@@ -91,35 +91,19 @@ namespace TeeLab.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaSP,TenSP,TinhTrang,SoTien")] SanPham sanPham)
+        // Phải có "SoLuong" trong cái ngoặc dưới đây thì nó mới cho lưu!
+        public async Task<IActionResult> Edit(string id, [Bind("MaSP,TenSP,SoTien,SoLuong,TinhTrang")] SanPham sanPham)
         {
-            if (id != sanPham.MaSP)
-            {
-                return NotFound();
-            }
+            if (id != sanPham.MaSP) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    if (sanPham.SoLuong > 0)
-                        sanPham.TinhTrang = "Còn hàng";
-                    else
-                        sanPham.TinhTrang = "Hết hàng";
-                    _context.Update(sanPham);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SanPhamExists(sanPham.MaSP))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                // Tự động cập nhật tình trạng dựa trên số lượng mới nhập
+                if (sanPham.SoLuong > 0) sanPham.TinhTrang = "Còn hàng";
+                else sanPham.TinhTrang = "Hết hàng";
+
+                _context.Update(sanPham);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(sanPham);
