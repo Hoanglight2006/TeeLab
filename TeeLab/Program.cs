@@ -1,10 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Teelab.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Thêm đoạn này để cấu hình Đăng nhập bằng Cookie
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // Đường dẫn tới trang Đăng nhập
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn khi bị từ chối truy cập
+    });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,6 +31,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); // Bật xác thực người dùng (Phải nằm TRÊN UseAuthorization)
 app.UseAuthorization();
 
 app.MapStaticAssets();

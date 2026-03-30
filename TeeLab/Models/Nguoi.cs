@@ -17,5 +17,11 @@ namespace TeeLab.Models
 
         public string? Sdt { get; set; } // Đưa Số điện thoại lên đây dùng chung luôn
 
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
+        public string TenDangNhap { get; set; }
+
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        public string MatKhau { get; set; }
+
     }
 }
