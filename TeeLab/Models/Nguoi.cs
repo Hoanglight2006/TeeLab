@@ -2,11 +2,20 @@
 
 namespace TeeLab.Models
 {
-    public class Nguoi
+    // Dùng abstract class để không thể tạo đối tượng trực tiếp từ lớp Nguoi
+    public abstract class Nguoi
     {
         [Key]
-        public int NguoiId { get; set; }
+        public int Id { get; set; } // Dùng Id chung thay cho MaKH, MaNV, MaQL
+
+        [Required(ErrorMessage = "Họ tên không được để trống")]
         public string? Hoten { get; set; }
+
+        public string? Diachi { get; set; } // Dấu ? nghĩa là có thể để trống (null)
+
+        public DateTime? Ngaysinh { get; set; }
+
+        public string? Sdt { get; set; } // Đưa Số điện thoại lên đây dùng chung luôn
 
     }
 }
