@@ -1,11 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using System.Text.Json
+@using Teelab.Models
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TeeLab</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* Thêm dòng này để hiện icon cái giỏ hàng *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TeeLab.styles.css" asp-append-version="true" />
 </head>
@@ -13,7 +18,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TeeLab</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">TeeLab</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -23,37 +28,48 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
-                        @* @if (User.IsInRole("QuanLy") || User.IsInRole("NhanVien"))
+                        
+                        @* Hiển thị Quản lý kho nếu là Quản lý hoặc Nhân viên *@
+                        @if (User.Identity.IsAuthenticated && (User.IsInRole("QuanLy") || User.IsInRole("NhanVien")))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="SanPhams" asp-action="Index">Quản lý kho</a>
+                                <a class="nav-link text-primary fw-bold" asp-controller="SanPhams" asp-action="Index">Quản lý sản phẩm</a>
                             </li>
-                        } *@
+                        }
                     </ul>
 
-                    <ul class="navbar-nav">
-                        @* Nút Giỏ hàng luôn hiện *@
-                        <li class="nav-item">
+                    <ul class="navbar-nav align-items-center">
+                        @* Nút Giỏ hàng với số lượng tự động cập nhật *@
+                        <li class="nav-item me-3">
                             <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
-                                <i class="bi bi-cart4"></i> Giỏ hàng
-                                @* Chỗ này nếu làm xịn hơn sẽ dùng ViewComponent để đếm số, tạm thời để link đơn giản *@
+                                <i class="bi bi-cart4 fs-5"></i>
+                                @{
+                                    var sessionData = Context.Session.GetString("GioHang");
+                                    var cart = sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
+                                    var count = cart?.Sum(x => x.SoLuong) ?? 0;
+                                }
+                                @if (count > 0)
+                                {
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                        @count
+                                    </span>
+                                }
                             </a>
                         </li>
+
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @* Nếu đã đăng nhập: Hiện tên và nút Đăng xuất *@
                             <li class="nav-item">
-                                <span class="nav-link text-primary fw-bold">Chào, @User.Identity.Name!</span>
+                                <span class="nav-link text-dark">Chào, <strong>@User.Identity.Name</strong>!</span>
                             </li>
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="nav-link btn btn-link text-dark border-0" style="cursor:pointer;">Đăng xuất</button>
+                                    <button type="submit" class="nav-link btn btn-link text-danger border-0" style="cursor:pointer;">Đăng xuất</button>
                                 </form>
                             </li>
                         }
                         else
                         {
-                            @* Nếu chưa đăng nhập: Hiện Đăng nhập/Đăng ký *@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Đăng nhập</a>
                             </li>
@@ -72,9 +88,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted text-center">
         <div class="container">
-            &copy; 2026 - TeeLab - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - TeeLab - Website bán áo thun
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

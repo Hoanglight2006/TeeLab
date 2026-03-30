@@ -17,7 +17,17 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.TenSP</h5>
                     <p class="card-text text-danger fw-bold">@item.SoTien.ToString("N0") VNĐ</p>
-                    <p class="card-text text-muted">Tình trạng: @item.TinhTrang</p>
+                    <p class="text-muted small">
+                        Tình trạng:
+                        @if (item.SoLuong > 0)
+                        {
+                            <span class="text-success">Còn @item.SoLuong sản phẩm</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">Hết hàng</span>
+                        }
+                    </p>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-center">
                     @if (item.TinhTrang == "Hết hàng")

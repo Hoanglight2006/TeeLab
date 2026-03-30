@@ -38,8 +38,9 @@ namespace Teelab.Models
             });
 
             modelBuilder.Entity<SanPham>().HasData(
-                new SanPham { MaSP = "AT001", TenSP = "Áo thun Teelab Basic", SoTien = 250000, TinhTrang = "Còn hàng" },
-                new SanPham { MaSP = "AT002", TenSP = "Áo Hoodie Teelab", SoTien = 450000, TinhTrang = "Còn hàng" }
+                new SanPham { MaSP = "AT001", TenSP = "Áo thun Teelab Basic", SoTien = 250000, SoLuong = 50, TinhTrang = "Còn hàng" },
+                new SanPham { MaSP = "AT002", TenSP = "Áo Hoodie Teelab", SoTien = 450000, SoLuong = 10, TinhTrang = "Còn hàng" },
+                new SanPham { MaSP = "Hoc", TenSP = "Học", SoTien = 36000, SoLuong = 0, TinhTrang = "Hết hàng" }
             );
         }
     }

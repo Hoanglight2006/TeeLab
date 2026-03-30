@@ -9,6 +9,8 @@ namespace Teelab.Models
         [Key]
         public string MaSP { get; set; }
         public string TenSP { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập số lượng kho")]
+        public int SoLuong { get; set; }
         public string TinhTrang { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal SoTien { get; set; }

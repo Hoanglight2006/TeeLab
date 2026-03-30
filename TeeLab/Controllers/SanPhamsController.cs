@@ -53,10 +53,16 @@ namespace TeeLab.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaSP,TenSP,TinhTrang,SoTien")] SanPham sanPham)
+        public async Task<IActionResult> Create([Bind("MaSP,TenSP,SoTien,SoLuong")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
+                // TỰ ĐỘNG CẬP NHẬT TRẠNG THÁI
+                if (sanPham.SoLuong > 0)
+                    sanPham.TinhTrang = "Còn hàng";
+                else
+                    sanPham.TinhTrang = "Hết hàng";
+
                 _context.Add(sanPham);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +102,10 @@ namespace TeeLab.Controllers
             {
                 try
                 {
+                    if (sanPham.SoLuong > 0)
+                        sanPham.TinhTrang = "Còn hàng";
+                    else
+                        sanPham.TinhTrang = "Hết hàng";
                     _context.Update(sanPham);
                     await _context.SaveChangesAsync();
                 }
