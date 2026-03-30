@@ -1,8 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<Teelab.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Trang chủ Teelab";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Chào mừng đến với TEELAB</h1>
+    <p>Bộ sưu tập sản phẩm mới nhất</p>
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@item.TenSP</h5>
+                    <p class="card-text text-danger fw-bold">@item.SoTien.ToString("N0") VNĐ</p>
+                    <p class="card-text text-muted">Tình trạng: @item.TinhTrang</p>
+                </div>
+                <div class="card-footer bg-white border-top-0 text-center">
+                    <a href="#" class="btn btn-dark w-100">Thêm vào giỏ</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Teelab.Models
@@ -13,6 +14,7 @@ namespace Teelab.Models
         public decimal SoTien { get; set; }
 
         // Navigation property: 1 Sản phẩm có thể nằm trong nhiều chi tiết thanh toán
+        [ValidateNever] // Tránh vòng lặp khi serialize
         public ICollection<ChiTietThanhToan> ChiTietThanhToans { get; set; }
     }
 }
