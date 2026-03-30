@@ -12,7 +12,7 @@ namespace Teelab.Models
         public DateTime NgayTao { get; set; } = DateTime.Now;
 
         // Kết nối với Khách Hàng (1 Khách hàng có nhiều hóa đơn Thanh toán)
-        public string Id { get; set; } // Khóa ngoại trỏ về bảng Nguoi
+        public int Id { get; set; } // Khóa ngoại trỏ về bảng Nguoi
         [ForeignKey("Id")]
         public KhachHang KhachHang { get; set; }
 
