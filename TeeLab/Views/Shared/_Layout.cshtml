@@ -21,11 +21,46 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
+                        @if (User.IsInRole("QuanLy") || User.IsInRole("NhanVien"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="SanPhams" asp-action="Index">Quản lý kho</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        @* Nút Giỏ hàng luôn hiện *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
+                                <i class="bi bi-cart4"></i> Giỏ hàng
+                                @* Chỗ này nếu làm xịn hơn sẽ dùng ViewComponent để đếm số, tạm thời để link đơn giản *@
+                            </a>
                         </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @* Nếu đã đăng nhập: Hiện tên và nút Đăng xuất *@
+                            <li class="nav-item">
+                                <span class="nav-link text-primary fw-bold">Chào, @User.Identity.Name!</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                                    <button type="submit" class="nav-link btn btn-link text-dark border-0" style="cursor:pointer;">Đăng xuất</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            @* Nếu chưa đăng nhập: Hiện Đăng nhập/Đăng ký *@
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

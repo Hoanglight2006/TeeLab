@@ -1,0 +1,54 @@
+﻿@model Teelab.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="text-center mb-4">Đăng ký Thành viên</h3>
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Họ và Tên</label>
+                        <input asp-for="Hoten" class="form-control" />
+                        <span asp-validation-for="Hoten" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input asp-for="TenDangNhap" class="form-control" />
+                        <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Mật khẩu</label>
+                            <input asp-for="MatKhau" class="form-control" type="password" />
+                            <span asp-validation-for="MatKhau" class="text-danger"></span>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input asp-for="XacNhanMatKhau" class="form-control" type="password" />
+                            <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input asp-for="Sdt" class="form-control" />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">TẠO TÀI KHOẢN</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <a asp-action="Login">Đã có tài khoản? Đăng nhập ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

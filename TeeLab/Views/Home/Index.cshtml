@@ -20,7 +20,16 @@
                     <p class="card-text text-muted">Tình trạng: @item.TinhTrang</p>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-center">
-                    <a href="#" class="btn btn-dark w-100">Thêm vào giỏ</a>
+                    @if (item.TinhTrang == "Hết hàng")
+                    {
+                        <button class="btn btn-secondary w-100" disabled>Hết hàng</button>
+                    }
+                    else
+                    {
+                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.MaSP" class="btn btn-dark w-100">
+                            Thêm vào giỏ
+                        </a>
+                    }
                 </div>
             </div>
         </div>

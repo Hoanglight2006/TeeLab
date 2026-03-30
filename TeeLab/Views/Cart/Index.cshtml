@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Teelab.Models.CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng của bạn";
+}
+
+<h2 class="mb-4">Giỏ hàng của bạn</h2>
+
+@if (Model.Any())
+{
+    <table class="table shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TenSP</td>
+                    <td>@item.Gia.ToString("N0") VNĐ</td>
+                    <td>@item.SoLuong</td>
+                    <td>@item.ThanhTien.ToString("N0") VNĐ</td>
+                    <td><a asp-action="Remove" asp-route-id="@item.MaSP" class="btn btn-sm btn-danger">Xóa</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="text-end mt-3">
+        <h4>Tổng cộng: @Model.Sum(x => x.ThanhTien).ToString("N0") VNĐ</h4>
+        <a asp-action="Checkout" class="btn btn-success btn-lg">THANH TOÁN NGAY</a>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Giỏ hàng đang trống. Quay lại <a asp-controller="Home" asp-action="Index">mua sắm</a> nhé!</div>
+}

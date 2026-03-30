@@ -17,6 +17,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Giỏ hàng tồn tại trong 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -32,6 +37,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication(); // Bật xác thực người dùng (Phải nằm TRÊN UseAuthorization)
+app.UseSession(); // Quan trọng: Phải nằm trên UseAuthorization
 app.UseAuthorization();
 
 app.MapStaticAssets();
