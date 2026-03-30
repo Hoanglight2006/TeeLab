@@ -11,9 +11,10 @@ namespace Teelab.Models
         public string TenSP { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập số lượng kho")]
         public int SoLuong { get; set; }
-        public string TinhTrang { get; set; }
+        public string? TinhTrang { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal SoTien { get; set; }
+        public string? HinhAnh { get; set; }
 
         // Navigation property: 1 Sản phẩm có thể nằm trong nhiều chi tiết thanh toán
         [ValidateNever] // Tránh vòng lặp khi serialize

@@ -29,3 +29,16 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Tùy chỉnh ảnh sản phẩm ngoài trang chủ */
+.product-image-home {
+    height: 250px; /* Chiều cao cố định */
+    object-fit: contain; /* Ảnh không bị méo, hiện trọn vẹn bên trong */
+    padding: 10px; /* Tạo khoảng trống nhẹ xung quanh */
+    background-color: #f8f9fa; /* Nền xám nhẹ nếu ảnh nhỏ hơn khung */
+}
+
+/* Ép tên sản phẩm chỉ hiện tối đa 1 dòng cho đều */
+.card-title.text-truncate {
+    max-width: 100%;
+}

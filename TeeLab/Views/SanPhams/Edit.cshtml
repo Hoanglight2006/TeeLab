@@ -10,7 +10,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            @* <--- QUAN TRỌNG *@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MaSP" />
             <div class="form-group">
@@ -18,11 +19,11 @@
                 <input asp-for="TenSP" class="form-control" />
                 <span asp-validation-for="TenSP" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="TinhTrang" class="control-label"></label>
                 <input asp-for="TinhTrang" class="form-control" />
                 <span asp-validation-for="TinhTrang" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <label asp-for="SoTien" class="control-label"></label>
                 <input asp-for="SoTien" class="form-control" />
@@ -33,8 +34,19 @@
                 <input asp-for="SoLuong" class="form-control" type="number" min="0" />
                 <span asp-validation-for="SoLuong" class="text-danger"></span>
             </div>
+            <div class="form-group mb-3">
+                <label class="control-label">Hình ảnh hiện tại</label>
+                <div class="mb-2">
+                    @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                    {
+                        <img src="~/images/sanpham/@Model.HinhAnh" width="150" class="img-thumbnail" />
+                    }
+                </div>
+                <label class="control-label">Thay đổi ảnh mới (để trống nếu giữ nguyên)</label>
+                <input type="file" name="hinhAnhSP" class="form-control" accept="image/*" />
+            </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Lưu thay đổi" class="btn btn-primary" />
             </div>
         </form>
     </div>

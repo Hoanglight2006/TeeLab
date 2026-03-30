@@ -1,7 +1,14 @@
-﻿@model IEnumerable<Teelab.Models.SanPham>
+﻿@using Microsoft.AspNetCore.Http
+@using System.Text.Json
+@using Teelab.Models
+@model IEnumerable<Teelab.Models.SanPham>
 
 @{
     ViewData["Title"] = "Trang chủ Teelab";
+    var sessionData = Context.Session.GetString("GioHang");
+    var currentCart = sessionData == null
+        ? new List<CartItem>()
+        : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
 }
 
 <div class="text-center">
@@ -9,14 +16,33 @@
     <p>Bộ sưu tập sản phẩm mới nhất</p>
 </div>
 
-<div class="row">
+<div class="row mt-4">
     @foreach (var item in Model)
     {
+        var itemInCart = currentCart.FirstOrDefault(c => c.MaSP == item.MaSP);
+        var quantityInCart = itemInCart?.SoLuong ?? 0;
+
         <div class="col-md-3 mb-4">
             <div class="card h-100 shadow-sm">
+                
+                @* --- PHẦN MỚI: HIỂN THỊ ẢNH --- *@
+                @* Kiểm tra nếu có tên file ảnh trong DB *@
+                @if (!string.IsNullOrEmpty(item.HinhAnh))
+                {
+                    <img src="~/images/sanpham/@item.HinhAnh" class="card-img-top product-image-home" alt="@item.TenSP" />
+                }
+                else
+                {
+                    @* Nếu chưa có ảnh, hiện một cái placeholder trống *@
+                    <div class="product-image-home bg-light d-flex align-items-center justify-content-center text-muted">
+                        No image
+                    </div>
+                }
+
                 <div class="card-body">
-                    <h5 class="card-title">@item.TenSP</h5>
-                    <p class="card-text text-danger fw-bold">@item.SoTien.ToString("N0") VNĐ</p>
+                    <h5 class="card-title text-truncate">@item.TenSP</h5>
+                    <p class="text-danger fw-bold fs-5">@item.SoTien.ToString("N0") VNĐ</p>
+                    
                     <p class="text-muted small">
                         Tình trạng:
                         @if (item.SoLuong > 0)
@@ -25,36 +51,31 @@
                         }
                         else
                         {
-                            <span class="text-danger">Hết hàng</span>
+                            <span class="text-danger fw-bold">Hết hàng</span>
                         }
                     </p>
+
+                    @* Hiển thị số lượng nếu khách đã chọn *@
+                    @if (quantityInCart > 0)
+                    {
+                        <div class="mb-2">
+                            <span class="badge bg-info text-dark">
+                                <i class="bi bi-check-circle"></i> Đã chọn: @quantityInCart
+                            </span>
+                        </div>
+                    }
                 </div>
-                <div class="card-footer bg-white border-top-0 text-center">
-                    @if (item.TinhTrang == "Hết hàng")
+
+                <div class="card-footer bg-white border-top-0">
+                    @if (item.SoLuong == 0)
                     {
                         <button class="btn btn-secondary w-100" disabled>Hết hàng</button>
                     }
                     else
                     {
-                        <div class="card-footer bg-white border-top-0">
-                            @if (item.SoLuong == 0)
-                            {
-                                <button class="btn btn-secondary w-100" disabled>Hết hàng</button>
-                            }
-                            else
-                            {
-                                @* Biến nút bấm thành Form để gửi số lượng *@
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                                    <input type="hidden" name="id" value="@item.MaSP" />
-                                    <div class="input-group mb-2">
-                                        <span class="input-group-text">SL</span>
-                                        @* Ô nhập số lượng, tối đa là số lượng trong kho *@
-                                        <input type="number" name="quantity" value="1" min="1" max="@item.SoLuong" class="form-control" />
-                                    </div>
-                                    <button type="submit" class="btn btn-dark w-100">Thêm vào giỏ</button>
-                                </form>
-                            }
-                        </div>
+                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.MaSP" class="btn btn-dark w-100">
+                            @(quantityInCart > 0 ? "Thêm tiếp" : "Thêm vào giỏ")
+                        </a>
                     }
                 </div>
             </div>
