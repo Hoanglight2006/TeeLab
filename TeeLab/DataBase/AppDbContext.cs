@@ -19,13 +19,28 @@ namespace Teelab.Models
         public DbSet<ThanhToan> ThanhToans { get; set; }
         public DbSet<ChiTietThanhToan> ChiTietThanhToans { get; set; }
 
-        // Cấu hình Khóa chính kép cho lớp trung gian
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ChiTietThanhToan>()
-                .HasKey(c => new { c.MaTT, c.MaSP }); // Dùng cả 2 mã làm khóa chính
+            // Cấu hình khóa chính kép cho ChiTietThanhToan (giữ nguyên cái cũ của bạn)
+            modelBuilder.Entity<ChiTietThanhToan>().HasKey(c => new { c.MaTT, c.MaSP });
+
+            // TỰ ĐỘNG BƠM DỮ LIỆU MẪU (SEED DATA)
+            modelBuilder.Entity<QuanLy>().HasData(new QuanLy
+            {
+                Id = 1, // Vì bạn dùng string làm Id nên để "1"
+                Hoten = "Admin",
+                TenDangNhap = "admin",
+                MatKhau = "123456",
+                Sdt = "0123456789"
+            });
+
+            modelBuilder.Entity<SanPham>().HasData(
+                new SanPham { MaSP = "AT001", TenSP = "Áo thun Teelab Basic", SoTien = 250000, TinhTrang = "Còn hàng" },
+                new SanPham { MaSP = "AT002", TenSP = "Áo Hoodie Teelab", SoTien = 450000, TinhTrang = "Còn hàng" }
+            );
         }
     }
 }
