@@ -12,5 +12,20 @@ namespace Teelab.Models
         public DbSet<KhachHang> KhachHangs { get; set; }
         public DbSet<NhanVien> NhanViens { get; set; }
         public DbSet<QuanLy> QuanLys { get; set; }
+
+        // Commit lần 2
+        // Thêm 3 bảng mới
+        public DbSet<SanPham> SanPhams { get; set; }
+        public DbSet<ThanhToan> ThanhToans { get; set; }
+        public DbSet<ChiTietThanhToan> ChiTietThanhToans { get; set; }
+
+        // Cấu hình Khóa chính kép cho lớp trung gian
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ChiTietThanhToan>()
+                .HasKey(c => new { c.MaTT, c.MaSP }); // Dùng cả 2 mã làm khóa chính
+        }
     }
 }
