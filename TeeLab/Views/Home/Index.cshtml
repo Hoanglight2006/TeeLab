@@ -73,9 +73,19 @@
                     }
                     else
                     {
-                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.MaSP" class="btn btn-dark w-100">
-                            @(quantityInCart > 0 ? "Thêm tiếp" : "Thêm vào giỏ")
-                        </a>
+                        @* PHẢI DÙNG FORM ĐỂ GỬI POST REQUEST VÀ CHO CHỌN SỐ LƯỢNG *@
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="id" value="@item.MaSP" />
+            
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">SL</span>
+                                <input type="number" name="quantity" value="1" min="1" max="@item.SoLuong" class="form-control" />
+                            </div>
+            
+                            <button type="submit" class="btn btn-dark w-100">
+                                @(quantityInCart > 0 ? "Thêm tiếp" : "Thêm vào giỏ")
+                            </button>
+                        </form>
                     }
                 </div>
             </div>
