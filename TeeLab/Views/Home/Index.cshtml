@@ -36,9 +36,25 @@
                     }
                     else
                     {
-                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.MaSP" class="btn btn-dark w-100">
-                            Thêm vào giỏ
-                        </a>
+                        <div class="card-footer bg-white border-top-0">
+                            @if (item.SoLuong == 0)
+                            {
+                                <button class="btn btn-secondary w-100" disabled>Hết hàng</button>
+                            }
+                            else
+                            {
+                                @* Biến nút bấm thành Form để gửi số lượng *@
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="id" value="@item.MaSP" />
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text">SL</span>
+                                        @* Ô nhập số lượng, tối đa là số lượng trong kho *@
+                                        <input type="number" name="quantity" value="1" min="1" max="@item.SoLuong" class="form-control" />
+                                    </div>
+                                    <button type="submit" class="btn btn-dark w-100">Thêm vào giỏ</button>
+                                </form>
+                            }
+                        </div>
                     }
                 </div>
             </div>

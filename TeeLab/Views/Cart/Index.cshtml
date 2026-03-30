@@ -38,7 +38,13 @@
                 <tr>
                     <td>@item.TenSP</td>
                     <td>@item.Gia.ToString("N0") VNĐ</td>
-                    <td>@item.SoLuong</td>
+                    <td>
+                        <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center" style="max-width: 120px;">
+                            <input type="hidden" name="id" value="@item.MaSP" />
+                            <input type="number" name="quantity" value="@item.SoLuong" min="1"
+                                   class="form-control form-control-sm me-2" onchange="this.form.submit()" />
+                        </form>
+                    </td>
                     <td>@item.ThanhTien.ToString("N0") VNĐ</td>
                     <td><a asp-action="Remove" asp-route-id="@item.MaSP" class="btn btn-sm btn-danger">Xóa</a></td>
                 </tr>
@@ -47,7 +53,7 @@
     </table>
     <div class="text-end mt-3">
         <h4>Tổng cộng: @Model.Sum(x => x.ThanhTien).ToString("N0") VNĐ</h4>
-        <a asp-action="Checkout" class="btn btn-success btn-lg">THANH TOÁN NGAY</a>
+        <a asp-controller="Cart" asp-action="Checkout" class="btn btn-success btn-lg">THANH TOÁN NGAY</a>
     </div>
 }
 else
