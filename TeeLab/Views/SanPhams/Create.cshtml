@@ -13,11 +13,18 @@
             
             <div class="row">
                 <div class="col-md-6">
+                    @* --- SỬA Ở ĐÂY: Chuyển ô nhập Mã SP thành Chọn Loại SP --- *@
                     <div class="form-group mb-3">
-                        <label asp-for="MaSP" class="fw-bold mb-1">Mã sản phẩm</label>
-                        <input asp-for="MaSP" class="form-control" placeholder="VD: AT003" />
-                        <span asp-validation-for="MaSP" class="text-danger"></span>
+                        <label class="fw-bold mb-1">Loại sản phẩm (Mã sẽ tự tạo)</label>
+                        <select name="MaLoai" class="form-select border-dark">
+                            <option value="AT">Áo thun (AT)</option>
+                            <option value="HD">Áo Hoodie (HD)</option>
+                            <option value="PK">Phụ kiện (PK)</option>
+                            <option value="Q">Quần (Q)</option>
+                        </select>
                     </div>
+                    @* -------------------------------------------------------- *@
+                    
                     <div class="form-group mb-3">
                         <label asp-for="TenSP" class="fw-bold mb-1">Tên sản phẩm</label>
                         <input asp-for="TenSP" class="form-control" />
