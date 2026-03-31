@@ -24,18 +24,17 @@ namespace TeeLab.Controllers
         // PHÂN LUỒNG THÔNG MINH
         public async Task<IActionResult> Index()
         {
-            // 1. Nếu người đang đăng nhập là Admin (Quản lý)
             if (User.IsInRole("QuanLy"))
             {
-                // Lấy danh sách nhân viên và ném sang giao diện quản lý nhân sự
                 var danhSachNV = await _context.NhanViens.ToListAsync();
                 return View("DanhSachNhanVien", danhSachNV);
             }
 
-            // 2. Nếu người đang đăng nhập là Nhân viên
-            // Lấy danh sách đơn hàng ném sang giao diện duyệt đơn (Index.cshtml)
+            // --- CẬP NHẬT: Lấy thêm Chi tiết Hóa đơn và Sản phẩm ---
             var danhSachDonHang = await _context.ThanhToans
                 .Include(t => t.KhachHang)
+                .Include(t => t.ChiTietThanhToans)
+                    .ThenInclude(ct => ct.SanPham) // Lấy Tên sản phẩm để hiển thị
                 .OrderByDescending(t => t.NgayTao)
                 .ToListAsync();
 
@@ -48,13 +47,19 @@ namespace TeeLab.Controllers
             var donHang = await _context.ThanhToans.FindAsync(maTT);
             if (donHang != null)
             {
+                // --- CHẶN BẢO MẬT TỪ SERVER: Đã giao hoặc Đã hủy thì cấm sửa ---
+                if (donHang.TrangThai == "Giao hàng thành công" || donHang.TrangThai == "Đã hủy")
+                {
+                    TempData["Error"] = "Đơn hàng này đã chốt, không thể thay đổi trạng thái!";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 donHang.TrangThai = trangThaiMoi;
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Đã cập nhật đơn {maTT} thành: {trangThaiMoi}";
             }
             return RedirectToAction(nameof(Index));
         }
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();

@@ -15,5 +15,9 @@ namespace Teelab.Models
         public SanPham SanPham { get; set; }
 
         public int SoLuong { get; set; }
+
+        // --- BỔ SUNG THÊM 2 CỘT LƯU SIZE VÀ MÀU ---
+        public string? KichThuoc { get; set; }
+        public string? MauSac { get; set; }
     }
 }
