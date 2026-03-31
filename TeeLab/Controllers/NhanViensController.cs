@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TeeLab.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Teelab.Models;
+using TeeLab.Models;
 
 namespace TeeLab.Controllers
 {
+    [Authorize(Roles = "NhanVien,QuanLy")]
     public class NhanViensController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,12 +21,31 @@ namespace TeeLab.Controllers
             _context = context;
         }
 
-        // GET: NhanViens
+        // TRANG DASHBOARD CỦA NHÂN VIÊN: Nơi hiển thị các Đơn hàng
         public async Task<IActionResult> Index()
         {
-            return View(await _context.NhanViens.ToListAsync());
+            // Lấy danh sách hóa đơn, sắp xếp đơn mới nhất lên đầu
+            var danhSachDonHang = await _context.ThanhToans
+                .Include(t => t.KhachHang) // Lấy luôn thông tin khách đặt
+                .OrderByDescending(t => t.NgayTao)
+                .ToListAsync();
+
+            return View(danhSachDonHang);
         }
 
+        // HÀM XỬ LÝ KHI NHÂN VIÊN BẤM NÚT CẬP NHẬT TRẠNG THÁI
+        [HttpPost]
+        public async Task<IActionResult> CapNhatTrangThai(string maTT, string trangThaiMoi)
+        {
+            var donHang = await _context.ThanhToans.FindAsync(maTT);
+            if (donHang != null)
+            {
+                donHang.TrangThai = trangThaiMoi;
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"Đã cập nhật đơn {maTT} thành: {trangThaiMoi}";
+            }
+            return RedirectToAction(nameof(Index));
+        }
         // GET: NhanViens/Details/5
         public async Task<IActionResult> Details(int? id)
         {

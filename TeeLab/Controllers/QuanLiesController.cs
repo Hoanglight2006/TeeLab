@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TeeLab.Models;
 using Teelab.Models;
 
 namespace TeeLab.Controllers
 {
+    [Authorize(Roles = "QuanLy")]
     public class QuanLiesController : Controller
     {
         private readonly AppDbContext _context;
@@ -22,6 +24,22 @@ namespace TeeLab.Controllers
         // GET: QuanLies
         public async Task<IActionResult> Index()
         {
+            // 1. Tính tổng doanh thu (Chỉ tính đơn "Giao hàng thành công")
+            var doanhThu = await _context.ThanhToans
+                .Where(t => t.TrangThai == "Giao hàng thành công")
+                .SumAsync(t => t.TongTien);
+
+            // 2. Tính tổng số đơn hàng đã đặt
+            var tongDon = await _context.ThanhToans.CountAsync();
+
+            // 3. Đếm sản phẩm sắp hết hàng (Dưới 5 cái)
+            var spHetHang = await _context.SanPhams.CountAsync(s => s.SoLuong < 5);
+
+            // Gửi dữ liệu ra View
+            ViewBag.DoanhThu = doanhThu;
+            ViewBag.TongDon = tongDon;
+            ViewBag.SpHetHang = spHetHang;
+
             return View(await _context.QuanLys.ToListAsync());
         }
 
