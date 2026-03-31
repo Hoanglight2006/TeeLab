@@ -30,22 +30,26 @@
                     </ul>
 
                     <ul class="navbar-nav align-items-center">
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
-                                <i class="bi bi-cart4 fs-5"></i>
-                                @{
-                                    var sessionData = Context.Session.GetString("GioHang");
-                                    var cart = sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
-                                    var count = cart?.Sum(x => x.SoLuong) ?? 0;
-                                }
-                                @if (count > 0)
-                                {
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
-                                        @count
-                                    </span>
-                                }
-                            </a>
-                        </li>
+                        
+                        @if (!User.IsInRole("QuanLy") && !User.IsInRole("NhanVien"))
+                        {
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
+                                    <i class="bi bi-cart4 fs-5"></i>
+                                    @{
+                                        var sessionData = Context.Session.GetString("GioHang");
+                                        var cart = sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
+                                        var count = cart?.Sum(x => x.SoLuong) ?? 0;
+                                    }
+                                    @if (count > 0)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                            @count
+                                        </span>
+                                    }
+                                </a>
+                            </li>
+                        }
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -64,7 +68,6 @@
                                 }
                                 else
                                 {
-                                    @* Khách hàng bấm vào đây sẽ sang trang Quản lý đơn cá nhân *@
                                     <a class="nav-link text-dark fw-bold" asp-controller="KhachHangs" asp-action="Index">
                                         <i class="bi bi-person"></i> Chào, @User.Identity.Name
                                     </a>
@@ -106,15 +109,22 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     @if (TempData["CheckoutSuccess"] != null)
     {
         <script>
             Swal.fire({
             title: 'Thành công!',
-            text: '@TempData["CheckoutSuccess"]',
+            text: '@Html.Raw(TempData["CheckoutSuccess"])',
             icon: 'success',
             confirmButtonColor: '#212529',
-            confirmButtonText: 'Tuyệt vời'
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false /* Không cho click ra ngoài tắt popup */
+            }).then((result) => {
+            if (result.isConfirmed) {
+            // Sau khi bấm nút Tuyệt vời thì mới bay sang Lịch sử đơn hàng
+            window.location.href = '/KhachHangs';
+            }
             });
         </script>
     }

@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace Teelab.Controllers
 {
-    [Authorize]
+    // --- KHÓA CHẶT: CHỈ KHÁCH HÀNG MỚI ĐƯỢC VÀO GIỎ HÀNG ---
+    [Authorize(Roles = "KhachHang")]
     public class CartController : Controller
     {
         private readonly AppDbContext _context;
@@ -38,7 +39,6 @@ namespace Teelab.Controllers
         }
 
         [HttpPost]
-        // --- CẬP NHẬT: Nhận thêm biến size và color từ Form gửi lên ---
         public IActionResult AddToCart(string id, int quantity = 1, string size = null, string color = null)
         {
             var sp = _context.SanPhams.Find(id);
@@ -49,7 +49,6 @@ namespace Teelab.Controllers
             }
 
             var cart = GetCart();
-            // TÌM KIẾM: Phải trùng cả Mã SP, trùng Size và trùng Màu thì mới cộng dồn số lượng
             var item = cart.FirstOrDefault(c => c.MaSP == id && c.KichThuoc == size && c.MauSac == color);
 
             if (item == null)
@@ -60,8 +59,8 @@ namespace Teelab.Controllers
                     TenSP = sp.TenSP,
                     Gia = sp.SoTien,
                     SoLuong = quantity,
-                    KichThuoc = size, // Lưu size vào giỏ
-                    MauSac = color    // Lưu màu vào giỏ
+                    KichThuoc = size,
+                    MauSac = color
                 });
             }
             else
@@ -74,7 +73,6 @@ namespace Teelab.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- CẬP NHẬT: Xóa dựa trên CartItemId để không xóa nhầm áo khác size ---
         public IActionResult Remove(string cartItemId)
         {
             var cart = GetCart();
@@ -83,7 +81,7 @@ namespace Teelab.Controllers
             SaveCart(cart);
             return RedirectToAction("Index");
         }
-        [Authorize]
+
         public async Task<IActionResult> Checkout()
         {
             var cart = GetCart();
@@ -102,8 +100,8 @@ namespace Teelab.Controllers
                 MaTT = "HD" + DateTime.Now.Ticks.ToString().Substring(10),
                 NgayTao = DateTime.Now,
                 Id = userId,
-                TrangThai = "Chờ xác nhận", // Mặc định khi mới đặt
-                TongTien = cart.Sum(c => c.ThanhTien) // Tính tổng tiền đơn hàng
+                TrangThai = "Chờ xác nhận",
+                TongTien = cart.Sum(c => c.ThanhTien)
             };
             _context.ThanhToans.Add(hoaDon);
 
@@ -130,8 +128,8 @@ namespace Teelab.Controllers
                         MaTT = hoaDon.MaTT,
                         MaSP = item.MaSP,
                         SoLuong = item.SoLuong,
-                        KichThuoc = item.KichThuoc, // NHẶT SIZE TỪ GIỎ HÀNG
-                        MauSac = item.MauSac        // NHẶT MÀU TỪ GIỎ HÀNG
+                        KichThuoc = item.KichThuoc,
+                        MauSac = item.MauSac
                     };
                     _context.ChiTietThanhToans.Add(chiTiet);
                 }
@@ -140,12 +138,13 @@ namespace Teelab.Controllers
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("GioHang");
 
-            TempData["CheckoutSuccess"] = "Đặt hàng thành công!";
-            return RedirectToAction("Index", "KhachHangs");
+            TempData["CheckoutSuccess"] = "Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.";
+
+            // --- FIX BAY TRANG: Đứng im tại giỏ hàng để Popup nảy lên ---
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        // --- CẬP NHẬT: Cập nhật số lượng dựa trên CartItemId ---
         public IActionResult UpdateQuantity(string cartItemId, int quantity)
         {
             var cart = GetCart();
@@ -153,7 +152,7 @@ namespace Teelab.Controllers
 
             if (item != null)
             {
-                var sp = _context.SanPhams.Find(item.MaSP); // Tìm SP gốc trong DB để check tồn kho
+                var sp = _context.SanPhams.Find(item.MaSP);
                 if (sp != null)
                 {
                     if (quantity <= sp.SoLuong)

@@ -44,7 +44,11 @@ namespace TeeLab.Controllers
         [HttpPost]
         public async Task<IActionResult> CapNhatTrangThai(string maTT, string trangThaiMoi)
         {
-            var donHang = await _context.ThanhToans.FindAsync(maTT);
+            // CẬP NHẬT: Phải Include thêm ChiTietThanhToans để lấy thông tin mã áo và số lượng
+            var donHang = await _context.ThanhToans
+                .Include(t => t.ChiTietThanhToans)
+                .FirstOrDefaultAsync(t => t.MaTT == maTT);
+
             if (donHang != null)
             {
                 // --- CHẶN BẢO MẬT TỪ SERVER: Đã giao hoặc Đã hủy thì cấm sửa ---
@@ -52,6 +56,28 @@ namespace TeeLab.Controllers
                 {
                     TempData["Error"] = "Đơn hàng này đã chốt, không thể thay đổi trạng thái!";
                     return RedirectToAction(nameof(Index));
+                }
+
+                // --- TÍNH NĂNG MỚI: HOÀN KHO KHI HỦY ĐƠN ---
+                if (trangThaiMoi == "Đã hủy")
+                {
+                    // Duyệt qua từng món hàng trong đơn bị hủy
+                    foreach (var chiTiet in donHang.ChiTietThanhToans)
+                    {
+                        // Tìm sản phẩm gốc trong kho
+                        var sanPham = await _context.SanPhams.FindAsync(chiTiet.MaSP);
+                        if (sanPham != null)
+                        {
+                            // Cộng trả lại số lượng vào kho
+                            sanPham.SoLuong += chiTiet.SoLuong;
+
+                            // Cập nhật lại tình trạng nếu sản phẩm trước đó đang báo "Hết hàng"
+                            if (sanPham.SoLuong > 0)
+                            {
+                                sanPham.TinhTrang = "Còn hàng";
+                            }
+                        }
+                    }
                 }
 
                 donHang.TrangThai = trangThaiMoi;

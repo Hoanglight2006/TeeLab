@@ -17,41 +17,118 @@
                 <a asp-controller="NhanViens" asp-action="Index" class="list-group-item list-group-item-action py-3">
                     <i class="bi bi-people me-2"></i> Quản lý Nhân viên
                 </a>
-                <a href="#" class="list-group-item list-group-item-action py-3 text-muted">
-                    <i class="bi bi-bar-chart-line me-2"></i> Thống kê báo cáo
-                </a>
             </div>
         </div>
 
         <div class="col-md-9 col-lg-10">
             <div class="card shadow-sm border-0 mb-5">
-                <div class="card-body p-4 p-md-5 text-center">
-                    <h2 class="display-6 fw-bold mb-3 text-primary">CHÀO MỪNG QUẢN TRỊ VIÊN</h2>
-                    <p class="lead text-muted mb-4">Chương trình quản lý nội bộ.</p>
-                    <hr class="w-25 mx-auto mb-4" />
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6 fw-bold mb-3 text-primary">BẢNG ĐIỀU KHIỂN QUẢN TRỊ</h2>
+                        <p class="lead text-muted mb-4">Hệ thống quản lý nội bộ TeeLab E-commerce.</p>
+                        <hr class="w-25 mx-auto mb-4" />
+                    </div>
+
+                    <div class="bg-light p-3 rounded shadow-sm border mb-4">
+                        <form method="get" asp-action="Index" class="row gx-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-muted small mb-1"><i class="bi bi-calendar-check me-1"></i>Từ ngày</label>
+                                <input type="date" name="tuNgay" value="@ViewBag.TuNgay" class="form-control border-secondary" />
+                            </div>
+                            <div class="col-md-4 mt-3 mt-md-0">
+                                <label class="form-label fw-bold text-muted small mb-1"><i class="bi bi-calendar-x me-1"></i>Đến ngày</label>
+                                <input type="date" name="denNgay" value="@ViewBag.DenNgay" class="form-control border-secondary" />
+                            </div>
+                            <div class="col-md-4 mt-3 mt-md-0">
+                                <button type="submit" class="btn btn-dark fw-bold px-4 shadow-sm"><i class="bi bi-funnel me-1"></i> Lọc dữ liệu</button>
+                                <a asp-action="Index" class="btn btn-outline-secondary ms-2 shadow-sm">Xóa bộ lọc</a>
+                            </div>
+                        </form>
+                    </div>
                     
                     <div class="row text-start mt-4">
                         <div class="col-md-4 mb-3">
-                            <div class="p-4 bg-light rounded shadow-sm border-start border-primary border-4">
-                                <h6 class="text-muted fw-bold">DOANH THU THỰC TẾ</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.DoanhThu != null ? ((decimal)ViewBag.DoanhThu).ToString("N0") : "0") VNĐ</h3>
+                            <div class="p-4 bg-white rounded shadow-sm border-start border-primary border-4" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <h6 class="text-muted fw-bold mb-3">DOANH THU THỰC TẾ</h6>
+                                <h3 class="fw-bold mb-0 text-primary">@(ViewBag.DoanhThu != null ? ((decimal)ViewBag.DoanhThu).ToString("N0") : "0") <span class="fs-5 text-muted">VNĐ</span></h3>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="p-4 bg-light rounded shadow-sm border-start border-success border-4">
-                                <h6 class="text-muted fw-bold">TỔNG ĐƠN HÀNG</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.TongDon ?? 0) Đơn</h3>
+                            <div class="p-4 bg-white rounded shadow-sm border-start border-success border-4" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <h6 class="text-muted fw-bold mb-3">TỔNG ĐƠN HÀNG</h6>
+                                <h3 class="fw-bold mb-0 text-success">@(ViewBag.TongDon ?? 0) <span class="fs-5 text-muted">Đơn</span></h3>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="p-4 bg-light rounded shadow-sm border-start border-warning border-4">
-                                <h6 class="text-muted fw-bold">SẢN PHẨM SẮP HẾT</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.SpHetHang ?? 0) SP</h3>
+                            <div class="p-4 bg-white rounded shadow-sm border-start border-danger border-4" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <h6 class="text-muted fw-bold mb-3">SẢN PHẨM SẮP HẾT KHO</h6>
+                                <h3 class="fw-bold mb-0 text-danger">@(ViewBag.SpHetHang ?? 0) <span class="fs-5 text-muted">SP</span></h3>
                             </div>
                         </div>
                     </div>
+
+                    <hr class="my-5" />
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="fw-bold text-dark mb-4"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Top 5 Sản phẩm Bán chạy nhất</h4>
+                            <div class="p-4 bg-white rounded shadow-sm border">
+                                <canvas id="topProductsChart" style="max-height: 400px; width: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Lấy mảng tên sản phẩm và số lượng từ Backend (được mã hóa dưới dạng JSON)
+        const labels = @Html.Raw(Json.Serialize(ViewBag.ChartLabels));
+        const dataValues = @Html.Raw(Json.Serialize(ViewBag.ChartData));
+
+        const ctx = document.getElementById('topProductsChart').getContext('2d');
+        
+        // Nếu không có dữ liệu bán hàng
+        if (labels.length === 0) {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#6c757d";
+        ctx.textAlign = "center";
+        ctx.fillText("Chưa có dữ liệu bán hàng trong khoảng thời gian này.", ctx.canvas.width / 2, ctx.canvas.height / 2);
+        } else {
+        // Cấu hình vẽ Biểu đồ Cột
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: labels,
+        datasets: [{
+        label: 'Số lượng đã bán (Cái)',
+        data: dataValues,
+        backgroundColor: 'rgba(13, 110, 253, 0.7)', // Màu xanh da trời Bootstrap
+        borderColor: 'rgba(13, 110, 253, 1)',
+        borderWidth: 1,
+        borderRadius: 5 // Bo góc cột
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: { display: false } // Tắt cái chú thích nhãn thừa thãi
+        },
+        scales: {
+        y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1 } // Nhảy từng số nguyên một (1 cái, 2 cái...)
+        }
+        }
+        }
+        });
+        }
+    </script>
+}
