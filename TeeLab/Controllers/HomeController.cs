@@ -10,16 +10,34 @@ namespace TeeLab.Controllers
     {
         private readonly AppDbContext _context;
 
-        // Tiêm Database vào HomeController
         public HomeController(AppDbContext context)
         {
             _context = context;
         }
+
         public async Task<IActionResult> Index()
         {
-            // Lấy toàn bộ sản phẩm từ DB ném sang View
             var danhSachSanPham = await _context.SanPhams.ToListAsync();
             return View(danhSachSanPham);
+        }
+
+        // --- THÊM HÀM DETAILS NÀY VÀO ---
+        public async Task<IActionResult> Details(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            // Tìm sản phẩm trong DB theo ID
+            var sanPham = await _context.SanPhams.FirstOrDefaultAsync(m => m.MaSP == id);
+
+            if (sanPham == null)
+            {
+                return NotFound();
+            }
+
+            return View(sanPham);
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,111 @@
+﻿@model Teelab.Models.SanPham
+
+@{
+    ViewData["Title"] = Model.TenSP;
+    var sizes = string.IsNullOrEmpty(Model.KichThuoc) ? new string[0] : Model.KichThuoc.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+    var colors = string.IsNullOrEmpty(Model.MauSac) ? new string[0] : Model.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+}
+
+<div class="container mt-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-dark">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-dark">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.TenSP</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+            <div class="row">
+                <div class="col-md-5 mb-4 mb-md-0 text-center">
+                    @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                    {
+                        <img src="~/images/sanpham/@Model.HinhAnh" class="img-fluid rounded shadow-sm w-100 border" style="object-fit: cover;" alt="@Model.TenSP" />
+                    }
+                    else
+                    {
+                        <div class="bg-light d-flex align-items-center justify-content-center text-muted rounded shadow-sm w-100" style="height: 400px;">
+                            Chưa có hình ảnh
+                        </div>
+                    }
+                </div>
+
+                <div class="col-md-7 ps-md-5">
+                    <h2 class="fw-bold mb-2">@Model.TenSP</h2>
+                    <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                        <h2 class="text-danger fw-bold mb-0 me-3">@Model.SoTien.ToString("N0") VNĐ</h2>
+                        @if (Model.SoLuong > 0)
+                        {
+                            <span class="badge bg-success px-3 py-2 fs-6">Còn hàng (@Model.SoLuong)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger px-3 py-2 fs-6">Hết hàng</span>
+                        }
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-2">Thông tin sản phẩm:</h6>
+                            <p class="text-muted mb-0" style="line-height: 1.6;">
+                                @(string.IsNullOrEmpty(Model.MoTa) ? "Đang cập nhật mô tả chi tiết." : Model.MoTa)
+                            </p>
+                        </div>
+                    </div>
+
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="id" value="@Model.MaSP" />
+
+                        <div class="row mb-4">
+                            @if (sizes.Length > 0)
+                            {
+                                <div class="col-6">
+                                    <label class="fw-bold mb-2">Kích thước</label>
+                                    <select name="size" class="form-select form-select-lg shadow-sm">
+                                        @foreach (var s in sizes)
+                                        {
+                                            <option value="@s">@s</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+
+                            @if (colors.Length > 0)
+                            {
+                                <div class="col-6">
+                                    <label class="fw-bold mb-2">Màu sắc</label>
+                                    <select name="color" class="form-select form-select-lg shadow-sm">
+                                        @foreach (var c in colors)
+                                        {
+                                            <option value="@c">@c</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="row align-items-end">
+                            <div class="col-4 col-md-3">
+                                <label class="fw-bold mb-2">Số lượng</label>
+                                <input type="number" name="quantity" value="1" min="1" max="@(Model.SoLuong > 0 ? Model.SoLuong : 1)" class="form-control form-control-lg text-center shadow-sm" />
+                            </div>
+                            <div class="col-8 col-md-9">
+                                @if (Model.SoLuong == 0)
+                                {
+                                    <button type="button" class="btn btn-secondary btn-lg w-100 fw-bold shadow-sm" disabled>TẠM HẾT HÀNG</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold shadow-sm">
+                                        THÊM VÀO GIỎ HÀNG
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
