@@ -129,7 +129,9 @@ namespace Teelab.Controllers
                     {
                         MaTT = hoaDon.MaTT,
                         MaSP = item.MaSP,
-                        SoLuong = item.SoLuong
+                        SoLuong = item.SoLuong,
+                        KichThuoc = item.KichThuoc, // NHẶT SIZE TỪ GIỎ HÀNG
+                        MauSac = item.MauSac        // NHẶT MÀU TỪ GIỎ HÀNG
                     };
                     _context.ChiTietThanhToans.Add(chiTiet);
                 }
@@ -138,10 +140,7 @@ namespace Teelab.Controllers
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("GioHang");
 
-            // Tạo cờ thông báo để Frontend hiện Popup
             TempData["CheckoutSuccess"] = "Đặt hàng thành công!";
-
-            // Đặt xong thì bắn sang trang cá nhân của Khách (KhachHangs/Index)
             return RedirectToAction("Index", "KhachHangs");
         }
 

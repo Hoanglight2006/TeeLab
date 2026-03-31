@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<TeeLab.Models.QuanLy>
 
 @{
-    ViewData["Title"] = "Trang quản trị (Admin)";
+    ViewData["Title"] = "Trang quản trị";
 }
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-4 mb-5">
     <div class="row">
         <div class="col-md-3 col-lg-2 mb-4">
             <div class="list-group shadow-sm">
@@ -15,9 +15,6 @@
                     <i class="bi bi-box-seam me-2"></i> Quản lý Sản phẩm
                 </a>
                 <a asp-controller="NhanViens" asp-action="Index" class="list-group-item list-group-item-action py-3">
-                    <i class="bi bi-list-check me-2"></i> Duyệt Đơn Hàng
-                </a>
-                <a href="#" class="list-group-item list-group-item-action py-3 text-muted">
                     <i class="bi bi-people me-2"></i> Quản lý Nhân viên
                 </a>
                 <a href="#" class="list-group-item list-group-item-action py-3 text-muted">
@@ -27,29 +24,29 @@
         </div>
 
         <div class="col-md-9 col-lg-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-5 text-center">
-                    <h1 class="display-6 fw-bold mb-3 text-primary">CHÀO MỪNG QUẢN TRỊ VIÊN</h1>
-                    <p class="lead text-muted mb-4">Hệ thống quản lý nội bộ TeeLab E-commerce.</p>
-                    <hr class="w-25 mx-auto mb-5" />
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-body p-4 p-md-5 text-center">
+                    <h2 class="display-6 fw-bold mb-3 text-primary">CHÀO MỪNG QUẢN TRỊ VIÊN</h2>
+                    <p class="lead text-muted mb-4">Chương trình quản lý nội bộ.</p>
+                    <hr class="w-25 mx-auto mb-4" />
                     
                     <div class="row text-start mt-4">
                         <div class="col-md-4 mb-3">
                             <div class="p-4 bg-light rounded shadow-sm border-start border-primary border-4">
                                 <h6 class="text-muted fw-bold">DOANH THU THỰC TẾ</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.DoanhThu.ToString("N0") VNĐ</h3>
+                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.DoanhThu != null ? ((decimal)ViewBag.DoanhThu).ToString("N0") : "0") VNĐ</h3>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-4 bg-light rounded shadow-sm border-start border-success border-4">
                                 <h6 class="text-muted fw-bold">TỔNG ĐƠN HÀNG</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.TongDon Đơn</h3>
+                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.TongDon ?? 0) Đơn</h3>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="p-4 bg-light rounded shadow-sm border-start border-warning border-4">
                                 <h6 class="text-muted fw-bold">SẢN PHẨM SẮP HẾT</h6>
-                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.SpHetHang SP</h3>
+                                <h3 class="fw-bold mb-0 text-dark">@(ViewBag.SpHetHang ?? 0) SP</h3>
                             </div>
                         </div>
                     </div>
