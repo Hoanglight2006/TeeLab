@@ -12,8 +12,8 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260330103348_ThemHinhAnhSP")]
-    partial class ThemHinhAnhSP
+    [Migration("20260331144719_InitialProject")]
+    partial class InitialProject
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,12 @@ namespace TeeLab.Migrations
                     b.Property<string>("MaSP")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("KichThuoc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MauSac")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
@@ -84,6 +90,24 @@ namespace TeeLab.Migrations
                     b.HasIndex("MaSP");
 
                     b.ToTable("ChiTietThanhToans");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTT = "HD_SAMPLE_01",
+                            MaSP = "AT001",
+                            KichThuoc = "M",
+                            MauSac = "Đen",
+                            SoLuong = 2
+                        },
+                        new
+                        {
+                            MaTT = "HD_SAMPLE_02",
+                            MaSP = "HD001",
+                            KichThuoc = "XL",
+                            MauSac = "Xám",
+                            SoLuong = 1
+                        });
                 });
 
             modelBuilder.Entity("Teelab.Models.SanPham", b =>
@@ -92,6 +116,15 @@ namespace TeeLab.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("HinhAnh")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KichThuoc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MauSac")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoTa")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SoLuong")
@@ -105,7 +138,6 @@ namespace TeeLab.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TinhTrang")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaSP");
@@ -116,6 +148,9 @@ namespace TeeLab.Migrations
                         new
                         {
                             MaSP = "AT001",
+                            HinhAnh = "at001.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Trắng",
                             SoLuong = 50,
                             SoTien = 250000m,
                             TenSP = "Áo thun Teelab Basic",
@@ -124,18 +159,35 @@ namespace TeeLab.Migrations
                         new
                         {
                             MaSP = "AT002",
-                            SoLuong = 10,
-                            SoTien = 450000m,
-                            TenSP = "Áo Hoodie Teelab",
+                            HinhAnh = "at002.jpg",
+                            KichThuoc = "M, L",
+                            MauSac = "Trắng",
+                            SoLuong = 3,
+                            SoTien = 290000m,
+                            TenSP = "Áo thun Rabbit Edition",
                             TinhTrang = "Còn hàng"
                         },
                         new
                         {
-                            MaSP = "Hoc",
-                            SoLuong = 0,
-                            SoTien = 36000m,
-                            TenSP = "Học",
-                            TinhTrang = "Hết hàng"
+                            MaSP = "HD001",
+                            HinhAnh = "hd001.jpg",
+                            KichThuoc = "L, XL",
+                            MauSac = "Xám",
+                            SoLuong = 20,
+                            SoTien = 450000m,
+                            TenSP = "Hoodie Teelab Signature",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "PK001",
+                            HinhAnh = "pk001.jpg",
+                            KichThuoc = "Free size",
+                            MauSac = "Đen",
+                            SoLuong = 100,
+                            SoTien = 150000m,
+                            TenSP = "Mũ Cap Teelab",
+                            TinhTrang = "Còn hàng"
                         });
                 });
 
@@ -150,11 +202,36 @@ namespace TeeLab.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("TongTien")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("TrangThai")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("MaTT");
 
                     b.HasIndex("Id");
 
                     b.ToTable("ThanhToans");
+
+                    b.HasData(
+                        new
+                        {
+                            MaTT = "HD_SAMPLE_01",
+                            Id = 3,
+                            NgayTao = new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 500000m,
+                            TrangThai = "Giao hàng thành công"
+                        },
+                        new
+                        {
+                            MaTT = "HD_SAMPLE_02",
+                            Id = 3,
+                            NgayTao = new DateTime(2026, 3, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TongTien = 450000m,
+                            TrangThai = "Chờ xác nhận"
+                        });
                 });
 
             modelBuilder.Entity("TeeLab.Models.KhachHang", b =>
@@ -162,6 +239,17 @@ namespace TeeLab.Migrations
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
                     b.HasDiscriminator().HasValue("KhachHang");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 3,
+                            Diachi = "Hải Phòng",
+                            Hoten = "Lê Minh Hoàng",
+                            MatKhau = "123",
+                            Sdt = "0977777777",
+                            TenDangNhap = "hoang"
+                        });
                 });
 
             modelBuilder.Entity("TeeLab.Models.NhanVien", b =>
@@ -169,6 +257,17 @@ namespace TeeLab.Migrations
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
                     b.HasDiscriminator().HasValue("NhanVien");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            Diachi = "Hà Nội",
+                            Hoten = "Nguyễn Nhân Viên",
+                            MatKhau = "123",
+                            Sdt = "0988888888",
+                            TenDangNhap = "nhanvien"
+                        });
                 });
 
             modelBuilder.Entity("TeeLab.Models.QuanLy", b =>
@@ -181,8 +280,9 @@ namespace TeeLab.Migrations
                         new
                         {
                             Id = 1,
-                            Hoten = "Admin",
-                            MatKhau = "123456",
+                            Diachi = "Thái Nguyên",
+                            Hoten = "Dương Đình Hoàng",
+                            MatKhau = "123",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });

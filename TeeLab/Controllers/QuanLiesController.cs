@@ -44,7 +44,10 @@ namespace TeeLab.Controllers
 
             // 3. Tính toán các con số tổng quan
             var doanhThu = await queryDonThanhCong.SumAsync(t => t.TongTien);
-            var tongDon = await queryTatCaDon.CountAsync();
+
+            // CẬP NHẬT: Chỉ đếm những đơn hàng KHÔNG bị hủy
+            var tongDon = await queryTatCaDon.Where(t => t.TrangThai != "Đã hủy").CountAsync();
+
             var spHetHang = await _context.SanPhams.CountAsync(s => s.SoLuong < 5);
 
             // 4. Lấy TOP 5 SẢN PHẨM BÁN CHẠY NHẤT (Chỉ tính đơn thành công)
