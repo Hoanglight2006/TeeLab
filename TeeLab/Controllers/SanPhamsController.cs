@@ -51,17 +51,37 @@ namespace TeeLab.Controllers
         }
 
         // POST: SanPhams/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: SanPhams/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Bỏ KichThuoc, MauSac ra khỏi Bind, thay bằng 2 tham số List<string>
-        public async Task<IActionResult> Create([Bind("MaSP,TenSP,SoTien,SoLuong,MoTa")] SanPham sanPham, IFormFile? hinhAnhSP, List<string> selectedSizes, List<string> selectedColors)
+        // Bỏ MaSP ra khỏi Bind, thêm tham số string MaLoai
+        public async Task<IActionResult> Create([Bind("TenSP,SoTien,SoLuong,MoTa")] SanPham sanPham, string MaLoai, IFormFile? hinhAnhSP, List<string> selectedSizes, List<string> selectedColors)
         {
-            // Bỏ qua kiểm tra lỗi cho các trường tự động
+            // Bỏ qua kiểm tra lỗi cho các trường này vì ta tự xử lý
+            ModelState.Remove("MaSP");
             ModelState.Remove("KichThuoc");
             ModelState.Remove("MauSac");
+
+            // --- SỬA Ở ĐÂY: LOGIC TỰ ĐỘNG SINH MÃ SẢN PHẨM ---
+            // Tìm sản phẩm có mã bắt đầu bằng MaLoai (VD: "AT") và có số thứ tự lớn nhất
+            var lastSp = await _context.SanPhams
+                .Where(s => s.MaSP.StartsWith(MaLoai))
+                .OrderByDescending(s => s.MaSP)
+                .FirstOrDefaultAsync();
+
+            int nextNumber = 1;
+            if (lastSp != null)
+            {
+                // Cắt bỏ phần chữ, lấy phần số phía sau và tăng lên 1
+                string lastNumberStr = lastSp.MaSP.Substring(MaLoai.Length);
+                if (int.TryParse(lastNumberStr, out int lastNumber))
+                {
+                    nextNumber = lastNumber + 1;
+                }
+            }
+
+            // Gán mã mới theo chuẩn: Tiền tố + 3 chữ số (Ví dụ: AT001, AT002)
+            sanPham.MaSP = MaLoai + nextNumber.ToString("D3");
+            // --------------------------------------------------
 
             if (ModelState.IsValid)
             {
@@ -91,6 +111,7 @@ namespace TeeLab.Controllers
             }
             return View(sanPham);
         }
+
         // GET: SanPhams/Edit/5
         public async Task<IActionResult> Edit(string id)
         {

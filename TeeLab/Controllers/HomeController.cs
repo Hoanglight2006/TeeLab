@@ -40,7 +40,7 @@ namespace TeeLab.Controllers
             return View(sanPham);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Privacy() 
         {
             return View();
         }
