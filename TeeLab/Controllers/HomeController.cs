@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Teelab.Models;
 using TeeLab.Models;
+using System.Linq;
 
 namespace TeeLab.Controllers
 {
@@ -15,13 +16,25 @@ namespace TeeLab.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // --- CẬP NHẬT: THÊM TÍNH NĂNG SEARCH ---
+        public async Task<IActionResult> Index(string searchString)
         {
-            var danhSachSanPham = await _context.SanPhams.ToListAsync();
-            return View(danhSachSanPham);
+            // Lấy toàn bộ danh sách sản phẩm
+            var sanPhams = from s in _context.SanPhams
+                           select s;
+
+            // Nếu người dùng có nhập từ khóa tìm kiếm
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                sanPhams = sanPhams.Where(s => s.TenSP.Contains(searchString));
+            }
+
+            // Truyền từ khóa ngược lại View để giữ chữ hiển thị trên ô input
+            ViewData["CurrentFilter"] = searchString;
+
+            return View(await sanPhams.ToListAsync());
         }
 
-        // --- THÊM HÀM DETAILS NÀY VÀO ---
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -29,7 +42,6 @@ namespace TeeLab.Controllers
                 return NotFound();
             }
 
-            // Tìm sản phẩm trong DB theo ID
             var sanPham = await _context.SanPhams.FirstOrDefaultAsync(m => m.MaSP == id);
 
             if (sanPham == null)
@@ -40,7 +52,7 @@ namespace TeeLab.Controllers
             return View(sanPham);
         }
 
-        public IActionResult Privacy() 
+        public IActionResult Privacy()
         {
             return View();
         }
