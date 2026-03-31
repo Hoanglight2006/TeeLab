@@ -1,48 +1,68 @@
 ﻿@model TeeLab.Models.NhanVien
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo tài khoản Nhân viên";
 }
 
-<h1>Create</h1>
+<div class="container-fluid mt-4 mb-5">
+    <h2 class="fw-bold mb-4 text-primary"><i class="bi bi-person-plus-fill me-2"></i>Thêm mới Nhân viên</h2>
 
-<h4>NhanVien</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Hoten" class="control-label"></label>
-                <input asp-for="Hoten" class="form-control" />
-                <span asp-validation-for="Hoten" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Diachi" class="control-label"></label>
-                <input asp-for="Diachi" class="form-control" />
-                <span asp-validation-for="Diachi" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ngaysinh" class="control-label"></label>
-                <input asp-for="Ngaysinh" class="form-control" />
-                <span asp-validation-for="Ngaysinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Sdt" class="control-label"></label>
-                <input asp-for="Sdt" class="form-control" />
-                <span asp-validation-for="Sdt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                
+                <div class="row">
+                    <div class="col-md-6 border-end pe-md-4 mb-4 mb-md-0">
+                        <h5 class="fw-bold mb-3 text-muted border-bottom pb-2">Thông tin cá nhân</h5>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Hoten" class="fw-bold mb-1">Họ và tên</label>
+                            <input asp-for="Hoten" class="form-control" placeholder="Nhập họ tên nhân viên" />
+                            <span asp-validation-for="Hoten" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Sdt" class="fw-bold mb-1">Số điện thoại</label>
+                            <input asp-for="Sdt" class="form-control" />
+                            <span asp-validation-for="Sdt" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Diachi" class="fw-bold mb-1">Địa chỉ</label>
+                            <input asp-for="Diachi" class="form-control" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Ngaysinh" class="fw-bold mb-1">Ngày sinh</label>
+                            <input asp-for="Ngaysinh" class="form-control" type="date" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 ps-md-4">
+                        <h5 class="fw-bold mb-3 text-muted border-bottom pb-2">Cấp tài khoản đăng nhập</h5>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="TenDangNhap" class="fw-bold mb-1 text-primary">Tên đăng nhập</label>
+                            <input asp-for="TenDangNhap" class="form-control" placeholder="VD: nhanvien01" autocomplete="off" />
+                            <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="MatKhau" class="fw-bold mb-1 text-primary">Mật khẩu</label>
+                            <input asp-for="MatKhau" type="text" class="form-control" placeholder="Thiết lập mật khẩu" autocomplete="off" />
+                            <span asp-validation-for="MatKhau" class="text-danger"></span>
+                        </div>
+
+                        <div class="mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold mb-2 shadow-sm">TẠO TÀI KHOẢN</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary w-100 fw-bold">Quay lại danh sách</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

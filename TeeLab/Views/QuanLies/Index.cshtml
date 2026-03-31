@@ -1,53 +1,60 @@
 ﻿@model IEnumerable<TeeLab.Models.QuanLy>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Trang quản trị (Admin)";
 }
 
-<h1>Index</h1>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 mb-4">
+            <div class="list-group shadow-sm">
+                <a asp-controller="QuanLies" asp-action="Index" class="list-group-item list-group-item-action active fw-bold py-3">
+                    <i class="bi bi-speedometer2 me-2"></i> Tổng quan
+                </a>
+                <a asp-controller="SanPhams" asp-action="Index" class="list-group-item list-group-item-action py-3">
+                    <i class="bi bi-box-seam me-2"></i> Quản lý Sản phẩm
+                </a>
+                <a asp-controller="NhanViens" asp-action="Index" class="list-group-item list-group-item-action py-3">
+                    <i class="bi bi-list-check me-2"></i> Duyệt Đơn Hàng
+                </a>
+                <a href="#" class="list-group-item list-group-item-action py-3 text-muted">
+                    <i class="bi bi-people me-2"></i> Quản lý Nhân viên
+                </a>
+                <a href="#" class="list-group-item list-group-item-action py-3 text-muted">
+                    <i class="bi bi-bar-chart-line me-2"></i> Thống kê báo cáo
+                </a>
+            </div>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Hoten)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Diachi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ngaysinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sdt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hoten)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diachi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ngaysinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sdt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <div class="col-md-9 col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5 text-center">
+                    <h1 class="display-6 fw-bold mb-3 text-primary">CHÀO MỪNG QUẢN TRỊ VIÊN</h1>
+                    <p class="lead text-muted mb-4">Hệ thống quản lý nội bộ TeeLab E-commerce.</p>
+                    <hr class="w-25 mx-auto mb-5" />
+                    
+                    <div class="row text-start mt-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-4 bg-light rounded shadow-sm border-start border-primary border-4">
+                                <h6 class="text-muted fw-bold">DOANH THU THỰC TẾ</h6>
+                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.DoanhThu.ToString("N0") VNĐ</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-4 bg-light rounded shadow-sm border-start border-success border-4">
+                                <h6 class="text-muted fw-bold">TỔNG ĐƠN HÀNG</h6>
+                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.TongDon Đơn</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-4 bg-light rounded shadow-sm border-start border-warning border-4">
+                                <h6 class="text-muted fw-bold">SẢN PHẨM SẮP HẾT</h6>
+                                <h3 class="fw-bold mb-0 text-dark">@ViewBag.SpHetHang SP</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

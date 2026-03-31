@@ -83,7 +83,6 @@ namespace Teelab.Controllers
             SaveCart(cart);
             return RedirectToAction("Index");
         }
-
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
@@ -102,7 +101,9 @@ namespace Teelab.Controllers
             {
                 MaTT = "HD" + DateTime.Now.Ticks.ToString().Substring(10),
                 NgayTao = DateTime.Now,
-                Id = userId
+                Id = userId,
+                TrangThai = "Chờ xác nhận", // Mặc định khi mới đặt
+                TongTien = cart.Sum(c => c.ThanhTien) // Tính tổng tiền đơn hàng
             };
             _context.ThanhToans.Add(hoaDon);
 
@@ -118,7 +119,6 @@ namespace Teelab.Controllers
                     }
 
                     sp.SoLuong -= item.SoLuong;
-
                     if (sp.SoLuong <= 0)
                     {
                         sp.SoLuong = 0;
@@ -138,8 +138,11 @@ namespace Teelab.Controllers
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("GioHang");
 
-            TempData["Success"] = "Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.";
-            return RedirectToAction("Index", "Home");
+            // Tạo cờ thông báo để Frontend hiện Popup
+            TempData["CheckoutSuccess"] = "Đặt hàng thành công!";
+
+            // Đặt xong thì bắn sang trang cá nhân của Khách (KhachHangs/Index)
+            return RedirectToAction("Index", "KhachHangs");
         }
 
         [HttpPost]

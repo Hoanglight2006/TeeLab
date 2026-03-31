@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TeeLab.Models;
 using Teelab.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace TeeLab.Controllers
 {
+    // CHỈ CÓ KHÁCH HÀNG MỚI ĐƯỢC VÀO XEM LỊCH SỬ ĐƠN CỦA MÌNH
+    [Authorize(Roles = "KhachHang")]
     public class KhachHangsController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,12 +23,23 @@ namespace TeeLab.Controllers
             _context = context;
         }
 
-        // GET: KhachHangs
+        // --- CẬP NHẬT: TRANG LỊCH SỬ MUA HÀNG ---
         public async Task<IActionResult> Index()
         {
-            return View(await _context.KhachHangs.ToListAsync());
-        }
+            // Lấy ra ID của người dùng đang đăng nhập
+            var userIdClaim = User.FindFirstValue("UserId");
+            if (userIdClaim == null) return RedirectToAction("Login", "Account");
 
+            int userId = int.Parse(userIdClaim);
+
+            // Truy vấn lấy TẤT CẢ các Hóa đơn (ThanhToan) do ID người này đặt
+            var lichSuDonHang = await _context.ThanhToans
+                .Where(t => t.Id == userId)
+                .OrderByDescending(t => t.NgayTao)
+                .ToListAsync();
+
+            return View(lichSuDonHang);
+        }
         // GET: KhachHangs/Details/5
         public async Task<IActionResult> Details(int? id)
         {

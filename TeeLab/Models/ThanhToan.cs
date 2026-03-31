@@ -11,6 +11,13 @@ namespace Teelab.Models
 
         public DateTime NgayTao { get; set; } = DateTime.Now;
 
+        // --- BỔ SUNG 2 CỘT NÀY CHO NGHIỆP VỤ ĐƠN HÀNG ---
+        public string TrangThai { get; set; } = "Chờ xác nhận";
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal TongTien { get; set; }
+        // -----------------------------------------------
+
         // Kết nối với Khách Hàng (1 Khách hàng có nhiều hóa đơn Thanh toán)
         public int Id { get; set; } // Khóa ngoại trỏ về bảng Nguoi
         [ForeignKey("Id")]

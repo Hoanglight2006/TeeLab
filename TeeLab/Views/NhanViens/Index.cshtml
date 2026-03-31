@@ -1,53 +1,83 @@
-﻿@model IEnumerable<TeeLab.Models.NhanVien>
+﻿@model IEnumerable<Teelab.Models.ThanhToan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Xử lý đơn hàng";
 }
 
-<h1>Index</h1>
+<div class="container-fluid mt-4 mb-5">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Hoten)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Diachi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ngaysinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sdt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hoten)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diachi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ngaysinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sdt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0"><i class="bi bi-list-check text-primary me-2"></i>Quản lý Đơn đặt hàng</h2>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4 py-3">Mã Đơn</th>
+                            <th class="py-3">Ngày đặt</th>
+                            <th class="py-3">Khách hàng (ID)</th>
+                            <th class="py-3">Tổng tiền</th>
+                            <th class="py-3">Trạng thái</th>
+                            <th class="pe-4 py-3 text-center">Cập nhật</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold text-primary">@item.MaTT</td>
+                                <td class="py-3">@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="py-3">
+                                    @(item.KhachHang != null ? item.KhachHang.Hoten : "Khách ẩn danh")
+                                    <span class="text-muted small">(ID: @item.Id)</span>
+                                </td>
+                                <td class="py-3 fw-bold text-danger">@item.TongTien.ToString("N0") đ</td>
+                                <td class="py-3">
+                                    @{
+                                        var badgeClass = item.TrangThai switch
+                                        {
+                                            "Chờ xác nhận" => "bg-warning text-dark",
+                                            "Đang giao" => "bg-info text-dark",
+                                            "Giao hàng thành công" => "bg-success",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass px-2 py-1 fs-6">@item.TrangThai</span>
+                                </td>
+                                <td class="pe-4 py-3">
+                                    <form asp-controller="NhanViens" asp-action="CapNhatTrangThai" method="post" class="d-flex justify-content-center">
+                                        <input type="hidden" name="maTT" value="@item.MaTT" />
+                                        <select name="trangThaiMoi" class="form-select form-select-sm me-2 shadow-sm" style="width: 170px;">
+                                            <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
+                                            <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
+                                            <option value="Giao hàng thành công" selected="@(item.TrangThai == "Giao hàng thành công")">Giao hàng thành công</option>
+                                            <option value="Đã hủy" selected="@(item.TrangThai == "Đã hủy")">Đã hủy</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-dark px-3 shadow-sm">Lưu</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">Hiện tại chưa có đơn hàng nào trên hệ thống.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
