@@ -55,6 +55,7 @@
                                         <th class="py-3">Ngày đặt</th>
                                         <th class="py-3">Tổng tiền</th>
                                         <th class="py-3">Trạng thái</th>
+                                        <th class="py-3 text-center">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,10 +72,27 @@
                                                         "Chờ xác nhận" => "bg-warning text-dark",
                                                         "Đang giao" => "bg-info text-dark",
                                                         "Giao hàng thành công" => "bg-success",
+                                                        "Đã hủy" => "bg-secondary", // Thêm màu xám cho đơn đã hủy
                                                         _ => "bg-secondary"
                                                     };
                                                 }
                                                 <span class="badge @badgeClass px-2 py-1">@donHang.TrangThai</span>
+                                            </td>
+                    
+                                            <td class="py-3 text-center">
+                                                @if (donHang.TrangThai == "Chờ xác nhận")
+                                                {
+                                                    <form asp-controller="KhachHangs" asp-action="HuyDon" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                                        <input type="hidden" name="maTT" value="@donHang.MaTT" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm">
+                                                            <i class="bi bi-x-circle me-1"></i>Hủy đơn
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small italic">Không thể hủy</span>
+                                                }
                                             </td>
                                         </tr>
                                     }

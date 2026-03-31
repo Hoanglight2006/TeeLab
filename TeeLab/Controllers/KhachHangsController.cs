@@ -118,5 +118,44 @@ namespace TeeLab.Controllers
         }
 
         private bool KhachHangExists(int id) { return _context.KhachHangs.Any(e => e.Id == id); }
+        [HttpPost]
+        [Authorize(Roles = "KhachHang")]
+        public async Task<IActionResult> HuyDon(string maTT)
+        {
+            var userIdClaim = User.FindFirstValue("UserId");
+            if (userIdClaim == null) return RedirectToAction("Login", "Account");
+            int userId = int.Parse(userIdClaim);
+
+            // Tìm đúng đơn hàng của chính khách đó và lôi thêm Chi tiết để hoàn kho
+            var donHang = await _context.ThanhToans
+                .Include(t => t.ChiTietThanhToans)
+                .FirstOrDefaultAsync(t => t.MaTT == maTT && t.Id == userId);
+
+            if (donHang == null) return NotFound();
+
+            // Chỉ cho phép hủy khi đơn còn đang ở trạng thái Chờ xác nhận
+            if (donHang.TrangThai != "Chờ xác nhận")
+            {
+                TempData["Error"] = "Đơn hàng đã được xử lý hoặc đang giao, không thể tự hủy!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Logic Hoàn kho
+            foreach (var chiTiet in donHang.ChiTietThanhToans)
+            {
+                var sanPham = await _context.SanPhams.FindAsync(chiTiet.MaSP);
+                if (sanPham != null)
+                {
+                    sanPham.SoLuong += chiTiet.SoLuong;
+                    if (sanPham.SoLuong > 0) sanPham.TinhTrang = "Còn hàng";
+                }
+            }
+
+            donHang.TrangThai = "Đã hủy";
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Đã hủy đơn hàng thành công và hoàn trả số lượng vào kho!";
+            return RedirectToAction(nameof(Index));
+        }
     }
+
 }
