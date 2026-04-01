@@ -1,4 +1,4 @@
-﻿namespace TeeLab.Models
+﻿namespace Teelab.Models
 {
     public class KhachHang : Nguoi // Kế thừa từ lớp Nguoi
     {

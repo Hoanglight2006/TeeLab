@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TeeLab.Models;
 using Teelab.Models;
+using Teelab.DataBase;
 
-namespace TeeLab.Controllers
+namespace Teelab.Controllers
 {
     public class QuanLiesController : Controller
     {

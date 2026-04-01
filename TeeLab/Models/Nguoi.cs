@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TeeLab.Models
+namespace Teelab.Models
 {
     // Dùng abstract class để không thể tạo đối tượng trực tiếp từ lớp Nguoi
     public abstract class Nguoi
@@ -22,6 +22,9 @@ namespace TeeLab.Models
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string MatKhau { get; set; }
+        public string? Email { get; set; }
 
-    }
+		public string? Avatar { get; set; } // Thêm dòng này vào class Nguoi
+
+	}
 }

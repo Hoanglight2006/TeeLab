@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Teelab.Models;
+using Teelab.DataBase;
 
 #nullable disable
 
@@ -22,13 +22,34 @@ namespace TeeLab.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TeeLab.Models.Nguoi", b =>
+            modelBuilder.Entity("Teelab.Models.ChiTietThanhToan", b =>
+                {
+                    b.Property<string>("MaTT")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaSP")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SoLuong")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaTT", "MaSP");
+
+                    b.HasIndex("MaSP");
+
+                    b.ToTable("ChiTietThanhToans");
+                });
+
+            modelBuilder.Entity("Teelab.Models.Nguoi", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Diachi")
                         .HasColumnType("nvarchar(max)");
@@ -37,6 +58,9 @@ namespace TeeLab.Migrations
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Hoten")
                         .IsRequired()
@@ -63,24 +87,6 @@ namespace TeeLab.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Nguoi");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Teelab.Models.ChiTietThanhToan", b =>
-                {
-                    b.Property<string>("MaTT")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MaSP")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.HasKey("MaTT", "MaSP");
-
-                    b.HasIndex("MaSP");
-
-                    b.ToTable("ChiTietThanhToans");
                 });
 
             modelBuilder.Entity("Teelab.Models.SanPham", b =>
@@ -162,23 +168,23 @@ namespace TeeLab.Migrations
                     b.ToTable("ThanhToans");
                 });
 
-            modelBuilder.Entity("TeeLab.Models.KhachHang", b =>
+            modelBuilder.Entity("Teelab.Models.KhachHang", b =>
                 {
-                    b.HasBaseType("TeeLab.Models.Nguoi");
+                    b.HasBaseType("Teelab.Models.Nguoi");
 
                     b.HasDiscriminator().HasValue("KhachHang");
                 });
 
-            modelBuilder.Entity("TeeLab.Models.NhanVien", b =>
+            modelBuilder.Entity("Teelab.Models.NhanVien", b =>
                 {
-                    b.HasBaseType("TeeLab.Models.Nguoi");
+                    b.HasBaseType("Teelab.Models.Nguoi");
 
                     b.HasDiscriminator().HasValue("NhanVien");
                 });
 
-            modelBuilder.Entity("TeeLab.Models.QuanLy", b =>
+            modelBuilder.Entity("Teelab.Models.QuanLy", b =>
                 {
-                    b.HasBaseType("TeeLab.Models.Nguoi");
+                    b.HasBaseType("Teelab.Models.Nguoi");
 
                     b.HasDiscriminator().HasValue("QuanLy");
 
@@ -214,7 +220,7 @@ namespace TeeLab.Migrations
 
             modelBuilder.Entity("Teelab.Models.ThanhToan", b =>
                 {
-                    b.HasOne("TeeLab.Models.KhachHang", "KhachHang")
+                    b.HasOne("Teelab.Models.KhachHang", "KhachHang")
                         .WithMany()
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)

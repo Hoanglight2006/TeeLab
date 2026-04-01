@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Teelab.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Teelab.DataBase;
 
 var builder = WebApplication.CreateBuilder(args);
 

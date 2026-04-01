@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace TeeLab.Migrations
 {
     /// <inheritdoc />
-    public partial class InitTeelabDB : Migration
+    public partial class UpdateNamespaceAndProfile : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +23,9 @@ namespace TeeLab.Migrations
                     Diachi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ngaysinh = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenDangNhap = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MatKhau = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false)
                 },
                 constraints: table =>
@@ -34,8 +39,13 @@ namespace TeeLab.Migrations
                 {
                     MaSP = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TenSP = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TinhTrang = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SoTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    SoLuong = table.Column<int>(type: "int", nullable: false),
+                    TinhTrang = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SoTien = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HinhAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KichThuoc = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MauSac = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,6 +94,21 @@ namespace TeeLab.Migrations
                         principalTable: "ThanhToans",
                         principalColumn: "MaTT",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Nguois",
+                columns: new[] { "Id", "Diachi", "Discriminator", "Email", "Hoten", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
+                values: new object[] { 1, null, "QuanLy", null, "Admin", "123456", null, "0123456789", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "SanPhams",
+                columns: new[] { "MaSP", "HinhAnh", "KichThuoc", "MauSac", "MoTa", "SoLuong", "SoTien", "TenSP", "TinhTrang" },
+                values: new object[,]
+                {
+                    { "AT001", null, null, null, null, 50, 250000m, "Áo thun Teelab Basic", "Còn hàng" },
+                    { "AT002", null, null, null, null, 10, 450000m, "Áo Hoodie Teelab", "Còn hàng" },
+                    { "Hoc", null, null, null, null, 0, 36000m, "Học", "Hết hàng" }
                 });
 
             migrationBuilder.CreateIndex(

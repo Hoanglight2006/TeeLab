@@ -1,0 +1,280 @@
+﻿@model Teelab.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+
+    string displayEmail = (Model.Email?.Contains("@") ?? false) ? 
+        (Model.Email.Split('@')[0].Length > 3 ? Model.Email.Substring(0, 3) + "********@" + Model.Email.Split('@')[1] : "****@" + Model.Email.Split('@')[1]) 
+        : Model.Email;
+
+    string displayPhone = (Model.SoDienThoai?.Length > 5) ? 
+        Model.SoDienThoai.Substring(0, 3) + "*******" + Model.SoDienThoai.Substring(Model.SoDienThoai.Length - 2) 
+        : Model.SoDienThoai;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+    :root { 
+        --primary-btn: #2563eb; 
+        --primary-hover: #1d4ed8;
+        --accent: #ef4444; 
+        --bg-gray: #fcfcfd; /* Màu nền cực nhẹ để tách biệt với footer */
+    }
+    body { background-color: var(--bg-gray); }
+
+    .profile-main-wrapper { max-width: 1000px; margin: 20px auto; padding: 20px; }
+
+    .avatar-section { text-align: center; padding: 20px; border-right: 1px solid #f0f0f0; }
+    .profile-avatar { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
+
+    .form-label { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: #666; margin-bottom: 5px; }
+    .form-control { border-radius: 8px; padding: 10px; border: 1px solid #e0e0e0; transition: all 0.3s ease; }
+    .form-control:focus { border-color: var(--primary-btn); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); outline: none; }
+    
+    .input-locked { background-color: #f3f4f6 !important; color: #9ca3af; }
+
+    /* Nút Thay đổi (Email/SĐT) */
+    .btn-change { 
+        font-size: 0.7rem; font-weight: 800; color: var(--primary-btn); 
+        background: #fff; border: 1px solid #e0e0e0; border-left: none; 
+        padding: 0 15px; border-radius: 0 8px 8px 0; transition: all 0.2s;
+    }
+    .btn-change:hover { background: #f8faff; color: var(--primary-hover); }
+
+    /* Nút Đổi ảnh & GPS */
+    .btn-dark-custom { 
+        background: #1f2937; color: #fff; border: none; border-radius: 8px; 
+        transition: all 0.3s ease; font-weight: 600;
+    }
+    .btn-dark-custom:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    /* Nút Đổi mật khẩu */
+    .btn-outline-custom {
+        border: 2px solid #e5e7eb; color: #4b5563; background: transparent;
+        font-weight: 700; transition: all 0.3s;
+    }
+    .btn-outline-custom:hover { border-color: #1f2937; color: #1f2937; background: #f9fafb; }
+
+ /* --- NÚT LƯU MỚI: ĐỒNG BỘ VÀ SANG TRỌNG --- */
+.btn-save { 
+    background: #1f2937; /* Màu đen xám giống nút Thay ảnh */
+    color: #ffffff; 
+    border-radius: 12px; /* Bo góc mềm mại hơn */
+    padding: 16px; 
+    font-weight: 800; 
+    width: 100%; 
+    border: none; 
+    margin-top: 25px; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-transform: uppercase; 
+    letter-spacing: 2px; /* Tăng khoảng cách chữ cho chuẩn TeeLab */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-save:hover { 
+    background: #000000; /* Hover vào là đen tuyền */
+    transform: translateY(-3px); /* Nhích lên cao hơn chút */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+    color: #ffffff;
+}
+
+.btn-save:active { 
+    transform: translateY(-1px); 
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2); 
+}
+
+
+.btn-save:hover::after {
+    left: 100%;
+}
+
+    #userAddress { min-height: 80px; resize: vertical; }
+    #leafletMap { height: 200px; width: 100%; border-radius: 12px; border: 1px solid #e0e0e0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+
+    #passDiv { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-top: 15px; display: none; }
+    
+    .error-text { color: var(--accent); font-size: 0.75rem; margin-top: 4px; display: none; }
+    .is-invalid { border-color: var(--accent) !important; }
+</style>
+
+<div class="profile-main-wrapper">
+    <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data" id="profileForm">
+        <div class="row g-4">
+            <div class="col-md-3 avatar-section">
+                <img src="@(string.IsNullOrEmpty(Model.Avatar) ? "/images/no-avatar.png" : Model.Avatar)" class="profile-avatar" id="previewImg" />
+                <div class="mb-3">
+                    <label class="btn btn-dark-custom btn-sm px-4 py-2">
+                        THAY ẢNH <input type="file" name="AvatarFile" hidden accept="image/*" onchange="previewImage(this)" />
+                    </label>
+                </div>
+                <button type="button" class="btn btn-outline-custom btn-sm w-100 py-2" onclick="togglePass()">
+                    <i class="fas fa-key me-1"></i> ĐỔI MẬT KHẨU
+                </button>
+                
+                <div id="passDiv" class="text-start">
+                    <div class="mb-2">
+                        <label class="form-label">Mật khẩu cũ</label>
+                        <input type="password" name="OldPassword" id="OldPassword" class="form-control form-control-sm" />
+                        <div id="OldPass-error" class="error-text">Nhập mật khẩu cũ</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <input type="password" name="NewPassword" id="NewPassword" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Xác nhận</label>
+                        <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control form-control-sm" />
+                        <div id="ConfirmPass-error" class="error-text">Không trùng khớp</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <h4 class="fw-bold mb-4" style="letter-spacing: -1px;">THÔNG TIN CỦA BẠN</h4>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Họ và tên</label>
+                        <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Địa chỉ Email</label>
+                        <div class="input-group">
+                            <input id="Email" name="Email" type="text" class="form-control input-locked" value="@displayEmail" readonly />
+                            <button type="button" class="btn-change" onclick="unlockField('Email', '@Model.Email')">SỬA</button>
+                        </div>
+                        <div id="Email-error" class="error-text">Định dạng Email không đúng</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Số điện thoại</label>
+                        <div class="input-group">
+                            <input id="SoDienThoai" name="SoDienThoai" type="text" class="form-control input-locked" value="@displayPhone" readonly />
+                            <button type="button" class="btn-change" onclick="unlockField('SoDienThoai', '@Model.SoDienThoai')">SỬA</button>
+                        </div>
+                        <div id="Phone-error" class="error-text">SĐT không hợp lệ</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Địa chỉ & Định vị bản đồ</label>
+                        <div class="row g-3">
+                            <div class="col-md-7 address-input-area">
+                                <textarea asp-for="DiaChi" class="form-control" id="userAddress" placeholder="Số nhà, tên đường, phường/xã..."></textarea>
+                                <button class="btn btn-dark-custom btn-sm mt-2 px-3 py-2" type="button" onclick="getCurrentLocation()">
+                                    <i class="fas fa-location-dot me-1"></i> LẤY VỊ TRÍ GPS
+                                </button>
+                            </div>
+                            <div class="col-md-5">
+                                <div id="leafletMap"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-save">LƯU CẬP NHẬT HỒ SƠ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (!ViewData.ModelState.IsValid) {
+            var errors = string.Join("<br/>", ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            <text>
+                Swal.fire({ icon: 'error', title: 'Lỗi hệ thống', html: '@Html.Raw(errors)', confirmButtonColor: '#2563eb' });
+                document.getElementById("passDiv").style.display = "block";
+            </text>
+        }
+        @if (TempData["Success"] != null) {
+            <text>Swal.fire({ icon: 'success', title: 'Thành công', text: '@TempData["Success"]', timer: 2000, showConfirmButton: false });</text>
+        }
+
+        const emailInput = document.getElementById('Email');
+        const phoneInput = document.getElementById('SoDienThoai');
+        const oldPassInput = document.getElementById('OldPassword');
+        const newPassInput = document.getElementById('NewPassword');
+        const confirmPassInput = document.getElementById('ConfirmPassword');
+        const passDiv = document.getElementById('passDiv');
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('previewImg').src = window.URL.createObjectURL(input.files[0]);
+            }
+        }
+
+        function unlockField(id, realValue) {
+            const el = document.getElementById(id);
+            el.value = realValue; el.readOnly = false;
+            el.classList.remove('input-locked'); el.focus();
+        }
+
+        function togglePass() {
+            passDiv.style.display = (passDiv.style.display === "none") ? "block" : "none";
+        }
+
+        function validateEmail() {
+            if (emailInput.readOnly) return true;
+            const isValid = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(emailInput.value);
+            emailInput.classList.toggle('is-invalid', !isValid);
+            document.getElementById('Email-error').style.display = isValid ? 'none' : 'block';
+            return isValid;
+        }
+
+        function validatePhone() {
+            if (phoneInput.readOnly) return true;
+            const isValid = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(phoneInput.value.replace(/\s/g, ""));
+            phoneInput.classList.toggle('is-invalid', !isValid);
+            document.getElementById('Phone-error').style.display = isValid ? 'none' : 'block';
+            return isValid;
+        }
+
+        function validatePasswords() {
+            if (passDiv.style.display === 'none') return true;
+            let isOldValid = oldPassInput.value.trim() !== "";
+            let isConfirmValid = confirmPassInput.value === newPassInput.value;
+            oldPassInput.classList.toggle('is-invalid', !isOldValid);
+            document.getElementById('OldPass-error').style.display = isOldValid ? 'none' : 'block';
+            confirmPassInput.classList.toggle('is-invalid', !isConfirmValid);
+            document.getElementById('ConfirmPass-error').style.display = isConfirmValid ? 'none' : 'block';
+            return isOldValid && isConfirmValid;
+        }
+
+        emailInput.addEventListener('input', validateEmail);
+        phoneInput.addEventListener('input', validatePhone);
+        [oldPassInput, newPassInput, confirmPassInput].forEach(i => i.addEventListener('input', validatePasswords));
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            if (!validateEmail() || !validatePhone() || !validatePasswords()) e.preventDefault();
+        });
+
+        let map, marker;
+        function initMap() {
+            map = L.map('leafletMap').setView([21.5765, 105.8091], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            marker = L.marker([21.5765, 105.8091], { draggable: true }).addTo(map);
+            map.on('click', e => updatePos(e.latlng.lat, e.latlng.lng));
+            marker.on('dragend', () => updatePos(marker.getLatLng().lat, marker.getLatLng().lng));
+        }
+        async function updatePos(lt, ln) {
+            marker.setLatLng([lt, ln]);
+            const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lt}&lon=${ln}`);
+            const d = await r.json();
+            if (d.display_name) document.getElementById('userAddress').value = d.display_name;
+        }
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    map.setView([p.coords.latitude, p.coords.longitude], 15);
+                    updatePos(p.coords.latitude, p.coords.longitude);
+                });
+            }
+        }
+        document.addEventListener("DOMContentLoaded", initMap);
+    </script>
+}

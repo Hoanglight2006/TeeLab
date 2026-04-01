@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Teelab.DataBase;
 using Teelab.Models;
-using TeeLab.Models;
 
-namespace TeeLab.Controllers
+namespace Teelab.Controllers
 {
     public class HomeController : Controller
     {

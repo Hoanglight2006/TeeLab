@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TeeLab.Models;
+using Teelab.Models;
+using Teelab.DataBase;
 
-namespace Teelab.Models
+namespace Teelab.DataBase
 {
     public class AppDbContext : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TeeLab.Models;
+using Teelab.Models;
 
 namespace Teelab.Models
 {

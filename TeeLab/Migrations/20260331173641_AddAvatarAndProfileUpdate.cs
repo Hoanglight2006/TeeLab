@@ -5,35 +5,30 @@
 namespace TeeLab.Migrations
 {
     /// <inheritdoc />
-    public partial class ThemTaiKhoanMatKhau : Migration
+    public partial class AddAvatarAndProfileUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "MatKhau",
+                name: "Avatar",
                 table: "Nguois",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "TenDangNhap",
+            migrationBuilder.UpdateData(
                 table: "Nguois",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                keyColumn: "Id",
+                keyValue: 1,
+                column: "Avatar",
+                value: null);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "MatKhau",
-                table: "Nguois");
-
-            migrationBuilder.DropColumn(
-                name: "TenDangNhap",
+                name: "Avatar",
                 table: "Nguois");
         }
     }

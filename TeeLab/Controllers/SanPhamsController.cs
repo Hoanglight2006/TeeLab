@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Teelab.Models;
-
-namespace TeeLab.Controllers
+using Teelab.DataBase;
+namespace Teelab.Controllers
 {
     public class SanPhamsController : Controller
     {

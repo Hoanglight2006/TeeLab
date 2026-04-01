@@ -1,4 +1,4 @@
-﻿namespace TeeLab.Models
+﻿namespace Teelab.Models
 {
     public class NhanVien : Nguoi
     {
