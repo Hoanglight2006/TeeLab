@@ -23,10 +23,11 @@ namespace Teelab.Models
 
             modelBuilder.Entity<ChiTietThanhToan>().HasKey(c => new { c.MaTT, c.MaSP });
 
+
             // 1. SEED DATA: TÀI KHOẢN
-            modelBuilder.Entity<QuanLy>().HasData(new QuanLy { Id = 1, Hoten = "Dương Đình Hoàng", TenDangNhap = "admin", MatKhau = "123", Sdt = "0123456789", Diachi = "Thái Nguyên" });
-            modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Nguyễn Nhân Viên", TenDangNhap = "nhanvien", MatKhau = "123", Sdt = "0988888888", Diachi = "Hà Nội" });
-            modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Lê Minh Hoàng", TenDangNhap = "hoang", MatKhau = "123", Sdt = "0977777777", Diachi = "Hải Phòng" });
+            modelBuilder.Entity<QuanLy>().HasData(new QuanLy { Id = 1, Hoten = "Dương Đình Hoàng", TenDangNhap = "admin", MatKhau = "123", Sdt = "0123456789", Diachi = "Thái Nguyên", Email = "admin@teelab.vn", Avatar = "default-avatar.png" });
+            modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Nguyễn Nhân Viên", TenDangNhap = "nhanvien", MatKhau = "123", Sdt = "0988888888", Diachi = "Hà Nội", Email = "nhanvien@teelab.vn", Avatar = "default-avatar.png" });
+            modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Lê Minh Hoàng", TenDangNhap = "hoang", MatKhau = "123", Sdt = "0977777777", Diachi = "Hải Phòng", Email = "hoang@gmail.com", Avatar = "default-avatar.png" });
 
             // 2. SEED DATA: SẢN PHẨM
             modelBuilder.Entity<SanPham>().HasData(
