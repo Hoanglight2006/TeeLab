@@ -2,20 +2,19 @@
 
 namespace TeeLab.Models
 {
-    // Dùng abstract class để không thể tạo đối tượng trực tiếp từ lớp Nguoi
     public abstract class Nguoi
     {
         [Key]
-        public int Id { get; set; } // Dùng Id chung thay cho MaKH, MaNV, MaQL
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Họ tên không được để trống")]
         public string? Hoten { get; set; }
 
-        public string? Diachi { get; set; } // Dấu ? nghĩa là có thể để trống (null)
+        public string? Diachi { get; set; }
 
         public DateTime? Ngaysinh { get; set; }
 
-        public string? Sdt { get; set; } // Đưa Số điện thoại lên đây dùng chung luôn
+        public string? Sdt { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
         public string TenDangNhap { get; set; }
@@ -23,5 +22,10 @@ namespace TeeLab.Models
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string MatKhau { get; set; }
 
+        // --- BỔ SUNG 2 CỘT MỚI ---
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        public string? Email { get; set; }
+
+        public string? Avatar { get; set; } // Chỉ lưu tên file ảnh (VD: hoang.jpg)
     }
 }

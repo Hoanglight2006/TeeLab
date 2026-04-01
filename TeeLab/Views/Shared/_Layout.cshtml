@@ -53,23 +53,29 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
+                            // Lấy Avatar từ Claims, nếu không có thì gán mặc định
+                            var avatar = User.FindFirst("Avatar")?.Value ?? "default-avatar.png";
+                            var avatarPath = $"/images/avatars/{avatar}";
+
+                            <li class="nav-item d-flex align-items-center me-3">
+                                <img src="@avatarPath" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" onerror="this.src='/images/avatars/default-avatar.png';" />
+                                
                                 @if (User.IsInRole("QuanLy"))
                                 {
-                                    <a class="nav-link text-primary fw-bold" asp-controller="QuanLies" asp-action="Index">
-                                        <i class="bi bi-person-circle"></i> Chào, @User.Identity.Name (Admin)
+                                    <a class="nav-link text-primary fw-bold ms-1" asp-controller="QuanLies" asp-action="Index">
+                                        Chào, @User.Identity.Name (Admin)
                                     </a>
                                 }
                                 else if (User.IsInRole("NhanVien"))
                                 {
-                                    <a class="nav-link text-success fw-bold" asp-controller="NhanViens" asp-action="Index">
-                                        <i class="bi bi-person-badge"></i> Chào, @User.Identity.Name
+                                    <a class="nav-link text-success fw-bold ms-1" asp-controller="NhanViens" asp-action="Index">
+                                        Chào, @User.Identity.Name
                                     </a>
                                 }
                                 else
                                 {
-                                    <a class="nav-link text-dark fw-bold" asp-controller="KhachHangs" asp-action="Index">
-                                        <i class="bi bi-person"></i> Chào, @User.Identity.Name
+                                    <a class="nav-link text-dark fw-bold ms-1" asp-controller="KhachHangs" asp-action="Index">
+                                        Chào, @User.Identity.Name
                                     </a>
                                 }
                             </li>

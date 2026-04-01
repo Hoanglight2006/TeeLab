@@ -21,5 +21,11 @@ namespace Teelab.Models
 
         public string? Diachi { get; set; }
         public string? Sdt { get; set; }
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+        public string Email { get; set; }
+
+        // Biến này dùng để hứng file ảnh người dùng tải lên
+        public IFormFile? AvatarFile { get; set; }
     }
 }
