@@ -42,3 +42,124 @@ body {
 .card-title.text-truncate {
     max-width: 100%;
 }
+
+/* ===== HEADER ===== */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Menu link */
+.navbar-nav .nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 6px 12px;
+}
+
+    /* Gạch dưới */
+    .navbar-nav .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0%;
+        height: 2px;
+        background-color: #0d6efd;
+        transition: width 0.3s ease;
+    }
+
+    /* Hover menu */
+    .navbar-nav .nav-link:hover {
+        color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.15);
+        transform: scale(1.05);
+    }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+/* ===== ICON GIỎ HÀNG ===== */
+.navbar .bi-cart4 {
+    transition: 0.3s;
+}
+
+.navbar .nav-link:hover .bi-cart4 {
+    transform: rotate(-10deg) scale(1.2);
+    color: #dc3545;
+}
+
+/* ===== AVATAR ===== */
+.navbar img {
+    transition: 0.3s;
+}
+
+    .navbar img:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+/* ===== FILTER BUTTON ===== */
+.btn-filter {
+    border-radius: 20px;
+    padding: 6px 15px;
+    border: 1px solid #ddd;
+    background: white;
+    transition: 0.3s;
+}
+
+    /* Hover filter */
+    .btn-filter:hover {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+    /* Active filter */
+    .btn-filter.active {
+        background: #212529;
+        color: white;
+    }
+
+/* ===== SEARCH BOX ===== */
+input.form-control {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* ===== BANNER ===== */
+.hero-banner {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+}
+
+/* ===== CARD HOVER ===== */
+.card {
+    transition: 0.3s;
+}
+
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+/* ===== IMAGE PRODUCT ===== */
+.product-image-home {
+    height: 250px;
+    object-fit: cover; /* đẹp hơn contain */
+    padding: 10px;
+    background-color: #f8f9fa;
+    transition: 0.3s;
+}
+
+    .product-image-home:hover {
+        transform: scale(1.05);
+    }
+
+/* ===== TEXT TRUNCATE ===== */
+.card-title.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
