@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Teelab.Models;
 using TeeLab.Models;
-using Microsoft.AspNetCore.Hosting; // Thêm thư viện này
-
+using Microsoft.AspNetCore.Http; // Đảm bảo có dòng này để dùng Session
 namespace Teelab.Controllers
 {
     public class AccountController : Controller
@@ -39,16 +38,19 @@ namespace Teelab.Controllers
                     if (user is QuanLy) role = "QuanLy";
                     else if (user is NhanVien) role = "NhanVien";
 
-                    // Gắn thêm Avatar vào "Chứng minh thư" (Claims) của phiên đăng nhập
-                    string avatarPath = string.IsNullOrEmpty(user.Avatar) ? "default-avatar.png" : user.Avatar;
+                    // 1. Lấy tên file ảnh (Chỉ lấy tên file: default-avatar.png hoặc xxxx.jpg)
+                    string fileName = string.IsNullOrEmpty(user.Avatar) ? "default-avatar.png" : user.Avatar;
+
+                    // 2. Nạp vào Session đường dẫn đầy đủ để Layout dùng
+                    HttpContext.Session.SetString("UserAvatar", "/images/avatars/" + fileName);
 
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.Hoten),
                         new Claim(ClaimTypes.Role, role),
-                        new Claim(ClaimTypes.Email, user.Email ?? ""), // Lưu Email
+                        new Claim(ClaimTypes.Email, user.Email ?? ""),
                         new Claim("UserId", user.Id.ToString()),
-                        new Claim("Avatar", avatarPath) // LƯU AVATAR ĐỂ VIEW LẤY LÊN
+                        new Claim("Avatar", fileName) // Dùng fileName ở đây để hết lỗi CS0103
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -65,9 +67,11 @@ namespace Teelab.Controllers
             return View(model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("UserAvatar"); // Xóa avatar khi đăng xuất
             return RedirectToAction("Index", "Home");
         }
 
@@ -121,6 +125,79 @@ namespace Teelab.Controllers
                 return RedirectToAction("Login");
             }
             return View(model);
+        }
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return RedirectToAction("Login");
+
+            int userId = int.Parse(userIdClaim);
+            var user = _context.Nguois.FirstOrDefault(u => u.Id == userId);
+            if (user == null) return NotFound();
+
+            var model = new UserProfileViewModel
+            {
+                HoTen = user.Hoten ?? "",
+                Email = user.Email ?? "",
+                SoDienThoai = user.Sdt ?? "",
+                DiaChi = user.Diachi ?? "",
+                Avatar = string.IsNullOrEmpty(user.Avatar) ? "default-avatar.png" : user.Avatar
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model, IFormFile? AvatarFile, string? OldPassword, string? NewPassword, string? ConfirmPassword)
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!int.TryParse(userIdClaim, out int userId)) return RedirectToAction("Login");
+
+            var userInDb = _context.Nguois.FirstOrDefault(u => u.Id == userId);
+            if (userInDb == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(NewPassword))
+            {
+                if (userInDb.MatKhau != OldPassword)
+                {
+                    ModelState.AddModelError("OldPassword", "Mật khẩu cũ không chính xác!");
+                }
+                if (NewPassword != ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Mật khẩu xác nhận không khớp!");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    model.Avatar = userInDb.Avatar;
+                    return View("Profile", model);
+                }
+                userInDb.MatKhau = NewPassword;
+            }
+
+            if (AvatarFile != null && AvatarFile.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(AvatarFile.FileName);
+                // Lưu đúng vào thư mục avatars
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/avatars", fileName); 
+                using (var stream = new FileStream(path, FileMode.Create)) { await AvatarFile.CopyToAsync(stream); }
+                userInDb.Avatar = fileName;
+            }
+
+            if (!string.IsNullOrEmpty(model.Email) && !model.Email.Contains("*")) userInDb.Email = model.Email;
+            if (!string.IsNullOrEmpty(model.SoDienThoai) && !model.SoDienThoai.Contains("*")) userInDb.Sdt = model.SoDienThoai;
+
+            userInDb.Hoten = model.HoTen;
+            userInDb.Diachi = model.DiaChi;
+
+            await _context.SaveChangesAsync();
+
+            // Cập nhật lại Session ngay để Header đổi ảnh
+            string finalAvatar = string.IsNullOrEmpty(userInDb.Avatar) ? "default-avatar.png" : userInDb.Avatar;
+            HttpContext.Session.SetString("UserAvatar", "/images/avatars/" + finalAvatar);
+
+            TempData["Success"] = "";
+            return RedirectToAction("Profile");
         }
     }
 }

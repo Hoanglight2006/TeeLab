@@ -22,9 +22,7 @@ builder.Services.AddSession(options => {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -32,10 +30,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthentication(); // Bật xác thực người dùng (Phải nằm TRÊN UseAuthorization)
 app.UseSession(); // Quan trọng: Phải nằm trên UseAuthorization
 app.UseAuthorization();
