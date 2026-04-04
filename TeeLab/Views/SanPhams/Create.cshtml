@@ -46,7 +46,7 @@
                     <div class="form-group mb-4">
                         <label class="fw-bold mb-2">Kích thước (Size)</label>
                         <div class="d-flex flex-wrap gap-3">
-                            @foreach (var size in new[] { "S", "M", "L", "XL", "XXL" })
+                            @foreach (var size in new[] { "S", "M", "L", "XL"})
                             {
                                 <div class="form-check">
                                     <input class="form-check-input border-dark" type="checkbox" name="selectedSizes" value="@size" id="size_@size">
@@ -55,11 +55,11 @@
                             }
                         </div>
                     </div>
-
+                        
                     <div class="form-group mb-4">
                         <label class="fw-bold mb-2">Màu sắc</label>
                         <div class="d-flex flex-wrap gap-3">
-                            @foreach (var color in new[] { "Đen", "Trắng", "Xám", "Kem", "Đỏ", "Xanh Navy", "Hồng" })
+                            @foreach (var color in new[] { "Đen", "Trắng", "Xám Tiêu", "Kem", "Đỏ", "Xanh Than", "Hồng","Nâu", "Vàng","Xanh","Xanh Navy","Xám trắng" ,"Xanh rêu"})
                             {
                                 <div class="form-check">
                                     <input class="form-check-input border-dark" type="checkbox" name="selectedColors" value="@color" id="color_@color">

@@ -68,25 +68,8 @@ body {
     box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
 }
 
-/* --- GIỮ NGUYÊN CÁC PHẦN CÒN LẠI CỦA BẠN --- */
-.footer-logo {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 15px;
-    letter-spacing: 1.5px;
-    color: #000000;
-    text-transform: uppercase;
-}
 
-.footer-menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
-    padding: 0;
-}
+
 
     .footer-menu a {
         text-decoration: none;
@@ -141,4 +124,54 @@ body {
         color: #000000;
         text-decoration: none;
         font-weight: 600;
+    }
+.footer-section {
+    font-size: 14px;
+    background-color: #ffffff;
+    border-top: 1px solid #eee;
+    color: #000;
+}
+
+.footer-link-list li {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+    .footer-link-list li a {
+        text-decoration: none;
+        color: #000;
+        font-weight: 600; 
+    }
+
+        .footer-link-list li a:hover {
+            text-decoration: underline;
+        }
+
+.newsletter-form input {
+    background-color: #e9ecef;
+    border: none;
+    padding: 12px 20px;
+    border-top-left-radius: 50px !important;
+    border-bottom-left-radius: 50px !important;
+}
+
+.newsletter-form button {
+    font-size
+    border-top-right-radius: 50px !important;
+    border-bottom-right-radius: 50px !important;
+    padding: 12px 30px;
+}
+
+.footer-business-info p {
+    color: #333;
+    line-height: 1.5;
+}
+
+.bi {
+    transition: transform 0.2s;
+}
+
+    .bi:hover {
+        transform: scale(1.2);
+        display: inline-block;
     }
