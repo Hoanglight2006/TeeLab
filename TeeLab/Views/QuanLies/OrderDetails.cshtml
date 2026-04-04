@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5>CHI TIẾT ĐƠN HÀNG: #@Model.MaTT</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Ngày đặt:</strong> @Model.NgayTao.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ChiTietThanhToans)
+                    {
+                        <tr>
+                            <td>
+                                @item.SanPham.TenSP <br />
+                                <small class="text-muted">Size: @item.KichThuoc, Màu: @item.MauSac</small>
+                            </td>
+                            <td>@item.SoLuong</td>
+                            @* Chỗ này sẽ hết lỗi sau khi ông thêm 'Gia' vào Model ở Bước 1 *@
+                            <td>@item.Gia.ToString("N0") VNĐ</td>
+                            <td>@((item.SoLuong * item.Gia).ToString("N0")) VNĐ</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <h4 class="text-end text-danger">Tổng cộng: @Model.TongTien.ToString("N0") VNĐ</h4>
+            <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+</div>

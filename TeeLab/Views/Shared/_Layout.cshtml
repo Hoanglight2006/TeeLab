@@ -110,81 +110,82 @@
             @RenderBody()
         </main>
     </div>
-
-            </div>
         @if (!isLoginPage)
         {
-            <footer class="footer-section pt-5 pb-3">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-2 mb-4">
-                            <h6 class="fw-bold text-u   ppercase mb-3">FAQ</h6>
-                            <ul class="list-unstyled">
-                                <li><a href="#" class="text-decoration-none text-dark">Track Your Order</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <h6 class="fw-bold text-uppercase mb-3">Client Services</h6>
-                            <ul class="list-unstyled footer-link-list">
-                                <li><a href="#">Chính sách mua hàng</a></li>
-                                <li><a href="#">Chính sách bảo mật thông tin</a></li>
-                                <li><a href="#">Phương thức thanh toán</a></li>
-                                <li><a href="#">Chính sách trả hàng</a></li>
-                                <li><a href="#">Chính sách giao nhận, vận chuyển, kiểm hàng</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <h6 class="fw-bold text-uppercase mb-3">Newsletter</h6>
-                            <p class="small text-uppercase fw-semibold" style="line-height: 1.6;">
-                                Sign up to receive email updates on our latest collections, products, fashion shows, and projects.
-                                I agree to receive Teelab newsletter to be the first to know about new collections, exclusive product launches, events, and avalane services.
-                                By subscribing, I accept Teelab privacy policy.
-                            </p>
-                            <div class="newsletter-form d-flex mt-3">
-                                <input type="email" class="form-control rounded-pill-start border-end-0" placeholder="Email address">
-                                <button class="btn btn-dark rounded-pill-end px-4 text-uppercase fw-bold" type="button">Send</button>
+            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Home" &&
+                                             ViewContext.RouteData.Values["action"]?.ToString() == "Index")
+            {
+                <footer class="footer-section pt-5 pb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2 mb-4">
+                                <h6 class="fw-bold text-u   ppercase mb-3">FAQ</h6>
+                                <ul class="list-unstyled">
+                                    <li><a href="#" class="text-decoration-none text-dark">Track Your Order</a></li>
+                                </ul>
                             </div>
-                        </div>
-                    </div>
 
-                    <hr class="my-4">
+                            <div class="col-md-4 mb-4">
+                                <h6 class="fw-bold text-uppercase mb-3">Client Services</h6>
+                                <ul class="list-unstyled footer-link-list">
+                                    <li><a href="#">Chính sách mua hàng</a></li>
+                                    <li><a href="#">Chính sách bảo mật thông tin</a></li>
+                                    <li><a href="#">Phương thức thanh toán</a></li>
+                                    <li><a href="#">Chính sách trả hàng</a></li>
+                                    <li><a href="#">Chính sách giao nhận, vận chuyển, kiểm hàng</a></li>
+                                </ul>
+                            </div>
 
-                    <div class="row mt-4 align-items-start">
-                        <div class="col-md-4 mb-4">
-                            <div class="d-flex gap-3">
-                                <a href="#" class="text-dark fs-4"><i class="bi bi-facebook"></i></a>
-                                <a href="#" class="text-dark fs-4"><i class="bi bi-instagram"></i></a>
-                                <a href="#" class="text-dark fs-4"><i class="bi bi-tiktok"></i></a>
-                                <a href="#" class="text-dark fs-4"><i class="bi bi-threads"></i></a>
-                                <a href="#" class="text-dark fs-4"><i class="bi bi-youtube"></i></a>
+                            <div class="col-md-6 mb-4">
+                                <h6 class="fw-bold text-uppercase mb-3">Newsletter</h6>
+                                <p class="small text-uppercase fw-semibold" style="line-height: 1.6;">
+                                    Sign up to receive email updates on our latest collections, products, fashion shows, and projects.
+                                    I agree to receive Teelab newsletter to be the first to know about new collections, exclusive product launches, events, and avalane services.
+                                    By subscribing, I accept Teelab privacy policy.
+                                </p>
+                                <div class="newsletter-form d-flex mt-3">
+                                    <input type="email" class="form-control rounded-pill-start border-end-0" placeholder="Email address">
+                                    <button class="btn btn-dark rounded-pill-end px-4 text-uppercase fw-bold" type="button">Send</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-md-8 d-flex justify-content-md-end">
+                        <hr class="my-4">
 
-                            <div class="footer-business-info text-start" style="max-width: 600px;">
-                                <h6 class="fw-bold mb-2">HKD thời trang Huệ Nguyễn</h6>
-                                <p class="small mb-1">Giấy chứng nhận đăng ký hộ kinh doanh số 019171001898 do Phòng Kinh tế, hạ tầng và đô thị - UBND Phường Nghĩa Đô cấp ngày 23/01/2026</p>
-                                <p class="small mb-1">Địa chỉ: Số 34 Ngõ 225 Quan Hoa, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam</p>
-                                <p class="small mb-1">Email: teelabvn@gmail.com</p>
-                                <p class="small mb-2">Điện thoại: 0865539083</p>
-
-
+                        <div class="row mt-4 align-items-start">
+                            <div class="col-md-4 mb-4">
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="text-dark fs-4"><i class="bi bi-facebook"></i></a>
+                                    <a href="#" class="text-dark fs-4"><i class="bi bi-instagram"></i></a>
+                                    <a href="#" class="text-dark fs-4"><i class="bi bi-tiktok"></i></a>
+                                    <a href="#" class="text-dark fs-4"><i class="bi bi-threads"></i></a>
+                                    <a href="#" class="text-dark fs-4"><i class="bi bi-youtube"></i></a>
+                                </div>
                             </div>
 
+                            <div class="col-md-8 d-flex justify-content-md-end">
+
+                                <div class="footer-business-info text-start" style="max-width: 600px;">
+                                    <h6 class="fw-bold mb-2">HKD thời trang Huệ Nguyễn</h6>
+                                    <p class="small mb-1">Giấy chứng nhận đăng ký hộ kinh doanh số 019171001898 do Phòng Kinh tế, hạ tầng và đô thị - UBND Phường Nghĩa Đô cấp ngày 23/01/2026</p>
+                                    <p class="small mb-1">Địa chỉ: Số 34 Ngõ 225 Quan Hoa, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam</p>
+                                    <p class="small mb-1">Email: teelabvn@gmail.com</p>
+                                    <p class="small mb-2">Điện thoại: 0865539083</p>
+
+
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mt-4 text-center text-md-start">
-                        <span class="fw-bold" style="font-size: 14px;">teelab:alter</span>
-                    </div>
+                        <div class="mt-4 text-center text-md-start">
+                            <span class="fw-bold" style="font-size: 14px;">teelab:alter</span>
+                        </div>
 
-            </footer>
+                </footer>
+            }
         }
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

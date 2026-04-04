@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teelab.Models;
 
@@ -11,9 +12,11 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404171215_AddLockAndRankToKhachHang")]
+    partial class AddLockAndRankToKhachHang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +82,6 @@ namespace TeeLab.Migrations
                     b.Property<string>("MaSP")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Gia")
-                        .HasColumnType("float");
-
                     b.Property<string>("KichThuoc")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,7 +102,6 @@ namespace TeeLab.Migrations
                         {
                             MaTT = "HD_SAMPLE_01",
                             MaSP = "AT001",
-                            Gia = 0.0,
                             KichThuoc = "M",
                             MauSac = "Đen",
                             SoLuong = 2
@@ -111,7 +110,6 @@ namespace TeeLab.Migrations
                         {
                             MaTT = "HD_SAMPLE_02",
                             MaSP = "HD001",
-                            Gia = 0.0,
                             KichThuoc = "XL",
                             MauSac = "Xám",
                             SoLuong = 1
@@ -247,6 +245,7 @@ namespace TeeLab.Migrations
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
                     b.Property<string>("HangThanhVien")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsLocked")
@@ -265,6 +264,7 @@ namespace TeeLab.Migrations
                             MatKhau = "123",
                             Sdt = "0977777777",
                             TenDangNhap = "hoang",
+                            HangThanhVien = "Đồng",
                             IsLocked = false
                         });
                 });

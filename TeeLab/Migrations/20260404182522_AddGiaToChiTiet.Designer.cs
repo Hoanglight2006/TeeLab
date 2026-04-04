@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teelab.Models;
 
@@ -11,9 +12,11 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404182522_AddGiaToChiTiet")]
+    partial class AddGiaToChiTiet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,6 +250,7 @@ namespace TeeLab.Migrations
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
                     b.Property<string>("HangThanhVien")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsLocked")
@@ -265,6 +269,7 @@ namespace TeeLab.Migrations
                             MatKhau = "123",
                             Sdt = "0977777777",
                             TenDangNhap = "hoang",
+                            HangThanhVien = "Đồng",
                             IsLocked = false
                         });
                 });

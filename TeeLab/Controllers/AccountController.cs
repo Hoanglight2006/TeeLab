@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http; // Đảm bảo có dòng này để dùng Session
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Teelab.Models;
 using TeeLab.Models;
-using Microsoft.AspNetCore.Http; // Đảm bảo có dòng này để dùng Session
 namespace Teelab.Controllers
 {
     public class AccountController : Controller
@@ -34,6 +36,11 @@ namespace Teelab.Controllers
 
                 if (user != null)
                 {
+                    if (user is KhachHang kh && kh.IsLocked)
+                    {
+                        ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!");
+                        return View(model);
+                    }
                     string role = "KhachHang";
                     if (user is QuanLy) role = "QuanLy";
                     else if (user is NhanVien) role = "NhanVien";
@@ -199,5 +206,6 @@ namespace Teelab.Controllers
             TempData["Success"] = "";
             return RedirectToAction("Profile");
         }
+ 
     }
 }

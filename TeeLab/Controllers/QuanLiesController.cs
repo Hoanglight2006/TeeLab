@@ -189,5 +189,149 @@ namespace TeeLab.Controllers
         {
             return _context.QuanLys.Any(e => e.Id == id);
         }
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> OrderDetails(string id)
+        {
+            if (id == null) return NotFound();
+
+            // 1. Tìm hóa đơn và nạp kèm chi tiết sản phẩm
+            var donHang = await _context.ThanhToans
+                .Include(t => t.ChiTietThanhToans)
+                .ThenInclude(ct => ct.SanPham) // Nạp bảng SanPham để lấy giá gốc nếu cần
+                .FirstOrDefaultAsync(m => m.MaTT == id);
+
+            if (donHang == null) return NotFound();
+
+            // 2. LOGIC FIX LỖI SỐ 0: Kiểm tra từng dòng chi tiết
+            foreach (var item in donHang.ChiTietThanhToans)
+            {
+                // Nếu DonGia trong database đang là 0, thì lấy giá từ bảng SanPham bù vào
+                if (item.Gia == 0 && item.SanPham != null)
+                {
+                    item.Gia = (int)item.SanPham.SoTien; // Giả sử cột giá trong SanPham là GiaBan
+                }
+            }
+
+            return View(donHang);
+        }
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> CustomerHistory(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var khachHang = await _context.KhachHangs.FindAsync(id);
+            if (khachHang == null) return NotFound();
+
+            // Lấy lịch sử đơn hàng dựa trên cột Id (Khóa ngoại trỏ về khách hàng)
+            var lichSuDon = await _context.ThanhToans
+                .Where(t => t.Id == id)
+                .OrderByDescending(t => t.NgayTao)
+                .ToListAsync();
+
+            ViewBag.KhachHang = khachHang;
+            return View(lichSuDon);
+        }
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> ManegerCustomers(string searchString, string filterRank)
+        {
+            var query = _context.KhachHangs.AsQueryable();
+
+            // Lọc tìm kiếm
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(k => k.Hoten.Contains(searchString) ||
+                                         k.Sdt.Contains(searchString) ||
+                                         k.TenDangNhap.Contains(searchString));
+            }
+
+            // Lọc hạng
+            if (!string.IsNullOrEmpty(filterRank))
+            {
+                query = query.Where(k => k.HangThanhVien == filterRank);
+            }
+
+            var listKhachHang = await query.ToListAsync();
+
+            // TÍNH TOÁN: Tạo một Dictionary lưu [MaKH - TongTien]
+            // Chỉ tính những đơn hàng có trạng thái "Giao hàng thành công"
+            var tongChiTieu = await _context.ThanhToans
+                .Where(t => t.TrangThai == "Giao hàng thành công")
+                .GroupBy(t => t.Id)
+                .Select(g => new { MaKH = g.Key, TongTien = g.Sum(t => t.TongTien) })
+                .ToDictionaryAsync(x => x.MaKH, x => x.TongTien);
+
+            foreach (var kh in listKhachHang)
+            {
+ 
+                    // Lấy tổng tiền từ Dictionary, nếu không có đơn nào thành công thì mặc định là 0
+                    decimal total = tongChiTieu.ContainsKey(kh.Id) ? tongChiTieu[kh.Id] : 0;
+
+                    if (total >= 5000000) kh.HangThanhVien = "Kim Cương";
+                    else if (total >= 2000000) kh.HangThanhVien = "Vàng";
+                    else if (total >= 1000000) kh.HangThanhVien = "Bạc";
+                    else if (total > 0) kh.HangThanhVien = "Đồng";
+                    else kh.HangThanhVien = "Mới";
+                _context.Update(kh);
+            }
+            await _context.SaveChangesAsync(); // Lưu tất cả thay đổi hạng vào DB
+
+            ViewBag.TongChiTieu = tongChiTieu;
+            ViewBag.SearchString = searchString;
+            ViewBag.FilterRank = filterRank;
+
+            return View(listKhachHang);
+        }
+        [HttpPost]
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> ToggleLock(int id)
+        {
+            var kh = await _context.KhachHangs.FindAsync(id);
+            if (kh != null)
+            {
+                kh.IsLocked = !kh.IsLocked; // Đảo trạng thái: Đang mở -> Khóa, đang khóa -> Mở
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Cập nhật trạng thái thành công!";
+            }
+            return RedirectToAction(nameof(ManegerCustomers));
+        }
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> AdminEdit(int? id)
+        {
+            if (id == null) return NotFound();
+            var kh = await _context.KhachHangs.FindAsync(id);
+            if (kh == null) return NotFound();
+            return View(kh);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> AdminEdit(int id, KhachHang kh)
+        {
+            if (id != kh.Id) return NotFound();
+
+            // Loại bỏ kiểm tra ModelState nếu ông chỉ muốn cập nhật một vài trường
+            // hoặc đảm bảo các trường bắt buộc không bị null
+            try
+            {
+                var khInDb = await _context.KhachHangs.FindAsync(id);
+                if (khInDb == null) return NotFound();
+
+                // Cập nhật các thông tin từ Form truyền về
+                khInDb.Hoten = kh.Hoten;
+                khInDb.Sdt = kh.Sdt;
+                khInDb.Email = kh.Email;
+                khInDb.Diachi = kh.Diachi;
+                khInDb.HangThanhVien = kh.HangThanhVien; // ĐÂY LÀ DÒNG LƯU HẠNG ÔNG VỪA CHỌN
+                khInDb.IsLocked = kh.IsLocked;
+
+                _context.Update(khInDb);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ManegerCustomers));
+            }
+            catch (Exception)
+            {
+                return View(kh);
+            }
+        }
     }
 }

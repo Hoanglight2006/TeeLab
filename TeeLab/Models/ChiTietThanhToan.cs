@@ -19,5 +19,6 @@ namespace Teelab.Models
         // --- BỔ SUNG THÊM 2 CỘT LƯU SIZE VÀ MÀU ---
         public string? KichThuoc { get; set; }
         public string? MauSac { get; set; }
+        public double Gia { get; set; }
     }
 }
