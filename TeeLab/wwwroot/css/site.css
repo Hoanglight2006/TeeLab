@@ -186,6 +186,7 @@ body {
     transform: scale(1.2);
 }
 
+<<<<<<< HEAD
 form.d-flex.shadow-sm {
     display: flex;
     gap: 10px;
@@ -251,3 +252,5 @@ form.d-flex button {
 }
 
 
+=======
+>>>>>>> bde36d61b226b9bcd55814528386b517afa4c41f
