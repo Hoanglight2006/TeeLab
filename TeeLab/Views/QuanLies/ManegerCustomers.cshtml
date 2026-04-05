@@ -31,6 +31,149 @@
     .badge-rank { padding: 5px 10px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; background-color: #0dcaf0; color: #000; }
     .btn-action-group { display: flex; gap: 5px; justify-content: center; }
     .btn-sm-custom { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
+
+
+    <style>
+    /* 1. Nâng cấp tổng thể Dashboard */
+    .container-fluid {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding-top: 2rem;
+    }
+
+    h2.fw-bold {
+        letter-spacing: 1px;
+        color: #2c3e50;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    h2.fw-bold::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: #212529;
+        border-radius: 2px;
+    }
+
+    /* 2. Style cho Form Lọc (Search Bar) */
+    form.bg-light {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-radius: 12px !important;
+        padding: 20px !important;
+    }
+
+    form input, form select {
+        border: 1px solid #e0e0e0 !important;
+        padding: 10px 15px !important;
+        border-radius: 8px !important;
+        transition: all 0.3s ease;
+    }
+
+    form input:focus, form select:focus {
+        border-color: #212529 !important;
+        box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.1) !important;
+    }
+
+    /* 3. Style cho Table & Card */
+    .table-responsive {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 20px;
+        border: none;
+    }
+
+    .customer-table {
+border-collapse: separate;
+        border-spacing: 0 8px; /* Tạo khoảng cách giữa các hàng nếu muốn */
+    }
+
+    .customer-table thead th {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        border: none;
+        padding: 15px;
+    }
+
+    .customer-table tbody tr {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+
+    .customer-table tbody tr:hover {
+        background-color: #fcfcfc;
+        transform: scale(1.002);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .customer-table td {
+        padding: 15px;
+        border-top: 1px solid #f1f1f1 !important;
+        border-bottom: 1px solid #f1f1f1 !important;
+    }
+
+    /* 4. Hệ thống Badge Hạng (Nâng cấp độ bóng và font) */
+    .badge-rank {
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .rank-dong { background: linear-gradient(135deg, #a0522d, #cd7f32); color: white; }
+    .rank-bac { background: linear-gradient(135deg, #bdc3c7, #95a5a6); color: white; }
+    .rank-vang { background: linear-gradient(135deg, #f1c40f, #f39c12); color: #000; }
+    .rank-kimcuong { 
+        background: linear-gradient(45deg, #00bfff, #1e90ff, #8a2be2); 
+        color: white;
+        animation: shine 3s infinite;
+        background-size: 200% auto;
+    }
+
+    @@keyframes shine {
+        to { background-position: 200% center; }
+    }
+
+    /* 5. Nút bấm (Buttons) */
+    .btn-sm-custom {
+        padding: 6px 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-info { background-color: #0dcaf0; color: white !important; }
+    .btn-primary { background-color: #34495e; }
+    .btn-danger { background-color: #e74c3c; }
+    .btn-warning { background-color: #f39c12; }
+
+    .btn-sm-custom:hover {
+        filter: brightness(1.1);
+        transform: translateY(-2px);
+    }
+
+    /* 6. Trạng thái Lock/Unlock */
+    .badge {
+        padding: 6px 10px;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+
+</style>
+
 </style>
 
 <div class="container-fluid mt-4 mb-5">
@@ -46,12 +189,12 @@
                 <option value="Mới">Mới</option>
                 <option value="Đồng">Đồng</option>
                 <option value="Bạc">Bạc</option>
-                <option value="Vàng">Vàng</option>
+<option value="Vàng">Vàng</option>
                 <option value="Kim Cương">Kim Cương</option>
             </select>
         </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-dark w-100 fw-bold">LỌC</button>
+            <button type="submit" class="btn btn-dark w-100 fw-bold">Tìm Kiếm</button>
         </div>
     </form>
 
@@ -114,8 +257,7 @@
                                 <a asp-action="CustomerHistory" asp-route-id="@item.Id" class="btn-sm-custom btn btn-info text-white">
                                     <i class="bi bi-clock-history"></i> Lịch sử
                                 </a>
-                    
-                                <form asp-action="ToggleLock" asp-route-id="@item.Id" method="post" style="display:inline;">
+<form asp-action="ToggleLock" asp-route-id="@item.Id" method="post" style="display:inline;">
                                     <button type="submit" class="btn-sm-custom btn @(item.IsLocked ? "btn-warning" : "btn-danger")">
                                         @(item.IsLocked ? "Mở khóa" : "Khóa")
                                     </button>

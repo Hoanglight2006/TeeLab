@@ -2,219 +2,245 @@
 
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
-    
-    // LỌC DỮ LIỆU RA 3 BẢNG
     var donChuaXuLy = Model.Where(m => m.TrangThai == "Chờ xác nhận" || m.TrangThai == "Đang giao").ToList();
     var donThanhCong = Model.Where(m => m.TrangThai == "Giao hàng thành công").ToList();
     var donDaHuy = Model.Where(m => m.TrangThai == "Đã hủy").ToList();
 }
 
-<div class="container-fluid mt-4 mb-5">
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+<style>
+    :root {
+        --teelab-dark: #1a1a1a;
+        --teelab-blue: #007bff;
+        --teelab-success: #28a745;
+        --teelab-danger: #dc3545;
+        --bg-light: #f8f9fa;
     }
 
-    <h3 class="fw-bold mb-3 text-primary"><i class="bi bi-hourglass-split me-2"></i>Đơn hàng đang xử lý (@donChuaXuLy.Count)</h3>
-    <div class="card shadow-sm border-0 mb-5">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th class="ps-4 py-3">Ngày đặt</th>
-                            <th class="py-3">Khách hàng</th>
-                            <th class="py-3" style="width: 25%;">Tên sản phẩm (SL)</th>
-                            <th class="py-3">Size</th>
-                            <th class="py-3">Màu sắc</th>
-                            <th class="py-3">Tổng tiền</th>
-                            <th class="py-3">Trạng thái</th>
-                            <th class="pe-4 py-3 text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in donChuaXuLy)
-                        {
-                            <tr>
-                                <td class="ps-4 py-3 text-muted small">@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td class="py-3">
-                                    <a asp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold" target="_blank" title="Xem hồ sơ">
-                                        @(item.KhachHang != null ? item.KhachHang.Hoten : "Khách ẩn danh") <i class="bi bi-box-arrow-up-right ms-1 small"></i>
-                                    </a>
-                                </td>
-                                
-                                <td class="py-3">
-                                    <ul class="list-unstyled mb-0 small">
-                                        @foreach (var ct in item.ChiTietThanhToans)
-                                        {
-                                            <li class="mb-1 text-truncate"><strong>@ct.SoLuong x</strong> @(ct.SanPham?.TenSP ?? "SP đã xóa")</li>
-                                        }
-                                    </ul>
-                                </td>
-                                <td class="py-3">
-                                    <ul class="list-unstyled mb-0 small text-center">
-                                        @foreach (var ct in item.ChiTietThanhToans)
-                                        {
-                                            <li class="mb-1 fw-bold">@(ct.KichThuoc ?? "-")</li>
-                                        }
-                                    </ul>
-                                </td>
-                                <td class="py-3">
-                                    <ul class="list-unstyled mb-0 small text-center">
-                                        @foreach (var ct in item.ChiTietThanhToans)
-                                        {
-                                            <li class="mb-1">@(ct.MauSac ?? "-")</li>
-                                        }
-                                    </ul>
-                                </td>
+    body { background-color: #f4f7f6; color: #333; }
 
-                                <td class="py-3 fw-bold text-danger">@item.TongTien.ToString("N0") đ</td>
-                                <td class="py-3"><span class="badge @(item.TrangThai == "Chờ xác nhận" ? "bg-warning text-dark" : "bg-info text-dark") px-2 py-1 fs-6">@item.TrangThai</span></td>
-                                <td class="pe-4 py-3 text-center">
-                                    <form asp-controller="NhanViens" asp-action="CapNhatTrangThai" method="post" class="d-flex justify-content-center" onsubmit="return xacNhanCapNhat(event, this);">
-                                        <input type="hidden" name="maTT" value="@item.MaTT" />
-                                        <select name="trangThaiMoi" class="form-select form-select-sm me-2 shadow-sm" style="width: 140px;">
-                                            <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
-                                            <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
-                                            <option value="Giao hàng thành công">Giao hàng thành công</option>
-                                            <option value="Đã hủy">Đã hủy</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-dark px-3 shadow-sm">Lưu</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                        @if (!donChuaXuLy.Any())
-                        {
-                            <tr><td colspan="8" class="text-center py-4 text-muted">Không có đơn hàng nào đang chờ xử lý.</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    /* Tiêu đề phần */
+    .section-header {
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-header i { margin-right: 10px; font-size: 1.2rem; }
+
+    /* Card & Table Custom */
+    .custom-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        background: white;
+    }
+
+    .table thead th {
+        background-color: #fafafa;
+        color: var(--teelab-dark);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        border-bottom: 2px solid #eee;
+        padding: 1.2rem 1rem;
+    }
+
+    .table tbody td {
+        padding: 1.2rem 1rem;
+        border-bottom: 1px solid #f8f9fa;
+        vertical-align: middle;
+    }
+
+    /* Hiệu ứng hover cho hàng */
+    .table-hover tbody tr:hover {
+        background-color: #fcfcfc;
+    }
+
+    /* Badge & Status Pill */
+    .status-pill {
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+
+    .pill-warning { background: #fff3cd; color: #856404; }
+    .pill-info { background: #d1ecf1; color: #0c5460; }
+    .pill-success { background: #d4edda; color: #155724; }
+    .pill-danger { background: #f8d7da; color: #721c24; }
+    .pill-secondary { background: #e2e3e5; color: #383d41; }
+
+    /* Dropdown & Button */
+    .status-select {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+    }
+
+    .status-select:focus { border-color: var(--teelab-dark); box-shadow: none; }
+
+    .btn-save-status {
+        background: var(--teelab-dark);
+        color: white;
+        border-radius: 8px;
+        padding: 5px 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-save-status:hover { background: #000; transform: translateY(-1px); }
+
+    /* Text Helpers */
+    .product-list li {
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+    }
+    
+    .text-price { font-weight: 700; color: var(--teelab-danger); }
+</style>
+
+<div class="container-fluid px-4 py-4">
+@* --- ĐƠN HÀNG ĐANG XỬ LÝ --- *@
+    <div class="section-header text-primary">
+        <i class="bi bi-lightning-charge-fill"></i> ĐƠN HÀNG ĐANG XỬ LÝ (@donChuaXuLy.Count)
     </div>
 
-    <h4 class="fw-bold mb-3 text-success"><i class="bi bi-check-circle-fill me-2"></i>Đơn hàng Giao thành công (@donThanhCong.Count)</h4>
-    <div class="card shadow-sm border-0 mb-5">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-success text-white">
-                        <tr>
-                            <th class="ps-4 py-3">Ngày đặt</th>
-                            <th class="py-3">Khách hàng</th>
-                            <th class="py-3" style="width: 25%;">Tên sản phẩm (SL)</th>
-                            <th class="py-3">Size</th>
-                            <th class="py-3">Màu sắc</th>
-                            <th class="py-3">Tổng tiền</th>
-                            <th class="pe-4 py-3">Trạng thái</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in donThanhCong)
-                        {
-                            <tr class="table-light">
-                                <td class="ps-4 py-3 text-muted small">@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td class="py-3">
-                                    <a asp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark" target="_blank">
-                                        @(item.KhachHang != null ? item.KhachHang.Hoten : "Khách ẩn danh")
-                                    </a>
-                                </td>
-                                <td class="py-3">
-                                    <ul class="list-unstyled mb-0 small text-muted">
-                                        @foreach (var ct in item.ChiTietThanhToans)
-                                        {
-                                            <li class="mb-1 text-truncate"><strong>@ct.SoLuong x</strong> @(ct.SanPham?.TenSP ?? "SP đã xóa")</li>
-                                        }
-                                    </ul>
-                                </td>
-                                <td class="py-3"><ul class="list-unstyled mb-0 small text-center text-muted">@foreach (var ct in item.ChiTietThanhToans) {
-                                    <li class="mb-1">@(ct.KichThuoc ?? "-")</li>
-                                }
-                            </ul></td>
-                            <td class="py-3"><ul class="list-unstyled mb-0 small text-center text-muted">@foreach (var ct in item.ChiTietThanhToans) {
-                                <li class="mb-1">@(ct.MauSac ?? "-")</li>
-                            }
-                        </ul></td>
-                        <td class="py-3 fw-bold text-success">@item.TongTien.ToString("N0") đ</td>
-                        <td class="pe-4 py-3"><span class="badge bg-success px-3 py-2"><i class="bi bi-lock-fill me-1"></i>Đã chốt</span></td>
-                    </tr>
-                }
-                @if (!donThanhCong.Any())
-                {
-                    <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có đơn hàng nào hoàn thành.</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-</div>
-
-<h4 class="fw-bold mb-3 text-danger"><i class="bi bi-x-circle-fill me-2"></i>Đơn hàng Đã hủy (@donDaHuy.Count)</h4>
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
+    <div class="card custom-card">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="bg-danger text-white">
+                <thead>
                     <tr>
-                        <th class="ps-4 py-3">Ngày đặt</th>
-                        <th class="py-3">Khách hàng</th>
-                        <th class="py-3" style="width: 25%;">Tên sản phẩm (SL)</th>
-                        <th class="py-3">Size</th>
-                        <th class="py-3">Màu sắc</th>
-                        <th class="py-3">Tổng tiền</th>
-                        <th class="pe-4 py-3">Trạng thái</th>
+                        <th class="ps-4">Ngày đặt</th>
+                        <th>Khách hàng</th>
+                        <th style="width: 25%;">Sản phẩm (SL)</th>
+                        <th class="text-center">Size/Màu</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th class="text-center pe-4">Thao tác nhanh</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in donDaHuy)
+                    @foreach (var item in donChuaXuLy)
                     {
-                        <tr class="table-light opacity-75">
-                            <td class="ps-4 py-3 text-muted small">@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td class="py-3">
-                                <a asp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-secondary" target="_blank">
-                                    @(item.KhachHang != null ? item.KhachHang.Hoten : "Khách ẩn danh")
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@item.NgayTao.ToString("dd/MM")</div>
+                                <div class="text-muted small">@item.NgayTao.ToString("HH:mm")</div>
+                            </td>
+                            <td>
+                                <a asp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark">
+                                    @(item.KhachHang?.Hoten ?? "Khách ẩn danh")
+                                    <i class="bi bi-arrow-up-right-circle ms-1 text-muted"></i>
                                 </a>
                             </td>
-                            <td class="py-3 text-decoration-line-through">
-                                <ul class="list-unstyled mb-0 small text-muted">
+                            <td>
+                                <ul class="list-unstyled mb-0 product-list">
                                     @foreach (var ct in item.ChiTietThanhToans)
                                     {
-                                        <li class="mb-1 text-truncate"><strong>@ct.SoLuong x</strong> @(ct.SanPham?.TenSP ?? "SP đã xóa")</li>
+                                        <li class="text-truncate">
+                                            <span class="badge bg-light text-dark border me-1">@ct.SoLuong</span> 
+                                            @ct.SanPham?.TenSP
+                                        </li>
                                     }
                                 </ul>
                             </td>
-                            <td class="py-3"><ul class="list-unstyled mb-0 small text-center text-muted">@foreach (var ct in item.ChiTietThanhToans) {
-                                <li class="mb-1">@(ct.KichThuoc ?? "-")</li>
-                            }
-                        </ul></td>
-                        <td class="py-3"><ul class="list-unstyled mb-0 small text-center text-muted">@foreach (var ct in item.ChiTietThanhToans) {
-                            <li class="mb-1">@(ct.MauSac ?? "-")</li>
-                        }
-                    </ul></td>
-                    <td class="py-3 fw-bold text-secondary text-decoration-line-through">@item.TongTien.ToString("N0") đ</td>
-                    <td class="pe-4 py-3"><span class="badge bg-secondary px-3 py-2"><i class="bi bi-lock-fill me-1"></i>Đã hủy</span></td>
-                </tr>
-            }
-            @if (!donDaHuy.Any())
-            {
-                <tr><td colspan="7" class="text-center py-4 text-muted">Không có đơn hàng nào bị hủy.</td></tr>
-            }
-        </tbody>
-    </table>
-</div>
-</div>
-</div>
+                            <td class="text-center">
+                                @foreach (var ct in item.ChiTietThanhToans) {
+                                    <span class="badge bg-white border text-dark mb-1">@ct.KichThuoc / @ct.MauSac</span><br/>
+                                }
+                            </td>
+                            <td class="text-price">@item.TongTien.ToString("N0")đ</td>
+                            <td>
+                                <span class="status-pill @(item.TrangThai == "Chờ xác nhận" ? "pill-warning" : "pill-info")">
+                                    @item.TrangThai
+</span>
+                            </td>
+                            <td class="pe-4 text-center">
+                                <form asp-controller="NhanViens" asp-action="CapNhatTrangThai" method="post" class="d-flex justify-content-center" onsubmit="return xacNhanCapNhat(event, this);">
+                                    <input type="hidden" name="maTT" value="@item.MaTT" />
+                                    <select name="trangThaiMoi" class="form-select-sm status-select me-2 shadow-sm">
+                                        <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
+                                        <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
+                                        <option value="Giao hàng thành công">Thành công</option>
+                                        <option value="Đã hủy">Hủy đơn</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-save-status">Lưu</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* --- ĐƠN HÀNG THÀNH CÔNG --- *@
+    <div class="section-header text-success">
+        <i class="bi bi-check-all"></i> ĐƠN HÀNG HOÀN TẤT (@donThanhCong.Count)
+    </div>
+    <div class="card custom-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Ngày đặt</th>
+                        <th>Khách hàng</th>
+                        <th>Tổng tiền</th>
+                        <th class="text-center">Chi tiết</th>
+                        <th class="pe-4 text-end">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in donThanhCong)
+                    {
+                        <tr>
+                            <td class="ps-4">@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                            <td class="fw-bold">@item.KhachHang?.Hoten</td>
+                            <td class="text-price">@item.TongTien.ToString("N0")đ</td>
+                            <td class="text-center small text-muted">@item.ChiTietThanhToans.Count() sản phẩm</td>
+                            <td class="pe-4 text-end">
+                                <span class="status-pill pill-success"><i class="bi bi-patch-check-fill me-1"></i>Đã chốt</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* --- ĐƠN HÀNG ĐÃ HỦY --- *@
+    <div class="section-header text-danger">
+<i class="bi bi-trash3"></i> ĐƠN HÀNG ĐÃ HỦY (@donDaHuy.Count)
+    </div>
+    <div class="card custom-card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <tbody>
+                    @foreach (var item in donDaHuy)
+                    {
+                        <tr class="opacity-75">
+                            <td class="ps-4 py-3" style="width: 150px;">@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                            <td class="fw-bold text-muted">@item.KhachHang?.Hoten</td>
+                            <td class="text-decoration-line-through">@item.TongTien.ToString("N0")đ</td>
+                            <td class="pe-4 text-end">
+                                <span class="status-pill pill-danger">Đã hủy đơn</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
@@ -225,14 +251,16 @@
             var trangThaiMoi = select.options[select.selectedIndex].text;
 
             Swal.fire({
-                title: 'Xác nhận thay đổi?',
-                text: "Bạn có chắc chắn muốn chuyển đơn hàng này sang trạng thái: " + trangThaiMoi + "?",
-                icon: 'warning',
+                title: 'Cập nhật đơn hàng?',
+                text: "Bạn có chắc muốn chuyển sang: " + trangThaiMoi + "?",
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#212529',
-                cancelButtonColor: '#dc3545',
-                confirmButtonText: 'Đồng ý',
-                cancelButtonText: 'Hủy bỏ'
+                confirmButtonColor: '#1a1a1a',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xác nhận',
+                cancelButtonText: 'Quay lại',
+                border: 'none',
+                borderRadius: '15px'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
