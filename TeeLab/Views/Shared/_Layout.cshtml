@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using System.Text.Json
 @using Teelab.Models
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +36,7 @@
                                 <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
                                     <i class="bi bi-cart4 fs-5"></i>
                                     @{
+                                        // Giữ nguyên logic giỏ hàng của bạn
                                         var sessionData = Context.Session.GetString("GioHang");
                                         var cart = sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
                                         var count = cart?.Sum(x => x.SoLuong) ?? 0;
@@ -53,37 +53,35 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            // Lấy Avatar từ Claims, nếu không có thì gán mặc định
-                            var avatar = User.FindFirst("Avatar")?.Value ?? "default-avatar.png";
-                            var avatarPath = $"/images/avatars/{avatar}";
-
-                            <li class="nav-item d-flex align-items-center me-3">
-                                <img src="@avatarPath" alt="Avatar" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" onerror="this.src='/images/avatars/default-avatar.png';" />
-                                
-                                @if (User.IsInRole("QuanLy"))
-                                {
-                                    <a class="nav-link text-primary fw-bold ms-1" asp-controller="QuanLies" asp-action="Index">
-                                        Chào, @User.Identity.Name (Admin)
-                                    </a>
-                                }
-                                else if (User.IsInRole("NhanVien"))
-                                {
-                                    <a class="nav-link text-success fw-bold ms-1" asp-controller="NhanViens" asp-action="Index">
-                                        Chào, @User.Identity.Name
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a class="nav-link text-dark fw-bold ms-1" asp-controller="KhachHangs" asp-action="Index">
-                                        Chào, @User.Identity.Name
-                                    </a>
-                                }
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="nav-link btn btn-link text-danger border-0" style="cursor:pointer;">Đăng xuất</button>
-                                </form>
-                            </li>
+                            // Lấy Avatar: Ưu tiên Session, nếu không có thì dùng ảnh mặc định
+                            var userAvatar = Context.Session.GetString("UserAvatar") ?? "/images/avatars/default-avatar.png";
+                          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            
+            @* --- ĐÂY LÀ THẺ IMG HIỂN THỊ AVATAR --- *@
+                                    <img src="@userAvatar"
+                 class="rounded-circle me-2" 
+                 style="width: 35px; height: 35px; object-fit: cover; border: 1px solid #ececec;" 
+                 onerror="this.src='/images/avatars/default-avatar.png';" />
+            
+            Chào, <strong>@User.Identity.Name</strong>!
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+                <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                    <i class="bi bi-person-circle me-2"></i>Trang cá nhân
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
                         }
                         else
                         {
@@ -99,21 +97,37 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted text-center">
-        <div class="container">
-            &copy; 2026 - TeeLab - Website bán áo thun
+    <footer class="footer-section">
+        <div class="footer-container text-center">
+            <div class="footer-logo">Teelab</div>
+            <ul class="footer-menu">
+                <li><a asp-controller="Home" asp-action="Index">HOME</a></li>
+                <li><a href="#">PRODUCT</a></li>
+                <li><a href="#">ABOUT</a></li>
+                <li><a href="#">BLOG</a></li>
+                <li><a href="#">CONTACT</a></li>
+            </ul>
+            <div class="footer-social">
+                <a href="#" class="icon-circle"><i class="bi bi-twitter-x"></i></a>
+                <a href="#" class="icon-circle"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="icon-circle"><i class="bi bi-instagram"></i></a>
+            </div>
+            <div class="copyright">
+                <p>Copyright &copy; @DateTime.Now.Year All rights reserved | Website bán áo thun <a asp-controller="Home" asp-action="Index">Teelab</a></p>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @if (TempData["CheckoutSuccess"] != null)
@@ -125,16 +139,14 @@
             icon: 'success',
             confirmButtonColor: '#212529',
             confirmButtonText: 'Ok',
-            allowOutsideClick: false /* Không cho click ra ngoài tắt popup */
+            allowOutsideClick: false
             }).then((result) => {
             if (result.isConfirmed) {
-            // Sau khi bấm nút Tuyệt vời thì mới bay sang Lịch sử đơn hàng
             window.location.href = '/KhachHangs';
             }
             });
         </script>
     }
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
