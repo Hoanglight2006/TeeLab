@@ -1,57 +1,230 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {6
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #f8f9fa;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ===== FOCUS ===== */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ===== FORM FLOATING ===== */
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
-/* Tùy chỉnh ảnh sản phẩm ngoài trang chủ */
-.product-image-home {
-    height: 250px; /* Chiều cao cố định */
-    object-fit: contain; /* Ảnh không bị méo, hiện trọn vẹn bên trong */
-    padding: 10px; /* Tạo khoảng trống nhẹ xung quanh */
-    background-color: #f8f9fa; /* Nền xám nhẹ nếu ảnh nhỏ hơn khung */
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
 }
 
-/* Ép tên sản phẩm chỉ hiện tối đa 1 dòng cho đều */
+/* ===== HEADER ===== */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-nav .nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 6px 12px;
+}
+
+    .navbar-nav .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0%;
+        height: 2px;
+        background-color: #0d6efd;
+        transition: width 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.15);
+        transform: scale(1.05);
+    }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+/* ===== CART ICON ===== */
+.navbar .bi-cart4 {
+    transition: 0.3s;
+}
+
+.navbar .nav-link:hover .bi-cart4 {
+    transform: rotate(-10deg) scale(1.2);
+    color: #dc3545;
+}
+
+/* ===== AVATAR ===== */
+.navbar img {
+    transition: 0.3s;
+}
+
+    .navbar img:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+/* ===== CATEGORY BUTTON ===== */
+.btn.rounded-pill {
+    transition: 0.3s;
+}
+
+    .btn.rounded-pill:hover {
+        transform: translateY(-2px);
+    }
+
+/* ===== SEARCH BOX ===== */
+.search-box {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+    .search-box:hover {
+        box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+
+    .search-box input.form-control {
+        border: none;
+        padding: 16px 20px;
+        font-size: 1rem;
+        box-shadow: none;
+    }
+
+    .search-box select.form-select {
+        border: none;
+        border-left: 1px solid #eee;
+        min-width: 220px;
+        padding: 16px;
+        box-shadow: none;
+    }
+
+    .search-box input:focus,
+    .search-box select:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    .search-box button {
+        border: none;
+        background: #212529;
+        color: white;
+        padding: 16px 24px;
+        transition: 0.3s;
+    }
+
+        .search-box button:hover {
+            background: #0d6efd;
+        }
+
+/* ===== HERO BANNER ===== */
+.hero-banner {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+}
+
+/* ===== PRODUCT CARD ===== */
+.card {
+    border-radius: 14px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+/* ===== PRODUCT IMAGE ===== */
+.card-img-top {
+    transition: 0.4s;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* ===== PRODUCT TITLE ===== */
 .card-title.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== PRICE ===== */
+.text-danger.fw-bold.fs-5 {
+    letter-spacing: 0.5px;
+}
+
+.card-footer .btn-dark {
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+    .card-footer .btn-dark:hover {
+        background: #0d6efd;
+    }
+
+.card-footer input[type="number"] {
+    border-radius: 10px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: white;
+}
+
+
     max-width: 100%;
 }
 
+/* --- PHẦN 1: CHỈNH BODY ĐỒNG MÀU --- */
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* Đổi từ gradient xám sang trắng tuyền để khớp hoàn toàn với Footer */
     background: #ffffff;
     margin: 0;
     padding: 0;
 }
 
+/* --- PHẦN 2: FOOTER CÓ ĐỔ BÓNG NHẸ --- */
 .footer-section {
     flex-shrink: 0;
     background-color: #ffffff;
@@ -60,10 +233,12 @@ body {
     text-align: center;
     width: 100%;
     margin-top: auto;
+    /* Xóa border-top cũ, thay bằng đổ bóng nhẹ hất lên trên giống Header */
     border-top: 1px solid rgba(0,0,0,0.05);
     box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
 }
 
+/* --- GIỮ NGUYÊN CÁC PHẦN CÒN LẠI CỦA BẠN --- */
 .footer-logo {
     font-size: 24px;
     font-weight: 800;
@@ -186,7 +361,6 @@ body {
     transform: scale(1.2);
 }
 
-<<<<<<< HEAD
 form.d-flex.shadow-sm {
     display: flex;
     gap: 10px;
@@ -251,6 +425,3 @@ form.d-flex button {
     color: #fff;
 }
 
-
-=======
->>>>>>> bde36d61b226b9bcd55814528386b517afa4c41f
