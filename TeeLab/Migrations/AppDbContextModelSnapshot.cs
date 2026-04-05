@@ -73,11 +73,11 @@ namespace TeeLab.Migrations
 
             modelBuilder.Entity("Teelab.Models.ChiTietThanhToan", b =>
                 {
-                    b.Property<string>("MaTT")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("MaSP")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Gia")
                         .HasColumnType("float");
@@ -85,34 +85,46 @@ namespace TeeLab.Migrations
                     b.Property<string>("KichThuoc")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MaSP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaTT")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("MauSac")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SoLuong")
                         .HasColumnType("int");
 
-                    b.HasKey("MaTT", "MaSP");
+                    b.HasKey("Id");
 
                     b.HasIndex("MaSP");
+
+                    b.HasIndex("MaTT");
 
                     b.ToTable("ChiTietThanhToans");
 
                     b.HasData(
                         new
                         {
-                            MaTT = "HD_SAMPLE_01",
-                            MaSP = "AT001",
+                            Id = 1,
                             Gia = 0.0,
                             KichThuoc = "M",
+                            MaSP = "AT001",
+                            MaTT = "HD_SAMPLE_01",
                             MauSac = "Đen",
                             SoLuong = 2
                         },
                         new
                         {
-                            MaTT = "HD_SAMPLE_02",
-                            MaSP = "HD001",
+                            Id = 2,
                             Gia = 0.0,
                             KichThuoc = "XL",
+                            MaSP = "HD001",
+                            MaTT = "HD_SAMPLE_02",
                             MauSac = "Xám",
                             SoLuong = 1
                         });
@@ -155,47 +167,175 @@ namespace TeeLab.Migrations
                     b.HasData(
                         new
                         {
-                            MaSP = "AT001",
-                            HinhAnh = "at001.jpg",
+                            MaSP = "TS382",
+                            HinhAnh = "aotrang.jpg",
                             KichThuoc = "S, M, L, XL",
-                            MauSac = "Đen, Trắng",
+                            MauSac = "Đen, Trắng, Xám tiêu",
                             SoLuong = 50,
                             SoTien = 250000m,
-                            TenSP = "Áo thun Teelab Basic",
+                            TenSP = "Áo Thun Teelab Alter Oversize Cotton 250GSM Trơn Unisex TS382",
                             TinhTrang = "Còn hàng"
                         },
                         new
                         {
-                            MaSP = "AT002",
-                            HinhAnh = "at002.jpg",
-                            KichThuoc = "M, L",
-                            MauSac = "Trắng",
+                            MaSP = "TS376",
+                            HinhAnh = "aoxam.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Trắng, Xám",
                             SoLuong = 3,
-                            SoTien = 290000m,
-                            TenSP = "Áo thun Rabbit Edition",
+                            SoTien = 280000m,
+                            TenSP = "Áo Thun Teelab Alter Oversize Cotton In World Tour TOKYO Water Color Unisex TS376",
                             TinhTrang = "Còn hàng"
                         },
                         new
                         {
-                            MaSP = "HD001",
-                            HinhAnh = "hd001.jpg",
-                            KichThuoc = "L, XL",
-                            MauSac = "Xám",
+                            MaSP = "TS377",
+                            HinhAnh = "aoxoc.jpg",
+                            KichThuoc = "S, M ,L, XL",
+                            MauSac = "Kẻ sọc nâu, Kẻ sọc xanh",
                             SoLuong = 20,
-                            SoTien = 450000m,
-                            TenSP = "Hoodie Teelab Signature",
+                            SoTien = 280000m,
+                            TenSP = "Áo Thun Sọc Teelab Alter Oversize Cotton Thêu Pop Star Unisex TS377",
                             TinhTrang = "Còn hàng"
                         },
                         new
                         {
-                            MaSP = "PK001",
-                            HinhAnh = "pk001.jpg",
-                            KichThuoc = "Free size",
-                            MauSac = "Đen",
+                            MaSP = "TS379",
+                            HinhAnh = "dodo.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Trắng, Xanh Navy, Đỏ đô, Xám tiêu",
                             SoLuong = 100,
-                            SoTien = 150000m,
-                            TenSP = "Mũ Cap Teelab",
+                            SoTien = 250000m,
+                            TenSP = "Áo Thun Teelab Alter Oversize Cotton In Essentials Unisex TS379",
                             TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "SH003",
+                            HinhAnh = "quandui.jpg",
+                            KichThuoc = "S, M ,L ,XL",
+                            MauSac = "Đen, Trắng",
+                            SoLuong = 100,
+                            SoTien = 220000m,
+                            TenSP = "Quần Short Teelab Alter Oversize Nỉ Chân Cua In Wourld Tour Unisex SH003",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "TS188",
+                            HinhAnh = "soc.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen",
+                            SoLuong = 0,
+                            SoTien = 250000m,
+                            TenSP = "Áo Thun Teelab Alter Oversize Cotton In Wave Line Unisex TS188",
+                            TinhTrang = "Hết hàng"
+                        },
+                        new
+                        {
+                            MaSP = "PS131",
+                            HinhAnh = "quanni.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Xanh Navy, Xám trắng",
+                            SoLuong = 50,
+                            SoTien = 250000m,
+                            TenSP = "Quần Nỉ Ống Suông Teelab Alter Oversize Nỉ In World Tour PS131",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "PS116",
+                            HinhAnh = "quanbo.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen Wash, Trắng Wash, Xanh Wash, Xám đen Wash",
+                            SoLuong = 20,
+                            SoTien = 250000m,
+                            TenSP = "Quần Dài Local Brand Unisex Teelab Jeans Ống Rộng PS116",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "HD121",
+                            HinhAnh = "hutdi.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Trắng, Xám, Nâu",
+                            SoLuong = 6,
+                            SoTien = 399000m,
+                            TenSP = "Áo Teelab Local Brand Unisex Hoodie zip Stars HD121",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "AC085",
+                            HinhAnh = "balo.jpg",
+                            SoLuong = 3,
+                            SoTien = 340000m,
+                            TenSP = "Balo Da Teelab Local Brand Essentials Leather Backpack AC085",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "AC057",
+                            HinhAnh = "tat.jpg",
+                            MauSac = "Đen, Trắng, Kem, Vàng, Xanh lá",
+                            SoLuong = 25,
+                            SoTien = 25000m,
+                            TenSP = "Tất Teelab Iconic Logo Socks AC057",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "AC112",
+                            HinhAnh = "nonda.jpg",
+                            MauSac = "Tweed Caro, Sọc, Đen, Da beo",
+                            SoLuong = 26,
+                            SoTien = 85000m,
+                            TenSP = "Nón Pillbox Local Brand Unisex Teelab Alter AC112",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "SS052",
+                            HinhAnh = "SS052.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Hồng, Xanh, Xám",
+                            SoLuong = 6,
+                            SoTien = 250000m,
+                            TenSP = "Áo Sơ Mi Ngắn Tay Teelab Local Brand Unisex Studio Oxford Shirt SS052",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "SS066",
+                            HinhAnh = "somidai.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Trắng, Xanh than, Xanh dương",
+                            SoLuong = 4,
+                            SoTien = 280000m,
+                            TenSP = "Áo Sơ Mi Dài Tay Teelab Local Brand Unisex Oxford shirts SS066",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "SS068",
+                            HinhAnh = "SS068.jpg",
+                            KichThuoc = "S, M, L, XL",
+                            MauSac = "Đen, Trắng, Xanh than, Xanh dương, Hồng",
+                            SoLuong = 12,
+                            SoTien = 250000m,
+                            TenSP = "Áo Sơ Mi Cộc Tay Teelab Local Brand Unisex Eco Oxford Logo Signature Shirt SS068",
+                            TinhTrang = "Còn hàng"
+                        },
+                        new
+                        {
+                            MaSP = "AP074",
+                            HinhAnh = "xamtieu.jpg",
+                            KichThuoc = "M, L, XL",
+                            MauSac = "Đen,Xanh Navy, Melane",
+                            SoLuong = 0,
+                            SoTien = 320000m,
+                            TenSP = "Áo Polo Local Brand Unisex Teelab KNIT POLO SHIRT AP074",
+                            TinhTrang = "Hết hàng"
                         });
                 });
 

@@ -76,7 +76,7 @@ namespace TeeLab.Controllers
             ViewBag.ChartLabels = topSanPham.Select(x => x.TenSP).ToArray();
             ViewBag.ChartData = topSanPham.Select(x => x.TongSoLuong).ToArray();
 
-            return View(await _context.QuanLys.ToListAsync());
+            return View();
         }
 
         // GET: QuanLies/Create

@@ -3,6 +3,91 @@
 @using Teelab.Models
 @model IEnumerable<Teelab.Models.SanPham>
 
+<style>
+    .banner-exclusive-v2 {
+        position: relative;
+        width: 100%;
+        max-height: 450px; 
+        margin: 20px 0 40px 0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .banner-main-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .banner-overlay-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.15); /* Giảm độ tối để ảnh mẫu rõ hơn */
+        z-index: 2;
+        /* Quan trọng: Cho phép các phần tử con nhận sự kiện chuột */
+        pointer-events: none; 
+    }
+
+    .title-container {
+        /* Cho phép container này nhận chuột để hover */
+        pointer-events: auto; 
+        padding: 10px 20px;
+    }
+
+    .teelab-title {
+        color: #ffffff !important;
+        font-size: clamp(2.5rem, 7vw, 4.5rem);
+        font-weight: 950; /* Cực đậm */
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 12px; /* Khoảng cách chữ rộng ra cho sang */
+        text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        
+        /* Hiệu ứng mượt */
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    /* Hiệu ứng Hover mới: To ra và sáng rực lên */
+    .teelab-title:hover {
+        transform: scale(1.1) translateY(-5px); /* To ra và nhích lên trên tí */
+        letter-spacing: 15px; /* Giãn chữ thêm khi hover */
+        text-shadow: 0 10px 25px rgba(255,255,255,0.3), 0 0 50px rgba(255,255,255,0.2);
+        color: #f8f9fa !important;
+    }
+
+    .banner-subtitle {
+        pointer-events: auto;
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-size: 1.1rem;
+        font-weight: 300;
+        margin-top: 15px;
+        letter-spacing: 3px;
+        text-transform: lowercase;
+        font-style: italic;
+    }
+
+    /* Đảm bảo thoát lỗi Razor */
+    @@keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @@media (max-width: 768px) {
+        .banner-exclusive { height: 350px; }
+        .banner-text-overlay h1 { font-size: 2.5rem; letter-spacing: 3px; }
+        .banner-text-overlay p { font-size: 0.9rem; }
+    }
+</style>
 @{
     ViewData["Title"] = "Trang chủ Teelab";
     var sessionData = Context.Session.GetString("GioHang");
@@ -11,11 +96,16 @@
         : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
 }
 
-<div class="text-center py-5 mb-5 bg-light rounded shadow-sm border">
-    <h1 class="display-5 fw-bold text-dark mb-3">TEELAB EXCLUSIVE</h1>
-    <p class="lead text-muted mb-0">Khám phá bộ sưu tập sản phẩm mới nhất</p>
-</div>
+<div class="banner-exclusive-v2">
+    <img src="~/images/avatars/slider_1.jpg" alt="Banner Teelab" class="banner-main-img" />
 
+    <div class="banner-overlay-content">
+        <div class="title-container">
+            <h1 class="teelab-title">TEELAB</h1>
+        </div>
+        <p class="banner-subtitle">Khám phá bộ sưu tập sản phẩm mới nhất</p>
+    </div>
+</div>
 <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
     <a asp-action="Index" asp-route-category="" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
        class="btn @(string.IsNullOrEmpty((string)ViewData["CurrentCategory"]) ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Tất cả</a>

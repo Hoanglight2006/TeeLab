@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Teelab.Models
 {
     public class ChiTietThanhToan
     {
+        [Key] // Thêm dòng này để làm khóa chính độc lập
+        public int Id { get; set; }
         // Khóa ngoại trỏ về ThanhToan
         public string MaTT { get; set; }
         [ForeignKey("MaTT")]

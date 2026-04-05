@@ -156,6 +156,13 @@ namespace TeeLab.Controllers
             TempData["Success"] = "Đã hủy đơn hàng thành công và hoàn trả số lượng vào kho!";
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "QuanLy")]
+        public async Task<IActionResult> ManegerCustomers()
+        {
+            // Lấy danh sách khách hàng truyền ra View
+            var data = await _context.KhachHangs.ToListAsync();
+            return View(data);
+        }
     }
 
 }
