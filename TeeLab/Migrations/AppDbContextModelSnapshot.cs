@@ -111,9 +111,9 @@ namespace TeeLab.Migrations
                         new
                         {
                             Id = 1,
-                            Gia = 0.0,
+                            Gia = 250000.0,
                             KichThuoc = "M",
-                            MaSP = "AT001",
+                            MaSP = "TS382",
                             MaTT = "HD_SAMPLE_01",
                             MauSac = "Đen",
                             SoLuong = 2
@@ -121,9 +121,9 @@ namespace TeeLab.Migrations
                         new
                         {
                             Id = 2,
-                            Gia = 0.0,
+                            Gia = 399000.0,
                             KichThuoc = "XL",
-                            MaSP = "HD001",
+                            MaSP = "HD121",
                             MaTT = "HD_SAMPLE_02",
                             MauSac = "Xám",
                             SoLuong = 1
@@ -295,7 +295,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "SS052",
+                            MaSP = "AT001",
                             HinhAnh = "SS052.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Hồng, Xanh, Xám",
@@ -306,7 +306,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "SS066",
+                            MaSP = "HD001",
                             HinhAnh = "somidai.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xanh than, Xanh dương",

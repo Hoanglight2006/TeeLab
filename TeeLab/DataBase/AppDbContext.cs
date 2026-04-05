@@ -42,8 +42,8 @@ namespace Teelab.Models
      new SanPham { MaSP = "AC085", TenSP = "Balo Da Teelab Local Brand Essentials Leather Backpack AC085", SoTien = 340000, SoLuong = 3, TinhTrang = "Còn hàng", HinhAnh = "balo.jpg" },
      new SanPham { MaSP = "AC057", TenSP = "Tất Teelab Iconic Logo Socks AC057", SoTien = 25000, SoLuong = 25, TinhTrang = "Còn hàng", HinhAnh = "tat.jpg", MauSac = "Đen, Trắng, Kem, Vàng, Xanh lá" },
      new SanPham { MaSP = "AC112", TenSP = "Nón Pillbox Local Brand Unisex Teelab Alter AC112", SoTien = 85000, SoLuong = 26, TinhTrang = "Còn hàng", HinhAnh = "nonda.jpg", MauSac = "Tweed Caro, Sọc, Đen, Da beo" },
-     new SanPham { MaSP = "SS052", TenSP = "Áo Sơ Mi Ngắn Tay Teelab Local Brand Unisex Studio Oxford Shirt SS052", SoTien = 250000, SoLuong = 6, TinhTrang = "Còn hàng", HinhAnh = "SS052.jpg", KichThuoc = "S, M, L, XL", MauSac = "Hồng, Xanh, Xám" },
-     new SanPham { MaSP = "SS066", TenSP = "Áo Sơ Mi Dài Tay Teelab Local Brand Unisex Oxford shirts SS066", SoTien = 280000, SoLuong = 4, TinhTrang = "Còn hàng", HinhAnh = "somidai.jpg", KichThuoc = "S, M, L, XL", MauSac = "Đen, Trắng, Xanh than, Xanh dương" },
+     new SanPham { MaSP = "AT001", TenSP = "Áo Sơ Mi Ngắn Tay Teelab Local Brand Unisex Studio Oxford Shirt SS052", SoTien = 250000, SoLuong = 6, TinhTrang = "Còn hàng", HinhAnh = "SS052.jpg", KichThuoc = "S, M, L, XL", MauSac = "Hồng, Xanh, Xám" },
+     new SanPham { MaSP = "HD001", TenSP = "Áo Sơ Mi Dài Tay Teelab Local Brand Unisex Oxford shirts SS066", SoTien = 280000, SoLuong = 4, TinhTrang = "Còn hàng", HinhAnh = "somidai.jpg", KichThuoc = "S, M, L, XL", MauSac = "Đen, Trắng, Xanh than, Xanh dương" },
      new SanPham { MaSP = "SS068", TenSP = "Áo Sơ Mi Cộc Tay Teelab Local Brand Unisex Eco Oxford Logo Signature Shirt SS068", SoTien = 250000, SoLuong = 12, TinhTrang = "Còn hàng", HinhAnh = "SS068.jpg", KichThuoc = "S, M, L, XL", MauSac = "Đen, Trắng, Xanh than, Xanh dương, Hồng" },
      new SanPham { MaSP = "AP074", TenSP = "Áo Polo Local Brand Unisex Teelab KNIT POLO SHIRT AP074", SoTien = 320000, SoLuong = 0, TinhTrang = "Hết hàng", HinhAnh = "xamtieu.jpg", KichThuoc = "M, L, XL", MauSac = "Đen,Xanh Navy, Melane" }
  );
@@ -58,9 +58,9 @@ namespace Teelab.Models
             );
 
             modelBuilder.Entity<ChiTietThanhToan>().HasData(
-                new ChiTietThanhToan { Id=1, MaTT = m1, MaSP = "AT001", SoLuong = 2, KichThuoc = "M", MauSac = "Đen" },
-                new ChiTietThanhToan { Id=2, MaTT = m2, MaSP = "HD001", SoLuong = 1, KichThuoc = "XL", MauSac = "Xám" }
-            );
+     new ChiTietThanhToan { Id = 1, MaTT = "HD_SAMPLE_01", MaSP = "TS382", SoLuong = 2, KichThuoc = "M", MauSac = "Đen", Gia = 250000 },
+     new ChiTietThanhToan { Id = 2, MaTT = "HD_SAMPLE_02", MaSP = "HD121", SoLuong = 1, KichThuoc = "XL", MauSac = "Xám", Gia = 399000 }
+ );
         }
     }
 }
