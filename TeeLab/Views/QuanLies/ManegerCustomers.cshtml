@@ -1,0 +1,132 @@
+﻿@model IEnumerable<TeeLab.Models.KhachHang>
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<style>/* Style chung cho Badge */
+.badge-rank {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Màu riêng cho từng hạng */
+.rank-dong { background-color: #cd7f32; color: white; }
+.rank-bac { background-color: #c0c0c0; color: #333; }
+.rank-vang { background-color: #ffd700; color: #333; }
+.rank-kimcuong { 
+    background: linear-gradient(45deg, #00bfff, #1e90ff); 
+    color: white;
+    border: 1px solid #fff;
+}
+.rank-none { background-color: #f8f9fa; color: #6c757d; border: 1px dashed #dee2e6; }
+    /* CSS để bảng chuyên nghiệp, không làm thay đổi biến */
+    .table-responsive { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; }
+    .customer-table thead th { background-color: #212529; color: white; padding: 12px; font-size: 0.85rem; text-transform: uppercase; }
+    .customer-table td { vertical-align: middle; padding: 12px; border-bottom: 1px solid #eee; }
+    .badge-rank { padding: 5px 10px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; background-color: #0dcaf0; color: #000; }
+    .btn-action-group { display: flex; gap: 5px; justify-content: center; }
+    .btn-sm-custom { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
+</style>
+
+<div class="container-fluid mt-4 mb-5">
+    <h2 class="fw-bold mb-4 text-uppercase">Quản lý khách hàng</h2>
+
+    <form method="get" class="row g-3 mb-4 bg-light p-3 rounded border">
+        <div class="col-md-4">
+            <input type="text" name="searchString" class="form-control" placeholder="Tìm tên, SĐT, tài khoản...">
+        </div>
+        <div class="col-md-3">
+            <select name="filterRank" class="form-select">
+                <option value="">-- Tất cả hạng --</option>
+                <option value="Mới">Mới</option>
+                <option value="Đồng">Đồng</option>
+                <option value="Bạc">Bạc</option>
+                <option value="Vàng">Vàng</option>
+                <option value="Kim Cương">Kim Cương</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100 fw-bold">LỌC</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-hover customer-table">
+            <thead>
+                <tr>
+                    <th>Họ Tên</th>
+                    <th>Tài Khoản</th>
+                    <th>SĐT</th>
+                    <th>Chi Tiêu</th>
+                    <th>Hạng</th>
+                    <th>Trạng Thái</th>
+                    <th class="text-center">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.Hoten</td>
+                        <td><code class="text-secondary">@item.TenDangNhap</code></td>
+                        <td>@item.Sdt</td>
+                        <td>
+                            @{
+                                decimal tong = 0;
+                                if (ViewBag.TongChiTieu != null && ViewBag.TongChiTieu.ContainsKey(item.Id))
+                                {
+                                    tong = ViewBag.TongChiTieu[item.Id];
+                                }
+                            }
+                            <span class="text-primary fw-bold">@tong.ToString("N0") VNĐ</span>
+                        </td>
+                        <td>
+    @if (item.HangThanhVien == "Kim Cương") {
+        <span class="badge-rank rank-kimcuong">💎 Kim Cương</span>
+    } else if (item.HangThanhVien == "Vàng") {
+        <span class="badge-rank rank-vang">⭐ Vàng</span>
+    } else if (item.HangThanhVien == "Bạc") {
+        <span class="badge-rank rank-bac">🥈 Bạc</span>
+    } else if (item.HangThanhVien == "Đồng") {
+        <span class="badge-rank rank-dong">🥉 Đồng</span>
+    } else {
+        <span class="badge-rank rank-none">Mới</span>
+    }
+</td>
+                        <td>
+                            @if (item.IsLocked)
+                            {
+                                <span class="badge bg-danger">Đã khóa</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-action-group">
+                                @* Nút xem lịch sử *@
+                                <a asp-action="CustomerHistory" asp-route-id="@item.Id" class="btn-sm-custom btn btn-info text-white">
+                                    <i class="bi bi-clock-history"></i> Lịch sử
+                                </a>
+                    
+                                <form asp-action="ToggleLock" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn-sm-custom btn @(item.IsLocked ? "btn-warning" : "btn-danger")">
+                                        @(item.IsLocked ? "Mở khóa" : "Khóa")
+                                    </button>
+                                </form>
+                                
+                                <a asp-action="AdminEdit" asp-route-id="@item.Id" class="btn-sm-custom btn btn-primary">Sửa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
