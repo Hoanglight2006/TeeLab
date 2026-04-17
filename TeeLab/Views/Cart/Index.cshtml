@@ -2,7 +2,88 @@
 @{
     ViewData["Title"] = "Giỏ hàng của bạn";
 }
+@{
+    var user = ViewBag.UserDefault as TeeLab.Models.KhachHang;
+}
+<style>
+    /* Tổng thể container */
+    .cart-container { background-color: #f8f9fa; border-radius: 20px; padding: 30px; }
 
+    /* Bảng sản phẩm */
+    .cart-items-box {
+        background: #ffffff;
+        border-radius: 15px;
+        border: none;
+        overflow: hidden; /* Để bo góc table */
+    }
+
+    /* FIX LỖI NHẢY CỘT */
+    .table { width: 100%; border-collapse: separate; }
+    .table thead th { 
+        background: #f8f9fa; 
+        border: none; 
+        color: #888; 
+        font-weight: 600; 
+        padding: 15px;
+        white-space: nowrap;
+    }
+    .table tbody td { 
+        padding: 20px 15px; 
+        border-bottom: 1px solid #f1f1f1;
+        vertical-align: middle;
+    }
+
+    /* Căn chỉnh lại độ rộng các cột để không bị lệch */
+    .col-product { min-width: 280px; } /* Đảm bảo tên sản phẩm không ép các cột khác */
+    .col-qty { width: 110px; text-align: center; }
+    .col-price { width: 130px; text-align: right; }
+    .col-action { width: 80px; text-align: right; }
+
+    .quantity-input {
+        width: 65px !important;
+        margin: 0 auto;
+        border-radius: 8px;
+    }
+
+    /* Sidebar & Form */
+    .checkout-sidebar {
+        background: #ffffff;
+        border-radius: 15px;
+        border: 1px solid #eee;
+        position: sticky;
+        top: 20px;
+    }
+    .info-checkout .form-group { margin-bottom: 15px; }
+    .info-checkout label { font-size: 0.85rem; font-weight: 600; color: #6c757d; margin-bottom: 4px; display: block; }
+    .info-checkout .form-control {
+        border-radius: 10px;
+        background-color: #fdfdfd;
+        border: 1px solid #ebedef;
+        padding: 10px 12px;
+    }
+
+    /* Nút bấm */
+    .btn-checkout {
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        width: 100%;
+    }
+    .btn-vnpay { background: #007bff; color: white; }
+    .btn-vnpay:hover { background: #0056b3; transform: translateY(-2px); }
+    .btn-cod { background: #ffffff; color: #333; border: 1.5px solid #333 !important; }
+    .btn-cod:hover { background: #333; color: white; transform: translateY(-2px); }
+
+    /* Validation */
+    .text-danger { font-size: 0.75rem; font-weight: 500; color: #e74c3c !important; margin-top: 4px; }
+    .input-validation-error { border: 1px solid #e74c3c !important; background-color: #fffafa !important; }
+</style>
 <div class="container mt-4 mb-5">
     @if (TempData["Success"] != null)
     {
@@ -24,71 +105,111 @@
 
     @if (Model.Any())
     {
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light text-muted">
+       
+    <div class="row g-4"> @* g-4 để tạo khoảng cách giữa 2 cột *@
+    
+    <div class="col-lg-8">
+        <div class="card cart-items-box shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th style="width: 100px;">Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th class="text-end pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
                             <tr>
-                                <th class="ps-4 py-3">Sản phẩm</th>
-                                <th class="py-3">Đơn giá</th>
-                                <th class="py-3" style="width: 150px;">Số lượng</th>
-                                <th class="py-3">Thành tiền</th>
-                                <th class="pe-4 py-3 text-end">Thao tác</th>
+                                <td class="ps-4">
+                                    <span class="fw-bold text-dark">@item.TenSP</span>
+                                    <div class="text-muted small">@item.KichThuoc | @item.MauSac</div>
+                                </td>
+                                <td>@item.Gia.ToString("N0")đ</td>
+                                <td>
+                                    <form asp-action="UpdateQuantity" method="post" class="m-0">
+                                        <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                                        <input type="number" name="quantity" value="@item.SoLuong" min="1"
+                                               class="form-control form-control-sm text-center quantity-input" onchange="this.form.submit()" />
+                                    </form>
+                                </td>
+                                <td class="text-danger fw-bold">@item.ThanhTien.ToString("N0")đ</td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Remove" asp-route-cartItemId="@item.CartItemId" class="btn btn-sm text-danger"><i class="bi bi-trash"></i> Xóa</a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td class="ps-4 py-3">
-                                        <div class="d-flex flex-column">
-                                            <strong class="fs-6 text-dark mb-1">@item.TenSP</strong>
-                                            @if (!string.IsNullOrEmpty(item.KichThuoc) || !string.IsNullOrEmpty(item.MauSac))
-                                            {
-                                                <div class="text-muted small">
-                                                    @(string.IsNullOrEmpty(item.KichThuoc) ? "" : $"Size: {item.KichThuoc}")
-                                                    @(string.IsNullOrEmpty(item.KichThuoc) || string.IsNullOrEmpty(item.MauSac) ? "" : " | ")
-                                                    @(string.IsNullOrEmpty(item.MauSac) ? "" : $"Màu: {item.MauSac}")
-                                                </div>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td class="py-3 fw-medium">@item.Gia.ToString("N0") đ</td>
-                                    <td class="py-3">
-                                        <form asp-action="UpdateQuantity" method="post" class="m-0">
-                                            <input type="hidden" name="cartItemId" value="@item.CartItemId" />
-                                            <input type="number" name="quantity" value="@item.SoLuong" min="1"
-                                                   class="form-control text-center shadow-sm" style="max-width: 80px;" onchange="this.form.submit()" />
-                                        </form>
-                                    </td>
-                                    <td class="py-3 text-danger fw-bold fs-6">@item.ThanhTien.ToString("N0") đ</td>
-                                    <td class="pe-4 py-3 text-end">
-                                        <a asp-action="Remove" asp-route-cartItemId="@item.CartItemId" class="btn btn-sm btn-outline-danger px-3 rounded-pill">
-                                            Xóa
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
-        
-        <div class="row justify-content-end">
-            <div class="col-md-5 col-lg-4">
-                <div class="card border-0 shadow-sm bg-light">
-                    <div class="card-body p-4 text-end">
-                        <p class="text-muted mb-1">Tổng cộng:</p>
-                        <h3 class="text-danger fw-bold mb-4">@Model.Sum(x => x.ThanhTien).ToString("N0") VNĐ</h3>
-                        <a asp-controller="Cart" asp-action="Checkout" class="btn btn-dark btn-lg w-100 fw-bold shadow-sm">
-                            THANH TOÁN NGAY
-                        </a>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card checkout-sidebar shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-wallet2 me-2"></i>Thông tin đơn hàng</h5>
+                
+                <form asp-action="Checkout" asp-controller="Cart" method="post" novalidate>
+                  <div class="info-checkout">
+    <div class="form-group">
+        <label><i class="bi bi-person"></i> Họ tên người nhận</label>
+        <input type="text" name="HoTen" id="HoTen" value="@user?.Hoten" 
+               class="form-control" 
+               data-val="true" data-val-required="Vui lòng nhập họ tên người nhận" />
+        @* Thẻ này là nơi hiện chữ đỏ của Hà *@
+        <span class="text-danger field-validation-valid" data-valmsg-for="HoTen" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="form-group">
+        <label><i class="bi bi-telephone"></i> Số điện thoại</label>
+        <input type="text" name="DienThoai" id="DienThoai" value="@user?.Sdt" 
+               class="form-control" 
+               data-val="true" data-val-required="Vui lòng nhập số điện thoại" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="DienThoai" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="form-group">
+        <label><i class="bi bi-geo-alt"></i> Địa chỉ nhận hàng</label>
+        <input type="text" name="DiaChi" id="DiaChi" value="@user?.Diachi" 
+               class="form-control" 
+               data-val="true" data-val-required="Vui lòng nhập địa chỉ nhận hàng" />
+        <span class="text-danger field-validation-valid" data-valmsg-for="DiaChi" data-valmsg-replace="true"></span>
+    </div>
+
+    <div class="form-group">
+        <label><i class="bi bi-chat-left-text"></i> Ghi chú (nếu có)</label>
+        <textarea name="GhiChu" class="form-control" rows="2" placeholder="Lưu ý cho shipper..."></textarea>
+    </div>
+</div>
+
+                    <div class="d-flex justify-content-between align-items-center my-4">
+                        <span class="text-muted">Tổng cộng:</span>
+                        <span class="h4 fw-bold text-danger mb-0">@Model.Sum(x => x.ThanhTien).ToString("N0") VNĐ</span>
                     </div>
-                </div>
+
+               <div class="d-grid gap-3">
+    @* Nút VNPay với icon thẻ tín dụng *@
+    <button type="submit" name="payment" value="Thanh toán VNPay" class="btn-checkout btn-vnpay shadow-sm">
+        <i class="bi bi-credit-card-2-front-fill me-2"></i>
+        <span>THANH TOÁN QUA <strong>VNPAY</strong></span>
+    </button>
+    
+    @* Nút COD với icon hộp quà/xe tải *@
+    <button type="submit" name="payment" value="COD" class="btn-checkout btn-cod">
+        <i class="bi bi-box-seam me-2"></i>
+        <span>THANH TOÁN KHI NHẬN HÀNG</span>
+    </button>
+</div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
     }
     else
     {
@@ -103,3 +224,8 @@
         </div>
     }
 </div>
+
+        @section Scripts {
+    @* Script này giúp các lỗi hiện ngay dưới ô input mà không cần load lại trang *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -163,6 +163,32 @@ namespace TeeLab.Controllers
             var data = await _context.KhachHangs.ToListAsync();
             return View(data);
         }
+        // Thêm vào KhachHangsController
+        [Authorize]
+        public async Task<IActionResult> OrderDetail(string id)
+        {
+            if (id == null) return NotFound();
+
+            // Lấy hóa đơn từ bảng ThanhToan kèm theo chi tiết sản phẩm
+            var hoaDon = await _context.ThanhToans
+                .Include(t => t.KhachHang) 
+                .Include(t => t.ChiTietThanhToans)
+                    .ThenInclude(ct => ct.SanPham)
+                .FirstOrDefaultAsync(m => m.MaTT == id);
+
+            if (hoaDon == null) return NotFound();
+
+            // Logic fix lỗi giá bằng 0 giống như bên QuanLy của Hà
+            foreach (var item in hoaDon.ChiTietThanhToans)
+            {
+                if (item.Gia == 0 && item.SanPham != null)
+                {
+                    item.Gia = (double)item.SanPham.SoTien;
+                }
+            }
+
+            return View(hoaDon);
+        }
     }
 
 }

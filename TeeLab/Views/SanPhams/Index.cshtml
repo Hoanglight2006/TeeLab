@@ -4,52 +4,191 @@
     ViewData["Title"] = "Quản lý sản phẩm";
 }
 
-<h1 class="mt-3">Danh sách sản phẩm</h1>
+<style>
+    :root {
+        --primary-color: #4e73df;
+        --secondary-color: #858796;
+        --success-color: #1cc88a;
+        --danger-color: #e74a3b;
+        --info-color: #36b9cc;
+    }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Tạo mới sản phẩm</a>
-</p>
-<table class="table table-hover shadow-sm">
-    <thead class="table-dark">
-        <tr>
-            <th>Ảnh</th>
-            <th>Mã SP</th>
-            <th>Tên sản phẩm</th>
-            <th>Giá tiền</th>
-            <th>Kho</th>
-            <th>Size</th>
-            <th>Màu</th>
-            <th>Tình trạng</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.HinhAnh))
+    body {
+        background-color: #f8f9fc;
+    }
+
+    .page-title {
+        color: #3a3b45;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Card Wrapper cho Table */
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    /* Style cho Table */
+    .custom-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .custom-table thead th {
+        background-color: #f8f9fc;
+        color: #4e73df;
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 15px;
+    }
+
+    .custom-table tbody tr {
+        background-color: white;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .custom-table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important;
+        background-color: #f8faff !important;
+    }
+
+    .custom-table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border: none;
+        border-top: 1px solid #f1f1f1;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    /* Bo góc cho hàng đầu và cuối của mỗi dòng */
+    .custom-table tbody td:first-child { border-left: 1px solid #f1f1f1; border-radius: 10px 0 0 10px; }
+    .custom-table tbody td:last-child { border-right: 1px solid #f1f1f1; border-radius: 0 10px 10px 0; }
+
+    /* Product Image */
+    .prod-img {
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .prod-img:hover { transform: scale(1.1); }
+
+    /* Badge Pill */
+    .badge-pill-custom {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    /* Button Group */
+    .btn-action {
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin: 2px;
+        border: none;
+    }
+
+    .btn-create {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(78, 115, 223, 0.2);
+    }
+</style>
+
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mt-0">Dòng sản phẩm TeeLab</h2>
+        <a asp-action="Create" class="btn btn-primary btn-create">
+            <i class="bi bi-plus-lg me-1"></i> Tạo mới sản phẩm
+        </a>
+    </div>
+
+    <div class="table-container shadow-sm">
+        <div class="table-responsive">
+<table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Mã SP</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá tiền</th>
+                        <th class="text-center">Kho</th>
+                        <th>Phân loại (Size/Màu)</th>
+                        <th>Tình trạng</th>
+                        <th class="text-center">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        <img src="~/images/sanpham/@item.HinhAnh" width="50" height="50" style="object-fit: cover;" />
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                {
+                                    <img src="~/images/sanpham/@item.HinhAnh" width="55" height="55" class="prod-img" style="object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:55px; height:55px">
+                                        <i class="bi bi-image text-muted"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td class="text-muted small fw-bold">@item.MaSP</td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.TenSP</div>
+                                <div class="text-muted small">TeeLab Collection</div>
+                            </td>
+                            <td class="fw-bold text-primary">@item.SoTien.ToString("N0")<small>đ</small></td>
+                            <td class="text-center">
+                                <span class="fw-bold">@item.SoLuong</span>
+                            </td>
+                            <td>
+                                <div class="small"> Kích thước: @item.KichThuoc</div>
+                                <div class="small text-muted">Màu sắc: @item.MauSac</div>
+                            </td>
+                            <td>
+                                @if (item.TinhTrang == "Còn hàng")
+                                {
+                                    <span class="badge badge-pill-custom bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Còn hàng
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-pill-custom bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+<i class="bi bi-x-circle-fill me-1"></i> Hết hàng
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@item.MaSP" class="btn btn-action btn-outline-primary" title="Sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.MaSP" class="btn btn-action btn-outline-info text-info" title="Chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaSP" class="btn btn-action btn-outline-danger" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                </td>
-                <td>@item.MaSP</td>
-                <td class="fw-bold">@item.TenSP</td>
-                <td>@item.SoTien.ToString("N0")</td>
-                <td>@item.SoLuong</td>
-                <td><small>@item.KichThuoc</small></td>
-                <td><small>@item.MauSac</small></td>
-                <td>
-                    <span class="badge @(item.TinhTrang == "Còn hàng" ? "bg-success" : "bg-danger")">
-                        @item.TinhTrang
-                    </span>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MaSP" class="btn btn-sm btn-outline-primary">Sửa</a>
-                    <a asp-action="Details" asp-route-id="@item.MaSP" class="btn btn-sm btn-outline-info">Chi tiết</a>
-                    <a asp-action="Delete" asp-route-id="@item.MaSP" class="btn btn-sm btn-outline-danger">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
