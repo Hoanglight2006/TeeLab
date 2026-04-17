@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Teelab.Models;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Teelab.Models;
+using TeeLab.Helper;
+using TeeLab.Models;
+using TeeLab.Services;
 
 namespace Teelab.Controllers
 {
@@ -16,10 +19,11 @@ namespace Teelab.Controllers
     public class CartController : Controller
     {
         private readonly AppDbContext _context;
-
-        public CartController(AppDbContext context)
+        private readonly IVnPayService _vnPayService;
+        public CartController(AppDbContext context, IVnPayService vnPayService)
         {
             _context = context;
+            _vnPayService = vnPayService; // Khởi tạo service
         }
 
         private List<CartItem> GetCart()
@@ -33,9 +37,22 @@ namespace Teelab.Controllers
             HttpContext.Session.SetString("GioHang", JsonSerializer.Serialize(cart));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index() // Thêm async Task để dùng await
         {
-            return View(GetCart());
+            var cart = GetCart();
+
+            // Lấy UserId từ Claims của người dùng đang đăng nhập
+            var userIdClaim = User.FindFirstValue("UserId");
+            if (userIdClaim != null)
+            {
+                int userId = int.Parse(userIdClaim);
+                // Tìm thông tin khách hàng trong Database
+                var khachHang = await _context.KhachHangs.FindAsync(userId);
+                // Gửi thông tin sang View qua ViewBag
+                ViewBag.UserDefault = khachHang;
+            }
+
+            return View(cart);
         }
 
         [HttpPost]
@@ -81,8 +98,31 @@ namespace Teelab.Controllers
             SaveCart(cart);
             return RedirectToAction("Index");
         }
-
+        [HttpGet]
         public async Task<IActionResult> Checkout()
+        {
+            var cart = GetCart();
+            if (cart == null || !cart.Any())
+            {
+                TempData["Error"] = "Giỏ hàng của bạn đang trống!";
+                return RedirectToAction("Index");
+            }
+
+            // Lấy UserId của người đang đăng nhập
+            var userIdClaim = User.FindFirstValue("UserId");
+            if (userIdClaim == null) return RedirectToAction("Login", "Account");
+            int userId = int.Parse(userIdClaim);
+
+            // Tìm thông tin khách hàng trong Database
+            var khachHang = await _context.KhachHangs.FindAsync(userId);
+
+            // Gửi thông tin khách hàng sang View qua ViewBag để tự động điền form
+            ViewBag.UserDefault = khachHang;
+
+            return View(cart);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Checkout(string payment, string HoTen, string DienThoai, string DiaChi, string GhiChu)
         {
             var cart = GetCart();
             if (cart == null || !cart.Any())
@@ -101,7 +141,12 @@ namespace Teelab.Controllers
                 NgayTao = DateTime.Now,
                 Id = userId,
                 TrangThai = "Chờ xác nhận",
-                TongTien = cart.Sum(c => c.ThanhTien)
+                TongTien = cart.Sum(c => c.ThanhTien),
+                PhuongThucTT = (payment != null && payment.Contains("VNPay")) ? "VNPay" : "COD",
+                HoTen = HoTen,
+                DienThoai = DienThoai,
+                DiaChi = DiaChi,
+                GhiChu = GhiChu
             };
             _context.ThanhToans.Add(hoaDon);
 
@@ -137,13 +182,76 @@ namespace Teelab.Controllers
 
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("GioHang");
+            if (payment == "Thanh toán VNPay")
+            {
+                var vnPayModel = new VnPaymentRequestModel
+                {
+                    Amount = (double)hoaDon.TongTien,
+                    CreatedDate = DateTime.Now,
+                    Description = $"Thanh toán đơn hàng {hoaDon.MaTT}",
+                    FullName = User.Identity.Name ?? "Khách hàng",
+                    OrderId = hoaDon.MaTT // Dùng MaTT (HD...)
+                };
+                return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+            }
 
-            TempData["CheckoutSuccess"] = "Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.";
-
-            // --- FIX BAY TRANG: Đứng im tại giỏ hàng để Popup nảy lên ---
+            TempData["CheckoutSuccess"] = "Đặt hàng thành công!";
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> PaymentCallBack()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
 
+            // Kiểm tra nếu response null hoặc thất bại
+            if (response == null || !response.Success)
+            {
+                // Kiểm tra xem có OrderId (MaTT) trả về không mới xử lý cộng kho
+                if (!string.IsNullOrEmpty(response?.OrderId))
+                {
+                    var dsChiTiet = _context.ChiTietThanhToans.Where(x => x.MaTT == response.OrderId).ToList();
+
+                    foreach (var ct in dsChiTiet)
+                    {
+                        var sp = await _context.SanPhams.FindAsync(ct.MaSP);
+                        if (sp != null)
+                        {
+                            sp.SoLuong += ct.SoLuong;
+
+                            // Nếu trước đó sp hết hàng, giờ có lại thì cập nhật trạng thái
+                            if (sp.SoLuong > 0 && sp.TinhTrang == "Hết hàng")
+                            {
+                                sp.TinhTrang = "Còn hàng";
+                            }
+                        }
+                    }
+
+                    // Cập nhật trạng thái hóa đơn thành 'Thất bại' hoặc 'Đã hủy' thay vì xóa
+                    var hoaDonThatBai = _context.ThanhToans.FirstOrDefault(h => h.MaTT == response.OrderId);
+                    if (hoaDonThatBai != null)
+                    {
+                        hoaDonThatBai.TrangThai = "Thanh toán thất bại";
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["Error"] = $"Thanh toán thất bại. Mã lỗi: {response?.VnPayResponseCode}";
+                return RedirectToAction("Index");
+            }
+
+            // --- TRƯỜNG HỢP THÀNH CÔNG ---
+            var hoaDon = _context.ThanhToans.FirstOrDefault(h => h.MaTT == response.OrderId);
+            if (hoaDon != null)
+            {
+                // Đã đổi từ "Đã thanh toán" sang "Chờ xác nhận" theo đúng ý bạn
+                hoaDon.TrangThai = "Chờ xác nhận";
+                hoaDon.PhuongThucTT = "VNPay (Đã thanh toán)";
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["CheckoutSuccess"] = "Thanh toán VNPay thành công! Đơn hàng đang chờ xác nhận.";
+            return RedirectToAction("Index");
+        }
         [HttpPost]
         public IActionResult UpdateQuantity(string cartItemId, int quantity)
         {
@@ -165,5 +273,6 @@ namespace Teelab.Controllers
             SaveCart(cart);
             return RedirectToAction("Index");
         }
+
     }
 }

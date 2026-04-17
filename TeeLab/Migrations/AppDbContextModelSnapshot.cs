@@ -17,7 +17,7 @@ namespace TeeLab.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -106,28 +106,6 @@ namespace TeeLab.Migrations
                     b.HasIndex("MaTT");
 
                     b.ToTable("ChiTietThanhToans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Gia = 0.0,
-                            KichThuoc = "M",
-                            MaSP = "AT001",
-                            MaTT = "HD_SAMPLE_01",
-                            MauSac = "Đen",
-                            SoLuong = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Gia = 0.0,
-                            KichThuoc = "XL",
-                            MaSP = "HD001",
-                            MaTT = "HD_SAMPLE_02",
-                            MauSac = "Xám",
-                            SoLuong = 1
-                        });
                 });
 
             modelBuilder.Entity("Teelab.Models.SanPham", b =>
@@ -167,7 +145,7 @@ namespace TeeLab.Migrations
                     b.HasData(
                         new
                         {
-                            MaSP = "TS382",
+                            MaSP = "AT382",
                             HinhAnh = "aotrang.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xám tiêu",
@@ -178,7 +156,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "TS376",
+                            MaSP = "AT376",
                             HinhAnh = "aoxam.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Trắng, Xám",
@@ -189,7 +167,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "TS377",
+                            MaSP = "AT377",
                             HinhAnh = "aoxoc.jpg",
                             KichThuoc = "S, M ,L, XL",
                             MauSac = "Kẻ sọc nâu, Kẻ sọc xanh",
@@ -200,18 +178,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "TS379",
-                            HinhAnh = "dodo.jpg",
-                            KichThuoc = "S, M, L, XL",
-                            MauSac = "Đen, Trắng, Xanh Navy, Đỏ đô, Xám tiêu",
-                            SoLuong = 100,
-                            SoTien = 250000m,
-                            TenSP = "Áo Thun Teelab Alter Oversize Cotton In Essentials Unisex TS379",
-                            TinhTrang = "Còn hàng"
-                        },
-                        new
-                        {
-                            MaSP = "SH003",
+                            MaSP = "Q003",
                             HinhAnh = "quandui.jpg",
                             KichThuoc = "S, M ,L ,XL",
                             MauSac = "Đen, Trắng",
@@ -222,7 +189,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "TS188",
+                            MaSP = "AT188",
                             HinhAnh = "soc.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen",
@@ -233,7 +200,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "PS131",
+                            MaSP = "Q131",
                             HinhAnh = "quanni.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Xanh Navy, Xám trắng",
@@ -244,7 +211,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "PS116",
+                            MaSP = "Q116",
                             HinhAnh = "quanbo.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen Wash, Trắng Wash, Xanh Wash, Xám đen Wash",
@@ -255,7 +222,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "HD121",
+                            MaSP = "AH121",
                             HinhAnh = "hutdi.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xám, Nâu",
@@ -266,7 +233,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "AC085",
+                            MaSP = "PK085",
                             HinhAnh = "balo.jpg",
                             SoLuong = 3,
                             SoTien = 340000m,
@@ -275,7 +242,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "AC057",
+                            MaSP = "PK057",
                             HinhAnh = "tat.jpg",
                             MauSac = "Đen, Trắng, Kem, Vàng, Xanh lá",
                             SoLuong = 25,
@@ -285,7 +252,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "AC112",
+                            MaSP = "PK112",
                             HinhAnh = "nonda.jpg",
                             MauSac = "Tweed Caro, Sọc, Đen, Da beo",
                             SoLuong = 26,
@@ -295,7 +262,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "SS052",
+                            MaSP = "AT052",
                             HinhAnh = "SS052.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Hồng, Xanh, Xám",
@@ -306,7 +273,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "SS066",
+                            MaSP = "AT066",
                             HinhAnh = "somidai.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xanh than, Xanh dương",
@@ -317,7 +284,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "SS068",
+                            MaSP = "AT068",
                             HinhAnh = "SS068.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xanh than, Xanh dương, Hồng",
@@ -328,7 +295,7 @@ namespace TeeLab.Migrations
                         },
                         new
                         {
-                            MaSP = "AP074",
+                            MaSP = "AT074",
                             HinhAnh = "xamtieu.jpg",
                             KichThuoc = "M, L, XL",
                             MauSac = "Đen,Xanh Navy, Melane",
@@ -344,11 +311,27 @@ namespace TeeLab.Migrations
                     b.Property<string>("MaTT")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("DiaChi")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DienThoai")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoTen")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("PhuongThucTT")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TongTien")
                         .HasColumnType("decimal(18, 2)");
@@ -362,24 +345,6 @@ namespace TeeLab.Migrations
                     b.HasIndex("Id");
 
                     b.ToTable("ThanhToans");
-
-                    b.HasData(
-                        new
-                        {
-                            MaTT = "HD_SAMPLE_01",
-                            Id = 3,
-                            NgayTao = new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TongTien = 500000m,
-                            TrangThai = "Giao hàng thành công"
-                        },
-                        new
-                        {
-                            MaTT = "HD_SAMPLE_02",
-                            Id = 3,
-                            NgayTao = new DateTime(2026, 3, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TongTien = 450000m,
-                            TrangThai = "Chờ xác nhận"
-                        });
                 });
 
             modelBuilder.Entity("TeeLab.Models.KhachHang", b =>
@@ -400,11 +365,11 @@ namespace TeeLab.Migrations
                             Id = 3,
                             Avatar = "default-avatar.png",
                             Diachi = "Hải Phòng",
-                            Email = "hoang@gmail.com",
-                            Hoten = "Lê Minh Hoàng",
-                            MatKhau = "123",
+                            Email = "Customer@gmail.com",
+                            Hoten = "Customer",
+                            MatKhau = "123456",
                             Sdt = "0977777777",
-                            TenDangNhap = "hoang",
+                            TenDangNhap = "Customer",
                             IsLocked = false
                         });
                 });
@@ -421,11 +386,11 @@ namespace TeeLab.Migrations
                             Id = 2,
                             Avatar = "default-avatar.png",
                             Diachi = "Hà Nội",
-                            Email = "nhanvien@teelab.vn",
-                            Hoten = "Nguyễn Nhân Viên",
-                            MatKhau = "123",
+                            Email = "Staff@teelab.vn",
+                            Hoten = "Staff",
+                            MatKhau = "123456",
                             Sdt = "0988888888",
-                            TenDangNhap = "nhanvien"
+                            TenDangNhap = "Staff"
                         });
                 });
 
@@ -442,8 +407,8 @@ namespace TeeLab.Migrations
                             Avatar = "default-avatar.png",
                             Diachi = "Thái Nguyên",
                             Email = "admin@teelab.vn",
-                            Hoten = "Dương Đình Hoàng",
-                            MatKhau = "123",
+                            Hoten = "ADMIN",
+                            MatKhau = "123456",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });

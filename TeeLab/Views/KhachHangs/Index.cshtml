@@ -209,6 +209,12 @@
                                             </td>
                     
                                             <td class="py-4 text-center pe-4">
+                                                @* Nút Chi tiết luôn hiển thị *@
+                                                <a asp-controller="KhachHangs" asp-action="OrderDetail" asp-route-id="@donHang.MaTT" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm mb-2 d-inline-block">
+                                                    <i class="bi bi-eye me-1"></i>Chi tiết
+                                                </a>
+                                                <br />
+
                                                 @if (donHang.TrangThai == "Chờ xác nhận")
                                                 {
                                                     <form asp-controller="KhachHangs" asp-action="HuyDon" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">

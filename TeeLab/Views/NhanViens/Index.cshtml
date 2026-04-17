@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
-    var donChuaXuLy = Model.Where(m => m.TrangThai == "Chờ xác nhận" || m.TrangThai == "Đang giao").ToList();
+    var donChuaXuLy = Model.Where(m => m.TrangThai == "Chờ xác nhận" || m.TrangThai == "Đang giao" || m.TrangThai == "Thanh toán thất bại").ToList();
     var donThanhCong = Model.Where(m => m.TrangThai == "Giao hàng thành công").ToList();
     var donDaHuy = Model.Where(m => m.TrangThai == "Đã hủy").ToList();
 }
@@ -63,18 +63,23 @@
 
     /* Badge & Status Pill */
     .status-pill {
-        padding: 6px 12px;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        display: inline-block;
-    }
+    padding: 6px 16px; /* Tăng padding trái phải cho nút rộng ra */
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-block;
+    white-space: nowrap; /* QUAN TRỌNG: Giúp chữ không bao giờ bị nhảy xuống dòng */
+    min-width: 110px;    /* Đảm bảo các nút có độ rộng tối thiểu bằng nhau cho đẹp */
+    text-align: center;  /* Căn chữ ra giữa nút */
+}
 
     .pill-warning { background: #fff3cd; color: #856404; }
     .pill-info { background: #d1ecf1; color: #0c5460; }
     .pill-success { background: #d4edda; color: #155724; }
     .pill-danger { background: #f8d7da; color: #721c24; }
     .pill-secondary { background: #e2e3e5; color: #383d41; }
+    /* Màu riêng cho VNPay */
+    .pill-vnpay { background: #e7f1ff; color: #0056b3; border: 1px solid #b8daff; }
 
     /* Dropdown & Button */
     .status-select {
@@ -84,21 +89,34 @@
         font-size: 0.85rem;
         transition: all 0.3s;
     }
-
-    .status-select:focus { border-color: var(--teelab-dark); box-shadow: none; }
-
+    /* Nút Lưu - Sửa lỗi màu chữ và hiệu ứng hover */
     .btn-save-status {
-        background: var(--teelab-dark);
-        color: white;
+        background: #007bff !important; /* Xanh Primary */
+        color: #ffffff !important;      /* Chữ trắng tuyệt đối */
+        border: none;
         border-radius: 8px;
-        padding: 5px 15px;
+        padding: 6px 18px;
         font-size: 0.85rem;
         font-weight: 600;
-        transition: 0.3s;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 2px 5px rgba(0,123,255,0.3);
+        display: inline-block;
     }
 
-    .btn-save-status:hover { background: #000; transform: translateY(-1px); }
 
+
+    /* Nút Chi tiết đơn hàng (Màu xanh nhạt dịu mắt) */
+    .btn-view-detail {
+        color: #007bff !important;
+        background: #e7f1ff !important;
+        border: 1px solid #b8daff !important;
+        border-radius: 8px;
+        padding: 5px 12px;
+        transition: 0.2s;
+    }
+
+
+ 
     /* Text Helpers */
     .product-list li {
         margin-bottom: 4px;
@@ -121,9 +139,10 @@
                     <tr>
                         <th class="ps-4">Ngày đặt</th>
                         <th>Khách hàng</th>
-                        <th style="width: 25%;">Sản phẩm (SL)</th>
+                        <th style="width: 20%;">Sản phẩm (SL)</th>
                         <th class="text-center">Size/Màu</th>
                         <th>Tổng tiền</th>
+                        <th>Phương thức</th> @* BỔ SUNG *@
                         <th>Trạng thái</th>
                         <th class="text-center pe-4">Thao tác nhanh</th>
                     </tr>
@@ -137,7 +156,7 @@
                                 <div class="text-muted small">@item.NgayTao.ToString("HH:mm")</div>
                             </td>
                             <td>
-                                <a asp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark">
+                                <a aasp-controller="KhachHangs" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark">
                                     @(item.KhachHang?.Hoten ?? "Khách ẩn danh")
                                     <i class="bi bi-arrow-up-right-circle ms-1 text-muted"></i>
                                 </a>
@@ -159,23 +178,39 @@
                                 }
                             </td>
                             <td class="text-price">@item.TongTien.ToString("N0")đ</td>
+                            <td> @* HIỂN THỊ PHƯƠNG THỨC *@
+                                @if (item.PhuongThucTT != null && item.PhuongThucTT.Contains("VNPay"))
+                                {
+                                    <span class="status-pill pill-vnpay"><i class="bi bi-credit-card-2-back-fill me-1"></i>VNPay</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill pill-secondary"><i class="bi bi-cash me-1"></i>COD</span>
+                                }
+                            </td>
                             <td>
-                                <span class="status-pill @(item.TrangThai == "Chờ xác nhận" ? "pill-warning" : "pill-info")">
+                                <span class="status-pill @(item.TrangThai == "Chờ xác nhận" ? "pill-warning" : item.TrangThai == "Thanh toán thất bại" ? "pill-danger" : "pill-info")">
                                     @item.TrangThai
-</span>
+                                </span>
                             </td>
                             <td class="pe-4 text-center">
-                                <form asp-controller="NhanViens" asp-action="CapNhatTrangThai" method="post" class="d-flex justify-content-center" onsubmit="return xacNhanCapNhat(event, this);">
-                                    <input type="hidden" name="maTT" value="@item.MaTT" />
-                                    <select name="trangThaiMoi" class="form-select-sm status-select me-2 shadow-sm">
-                                        <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
-                                        <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
-                                        <option value="Giao hàng thành công">Thành công</option>
-                                        <option value="Đã hủy">Hủy đơn</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-save-status">Lưu</button>
-                                </form>
-                            </td>
+                               <div class="d-flex justify-content-center align-items-center">
+        <a asp-controller="KhachHangs" asp-action="OrderDetail" asp-route-id="@item.MaTT" 
+           class="btn btn-view-detail me-2" title="Xem chi tiết đơn">
+            <i class="bi bi-eye-fill"></i>
+        </a>
+
+        <form asp-controller="NhanViens" asp-action="CapNhatTrangThai" method="post" class="d-flex" onsubmit="return xacNhanCapNhat(event, this);">
+            <input type="hidden" name="maTT" value="@item.MaTT" />
+            <select name="trangThaiMoi" class="form-select-sm status-select me-2 shadow-sm">
+                <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
+                <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
+                <option value="Giao hàng thành công">Thành công</option>
+                <option value="Đã hủy">Hủy đơn</option>
+            </select>
+            <button type="submit" class="btn btn-save-status">Lưu</button>
+        </form>
+    </div>
                         </tr>
                     }
                 </tbody>
@@ -195,7 +230,8 @@
                         <th class="ps-4">Ngày đặt</th>
                         <th>Khách hàng</th>
                         <th>Tổng tiền</th>
-                        <th class="text-center">Chi tiết</th>
+                        <th>Phương thức</th> @* BỔ SUNG *@
+                        <th class="text-center">Chi tiết </th>
                         <th class="pe-4 text-end">Trạng thái</th>
                     </tr>
                 </thead>
@@ -206,7 +242,16 @@
                             <td class="ps-4">@item.NgayTao.ToString("dd/MM/yyyy")</td>
                             <td class="fw-bold">@item.KhachHang?.Hoten</td>
                             <td class="text-price">@item.TongTien.ToString("N0")đ</td>
-                            <td class="text-center small text-muted">@item.ChiTietThanhToans.Count() sản phẩm</td>
+                            <td>@item.PhuongThucTT</td> @* HIỂN THỊ PHƯƠNG THỨC *@
+                            <td class="text-center">
+                                <a asp-controller="KhachHangs" asp-action="OrderDetail" asp-route-id="@item.MaTT" 
+                                class="text-decoration-none" title="Xem chi tiết đơn hàng">
+                                <span class="badge rounded-pill bg-light text-primary border border-primary px-3 py-2">
+                                <i class="bi bi-box-seam me-1"></i> 
+                                @item.ChiTietThanhToans.Count() sản phẩm
+                                </span>
+                                </a>
+                            </td>
                             <td class="pe-4 text-end">
                                 <span class="status-pill pill-success"><i class="bi bi-patch-check-fill me-1"></i>Đã chốt</span>
                             </td>
@@ -219,7 +264,7 @@
 
     @* --- ĐƠN HÀNG ĐÃ HỦY --- *@
     <div class="section-header text-danger">
-<i class="bi bi-trash3"></i> ĐƠN HÀNG ĐÃ HỦY (@donDaHuy.Count)
+        <i class="bi bi-trash3"></i> ĐƠN HÀNG ĐÃ HỦY (@donDaHuy.Count)
     </div>
     <div class="card custom-card">
         <div class="table-responsive">
@@ -231,6 +276,7 @@
                             <td class="ps-4 py-3" style="width: 150px;">@item.NgayTao.ToString("dd/MM/yyyy")</td>
                             <td class="fw-bold text-muted">@item.KhachHang?.Hoten</td>
                             <td class="text-decoration-line-through">@item.TongTien.ToString("N0")đ</td>
+                            <td class="text-muted" style="width: 120px;">@item.PhuongThucTT</td> @* BỔ SUNG *@
                             <td class="pe-4 text-end">
                                 <span class="status-pill pill-danger">Đã hủy đơn</span>
                             </td>
@@ -240,7 +286,6 @@
             </table>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
@@ -259,7 +304,6 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Xác nhận',
                 cancelButtonText: 'Quay lại',
-                border: 'none',
                 borderRadius: '15px'
             }).then((result) => {
                 if (result.isConfirmed) {

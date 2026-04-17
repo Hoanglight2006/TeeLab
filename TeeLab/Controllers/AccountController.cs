@@ -78,7 +78,8 @@ namespace Teelab.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Remove("UserAvatar"); // Xóa avatar khi đăng xuất
+            HttpContext.Session.Remove("UserAvatar");
+            HttpContext.Session.Remove("GioHang");
             return RedirectToAction("Index", "Home");
         }
 
