@@ -6,8 +6,8 @@
         // (Để phân biệt cùng 1 áo nhưng khác size/màu)
         public string CartItemId { get; set; } = Guid.NewGuid().ToString();
 
-        public string MaSP { get; set; }
-        public string TenSP { get; set; }
+        public string? MaSP { get; set; }
+        public string? TenSP { get; set; }
         public decimal Gia { get; set; }
         public int SoLuong { get; set; }
 

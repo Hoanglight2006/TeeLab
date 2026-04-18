@@ -17,10 +17,10 @@ namespace TeeLab.Models
         public string? Sdt { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-        public string TenDangNhap { get; set; }
+        public string? TenDangNhap { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
-        public string MatKhau { get; set; }
+        public string? MatKhau { get; set; }
 
         // --- BỔ SUNG 2 CỘT MỚI ---
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]

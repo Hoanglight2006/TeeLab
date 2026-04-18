@@ -4,7 +4,7 @@ using Teelab.Models;
 using TeeLab.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddScoped<GeminiService>(); // Đăng ký service của ông
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -24,7 +24,10 @@ builder.Services.AddSession(options => {
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
+var geminiSettings = builder.Configuration.GetSection("Gemini");
 var app = builder.Build();
+// Lấy cấu hình Gemini từ appsettings.json
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

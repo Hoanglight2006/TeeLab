@@ -6,11 +6,11 @@
     
     string displayEmail = (Model.Email?.Contains("@") ?? false) ? 
         (Model.Email.Split('@')[0].Length > 3 ? Model.Email.Substring(0, 3) + "********@" + Model.Email.Split('@')[1] : "****@" + Model.Email.Split('@')[1]) 
-        : Model.Email;
+        : Model.Email!;
 
     string displayPhone = (Model.SoDienThoai?.Length > 5) ? 
         Model.SoDienThoai.Substring(0, 3) + "*******" + Model.SoDienThoai.Substring(Model.SoDienThoai.Length - 2) 
-        : Model.SoDienThoai;
+        : Model.SoDienThoai!;
 }
 
 

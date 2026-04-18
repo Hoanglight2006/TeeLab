@@ -26,13 +26,13 @@ namespace TeeLab.Controllers
             // 1. Lọc theo Danh mục (Dựa vào tiền tố của Mã SP. VD: "AT" cho Áo thun)
             if (!string.IsNullOrEmpty(category))
             {
-                sanPhams = sanPhams.Where(s => s.MaSP.StartsWith(category));
+                sanPhams = sanPhams.Where(s => s.MaSP!.StartsWith(category));
             }
 
             // 2. Lọc theo Từ khóa tìm kiếm
             if (!string.IsNullOrEmpty(searchString))
             {
-                sanPhams = sanPhams.Where(s => s.TenSP.Contains(searchString));
+                sanPhams = sanPhams.Where(s => s.TenSP!.Contains(searchString));
             }
 
             // 3. Lọc theo Khoảng giá

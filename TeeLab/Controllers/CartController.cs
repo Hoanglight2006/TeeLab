@@ -29,7 +29,7 @@ namespace Teelab.Controllers
         private List<CartItem> GetCart()
         {
             var sessionData = HttpContext.Session.GetString("GioHang");
-            return sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData);
+            return sessionData == null ? new List<CartItem>() : JsonSerializer.Deserialize<List<CartItem>>(sessionData)!;
         }
 
         private void SaveCart(List<CartItem> cart)
@@ -56,7 +56,7 @@ namespace Teelab.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddToCart(string id, int quantity = 1, string size = null, string color = null)
+        public IActionResult AddToCart(string id, int quantity = 1, string? size = null, string? color = null)
         {
             var sp = _context.SanPhams.Find(id);
             if (sp == null || sp.SoLuong < quantity)
@@ -72,8 +72,8 @@ namespace Teelab.Controllers
             {
                 cart.Add(new CartItem
                 {
-                    MaSP = sp.MaSP,
-                    TenSP = sp.TenSP,
+                    MaSP = sp.MaSP!,
+                    TenSP = sp.TenSP!,
                     Gia = sp.SoTien,
                     SoLuong = quantity,
                     KichThuoc = size,
@@ -189,7 +189,7 @@ namespace Teelab.Controllers
                     Amount = (double)hoaDon.TongTien,
                     CreatedDate = DateTime.Now,
                     Description = $"Thanh toán đơn hàng {hoaDon.MaTT}",
-                    FullName = User.Identity.Name ?? "Khách hàng",
+                    FullName = User.Identity?.Name ?? "Khách hàng",
                     OrderId = hoaDon.MaTT // Dùng MaTT (HD...)
                 };
                 return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
