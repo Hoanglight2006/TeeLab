@@ -16,6 +16,8 @@ namespace Teelab.Models
         public DbSet<SanPham> SanPhams { get; set; }
         public DbSet<ThanhToan> ThanhToans { get; set; }
         public DbSet<ChiTietThanhToan> ChiTietThanhToans { get; set; }
+        public DbSet<ChatHistory> ChatHistory{ get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

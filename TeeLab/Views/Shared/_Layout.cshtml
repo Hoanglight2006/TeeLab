@@ -18,6 +18,123 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TeeLab.styles.css" asp-append-version="true" />
+<style>
+    /* Nút mở chat: Tông xám hiện đại, đổ bóng mềm */
+    #btn-chat-open {
+        position: fixed; bottom: 30px; right: 30px;
+        width: 60px; height: 60px; z-index: 9999;
+        background: #495057 !important;
+        border: none !important;
+        border-radius: 18px !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.3s ease;
+    }
+    #btn-chat-open:hover { transform: translateY(-3px); background: #343a40 !important; }
+    #btn-chat-open i { font-size: 24px; color: #fff; }
+
+    /* Khung chat */
+    #chat-window {
+        position: fixed; bottom: 105px; right: 30px;
+        width: 370px; height: 580px; z-index: 9999;
+        display: none; flex-direction: column;
+        background: #fff; border-radius: 24px;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+
+    /* FIX: Header với chữ màu đen đậm trên nền xám nhạt cực sang */
+    #chat-window .card-header {
+        background: #f8f9fa !important; /* Nền xám nhạt */
+        color: #212529 !important;    /* Chữ đen đậm để nổi bật */
+        padding: 18px 22px; 
+        border-bottom: 1px solid #eee;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    
+    /* Căn chỉnh chữ TeeLab đẹp hơn */
+    #chat-window .card-header span { 
+        font-weight: 800; 
+        font-size: 16px; 
+        letter-spacing: -0.5px;
+        display: flex; align-items: center; gap: 8px; 
+    }
+    
+    /* Chấm xanh trạng thái tinh tế */
+    #chat-window .card-header span::before {
+        content: ""; width: 8px; height: 8px; 
+        background: #27ae60; border-radius: 50%;
+    }
+
+    #chat-body {
+        flex: 1; overflow-y: auto; padding: 20px;
+        background-color: #ffffff;
+        display: flex; flex-direction: column; gap: 14px;
+    }
+
+    /* Cải thiện ô chat của khách (User Message) */
+    .user-msg {
+        align-self: flex-end;
+        background: #343a40; /* Màu xám than chì hiện đại */
+        color: #fff;
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 20px 20px 4px 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        max-width: 80%;
+    }
+
+    /* Tin nhắn của Bot */
+    .bot-msg {
+        align-self: flex-start;
+        background: #f1f3f5;
+        color: #333;
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 20px 20px 20px 4px;
+        max-width: 85%;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Footer và Input căn chỉnh lại cho hiện đại */
+    #chat-window .card-footer {
+        background: #fff; border-top: 1px solid #f1f1f1; padding: 15px 20px;
+    }
+    
+    .input-group {
+        background: #f8f9fa; 
+        border-radius: 15px;
+        padding: 8px 15px; 
+        border: 1px solid #dee2e6;
+        display: flex; align-items: center;
+        transition: 0.3s ease;
+    }
+    
+    .input-group:focus-within {
+        border-color: #adb5bd;
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        background: #fff;
+    }
+
+    #chat-input {
+        border: none !important; background: transparent !important;
+        box-shadow: none !important; font-size: 14px; flex: 1;
+        outline: none; color: #333;
+    }
+
+    #btn-send {
+        background: transparent !important; 
+        color: #495057 !important;
+        border: none; font-weight: 700;
+        cursor: pointer; padding-left: 10px;
+    }
+    #btn-send:hover { color: #000 !important; }
+
+    /* Thanh cuộn mảnh */
+    #chat-body::-webkit-scrollbar { width: 4px; }
+    #chat-body::-webkit-scrollbar-thumb { background: #e9ecef; border-radius: 10px; }
+</style>
 </head>
 <body>
     <header>
@@ -235,6 +352,88 @@
         </script>
     }
     @await RenderSectionAsync("Scripts", required: false)
+ <button id="btn-chat-open" class="btn btn-dark rounded-circle shadow" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; z-index:9999;">
+    <i class="bi bi-chat-dots-fill" style="font-size: 24px; color: white;"></i>
+</button>
+
+<div id="chat-window" class="card shadow" style="display:none; position:fixed; bottom:90px; right:20px; width:350px; height:500px; z-index:9999; border-radius: 15px; overflow: hidden;">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span class="fw-bold">Trợ lý ảo TeeLab</span>
+        <button class="btn btn-sm text-white border-0" onclick="$('#chat-window').fadeOut(200)">X</button>
+    </div>
     
+    <div id="chat-body" class="card-body" style="overflow-y:auto; background-color: #f8f9fa; display: flex; flex-direction: column; gap: 10px; padding: 15px;">
+        </div>
+    
+    <div class="card-footer bg-white border-top-0">
+        <div class="input-group">
+            <input type="text" id="chat-input" class="form-control rounded-pill-start" placeholder="Hỏi TeeLab ngay..." style="font-size: 14px;">
+            <button id="btn-send" class="btn btn-dark rounded-pill-end">Gửi</button>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // 1. Fix lỗi nhấn không hiện bằng cách dùng fadeToggle
+    $('#btn-chat-open').off('click').on('click', function() {
+        $('#chat-window').fadeToggle(200, function() {
+            if($(this).is(':visible')) {
+                $(this).css('display', 'flex'); // Ép kiểu flex để body không bị vỡ
+            }
+        });
+    });
+
+    // 2. Xử lý gửi tin nhắn
+    function sendMessage() {
+        const input = $('#chat-input');
+        const msg = input.val().trim();
+        if (!msg) return;
+
+        // Thêm tin nhắn User
+        $('#chat-body').append(`<div class="msg-item user-msg" style="align-self: flex-end; background: #000; color: #fff; padding: 8px 12px; border-radius: 15px 15px 2px 15px; max-width: 85%; margin-bottom: 5px;">${msg}</div>`);
+        input.val('');
+        
+        // Cuộn xuống cuối
+        $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+
+        // Hiệu ứng đang trả lời
+        const typingId = "typing-" + Date.now();
+        $('#chat-body').append(`<div id="${typingId}" class="msg-item bot-msg" style="align-self: flex-start; background: #eee; padding: 8px 12px; border-radius: 15px 15px 15px 2px; font-style: italic; color: #666;">TeeLab đang trả lời...</div>`);
+
+        $.ajax({
+            url: '/Assistant/Ask',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ message: msg }),
+            success: function(res) {
+                $(`#${typingId}`).remove(); 
+                
+                // Parse Markdown cực chuẩn
+                const htmlContent = marked.parse(res.reply.trim()); 
+
+                $('#chat-body').append(`
+                    <div class="msg-item bot-msg" style="align-self: flex-start; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 15px 15px 15px 2px; max-width: 90%; font-size: 14px; line-height: 1.5;">
+                        <div class="bot-content">${htmlContent}</div>
+                    </div>
+                `);
+
+                $('#chat-body').animate({ scrollTop: $('#chat-body')[0].scrollHeight }, 300);
+            },
+            error: function() {
+                $(`#${typingId}`).html("<span style='color:red;'>Lỗi kết nối, vui lòng thử lại.</span>");
+            }
+        });
+    }
+
+    // 3. Gán sự kiện cho nút Gửi và Enter
+    $('#btn-send').click(sendMessage);
+    $('#chat-input').on('keypress', function(e) {
+        if (e.which == 13) sendMessage();
+    });
+});
+</script>
 </body>
 </html>
