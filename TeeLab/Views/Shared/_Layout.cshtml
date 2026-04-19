@@ -175,7 +175,7 @@
                             </li>
                         }
 
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity!.IsAuthenticated)
                         {
                             // Lấy Avatar: Ưu tiên Session, nếu không có thì dùng ảnh mặc định
                             var userAvatar = Context.Session.GetString("UserAvatar") ?? "/images/avatars/default-avatar.png";
@@ -319,6 +319,7 @@
 
                                 </div>
 
+                            </div>
                             </div>
                         </div>
 

@@ -53,7 +53,7 @@ namespace Teelab.Controllers
 
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, user.Hoten),
+                        new Claim(ClaimTypes.Name, user.Hoten!),
                         new Claim(ClaimTypes.Role, role),
                         new Claim(ClaimTypes.Email, user.Email ?? ""),
                         new Claim("UserId", user.Id.ToString()),

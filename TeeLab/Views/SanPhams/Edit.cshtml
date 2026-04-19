@@ -43,8 +43,8 @@
 
                         @{
                             // Lấy data cũ, tách thành mảng để so sánh
-                            var currentSizes = string.IsNullOrEmpty(Model.KichThuoc) ? new string[0] : Model.KichThuoc.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            var currentColors = string.IsNullOrEmpty(Model.MauSac) ? new string[0] : Model.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            var currentSizes = string.IsNullOrEmpty(Model!.KichThuoc) ? new string[0] : Model!.KichThuoc.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            var currentColors = string.IsNullOrEmpty(Model!.MauSac) ? new string[0] : Model!.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         }
 
                         <div class="form-group mb-4 mt-4">

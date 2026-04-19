@@ -8,14 +8,14 @@ namespace Teelab.Models
         [Key] // Thêm dòng này để làm khóa chính độc lập
         public int Id { get; set; }
         // Khóa ngoại trỏ về ThanhToan
-        public string MaTT { get; set; }
+        public string? MaTT { get; set; }
         [ForeignKey("MaTT")]
-        public ThanhToan ThanhToan { get; set; }
+        public ThanhToan? ThanhToan { get; set; }
 
         // Khóa ngoại trỏ về SanPham
-        public string MaSP { get; set; }
+        public string? MaSP { get; set; }
         [ForeignKey("MaSP")]
-        public SanPham SanPham { get; set; }
+        public SanPham? SanPham { get; set; }
 
         public int SoLuong { get; set; }
 

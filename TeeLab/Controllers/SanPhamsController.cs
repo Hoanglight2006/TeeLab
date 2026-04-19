@@ -64,7 +64,7 @@ namespace TeeLab.Controllers
             // --- SỬA Ở ĐÂY: LOGIC TỰ ĐỘNG SINH MÃ SẢN PHẨM ---
             // Tìm sản phẩm có mã bắt đầu bằng MaLoai (VD: "AT") và có số thứ tự lớn nhất
             var lastSp = await _context.SanPhams
-                .Where(s => s.MaSP.StartsWith(MaLoai))
+                .Where(s => s.MaSP!.StartsWith(MaLoai))
                 .OrderByDescending(s => s.MaSP)
                 .FirstOrDefaultAsync();
 
@@ -72,7 +72,7 @@ namespace TeeLab.Controllers
             if (lastSp != null)
             {
                 // Cắt bỏ phần chữ, lấy phần số phía sau và tăng lên 1
-                string lastNumberStr = lastSp.MaSP.Substring(MaLoai.Length);
+                string lastNumberStr = lastSp.MaSP!.Substring(MaLoai.Length);
                 if (int.TryParse(lastNumberStr, out int lastNumber))
                 {
                     nextNumber = lastNumber + 1;
