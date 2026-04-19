@@ -3,63 +3,271 @@
     ViewData["Title"] = "Đăng ký tài khoản";
 }
 
-<div class="row justify-content-center mt-4 mb-5">
-    <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="text-center mb-4">Đăng ký Thành viên</h3>
-                <form asp-action="Register" method="post" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Họ và Tên</label>
-                        <input asp-for="Hoten" class="form-control" />
-                        <span asp-validation-for="Hoten" class="text-danger"></span>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+    :root {
+        --primary-dark: #1f2937;
+        --accent-red: #ef4444;
+    }
+    body { background-color: #fcfcfd; }
+
+    .register-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+        overflow: hidden;
+    }
+
+    .form-label { 
+        font-weight: 700; 
+        font-size: 0.7rem; 
+        text-transform: uppercase; 
+        color: #4b5563; 
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-dark);
+        box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.08);
+        outline: none;
+    }
+
+    /* Error Styling */
+    .error-msg {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--accent-red);
+        margin-top: 4px;
+        display: block;
+    }
+    .is-invalid { border-color: var(--accent-red) !important; }
+
+    /* Nút đăng ký phong cách TeeLab */
+    .btn-register {
+        background: var(--primary-dark);
+        color: white;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border: none;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .btn-register:hover {
+        background: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .login-link {
+        font-size: 0.9rem;
+        color: #6b7280;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .login-link:hover { color: var(--primary-dark); font-weight: 600; }
+
+    .preview-avatar-wrap {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    #avatarPreview {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        display: none; /* Chỉ hiện khi đã chọn file */
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="card register-card">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold" style="letter-spacing: -1px;">GIA NHẬP TEELAB</h3>
+                        <p class="text-muted small">Tạo tài khoản để nhận nhiều ưu đãi hơn</p>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input asp-for="TenDangNhap" class="form-control" />
-                        <span asp-validation-for="TenDangNhap" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input asp-for="Email" type="email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
+                    <form asp-action="Register" method="post" enctype="multipart/form-data" id="registerForm">
+                        <div asp-validation-summary="ModelOnly" class="error-msg mb-3"></div>
 
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label class="form-label">Mật khẩu</label>
-                            <input asp-for="MatKhau" class="form-control" type="password" />
-                            <span asp-validation-for="MatKhau" class="text-danger"></span>
+                        <div class="preview-avatar-wrap">
+                            <img id="avatarPreview" src="#" alt="Preview" />
                         </div>
-                        <div class="col">
-                            <label class="form-label">Xác nhận mật khẩu</label>
-                            <input asp-for="XacNhanMatKhau" class="form-control" type="password" />
-                            <span asp-validation-for="XacNhanMatKhau" class="text-danger"></span>
+
+                        <div class="mb-3">
+                            <label class="form-label">Họ và Tên</label>
+                            <input asp-for="Hoten" class="form-control" placeholder="VD: Nguyễn Văn A" />
+                            <span asp-validation-for="Hoten" class="error-msg"></span>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Số điện thoại</label>
-                        <input asp-for="Sdt" class="form-control" />
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tên đăng nhập</label>
+                            <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập (VD: user123)" />
+                            <span asp-validation-for="TenDangNhap" class="error-msg"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ảnh đại diện</label>
-                        <input asp-for="AvatarFile" type="file" class="form-control" accept="image/*" />
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
+                            <span asp-validation-for="Email" class="error-msg"></span>
+                        </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary fw-bold">TẠO TÀI KHOẢN</button>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Mật khẩu</label>
+                                <input asp-for="MatKhau" type="password" class="form-control" placeholder="••••••••" />
+                                <span asp-validation-for="MatKhau" class="error-msg"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Xác nhận</label>
+                                <input asp-for="XacNhanMatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu xác nhận" />
+                                <span asp-validation-for="XacNhanMatKhau" class="error-msg"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input asp-for="Sdt" class="form-control" placeholder="09xxxxxxxx" />
+                            <span asp-validation-for="Sdt" class="error-msg"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Ảnh đại diện (Tùy chọn)</label>
+                            <input asp-for="AvatarFile" type="file" class="form-control" accept="image/*" onchange="previewAvatar(this)" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-register">ĐĂNG KÝ NGAY</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a asp-action="Login" class="login-link">Đã có tài khoản? Đăng nhập ngay</a>
                     </div>
-                </form>
-                <div class="text-center mt-3">
-                    <a asp-action="Login">Đã có tài khoản? Đăng nhập ngay</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 1. Hiển thị thông báo khi Đăng ký thành công từ Server (TempData)
+        @if (TempData["Success"] != null) {
+            <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: '@TempData["Success"]',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    didClose: () => {
+                        window.location.href = '/Account/Login'; 
+                    }
+                });
+            </text>
+        }
+
+        // Thông báo lỗi từ Server (ModelState)
+        @if (!ViewData.ModelState.IsValid) {
+            var errors = string.Join("<br/>", ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            <text>
+                Swal.fire({ icon: 'error', title: 'Lỗi đăng ký', html: '@Html.Raw(errors)', confirmButtonColor: '#1f2937' });
+            </text>
+        }
+
+        const form = document.getElementById('registerForm');
+        const inputs = {
+            Hoten: document.querySelector('[name="Hoten"]'),
+            TenDangNhap: document.querySelector('[name="TenDangNhap"]'),
+            Email: document.querySelector('[name="Email"]'),
+            MatKhau: document.querySelector('[name="MatKhau"]'),
+            XacNhanMatKhau: document.querySelector('[name="XacNhanMatKhau"]'),
+            Sdt: document.querySelector('[name="Sdt"]')
+        };
+
+        const errorMessages = {
+            Hoten: "Họ tên chỉ được chứa chữ cái và khoảng trắng, không có chữ số.",
+            TenDangNhap: "Tên đăng nhập ít nhất 4 ký tự, không chứa dấu/khoảng cách.",
+            Email: "Định dạng Email không hợp lệ.",
+            MatKhau: "Mật khẩu phải từ 6 ký tự trở lên.",
+            XacNhanMatKhau: "Mật khẩu xác nhận không khớp.",
+            Sdt: "Số điện thoại không đúng định dạng."
+        };
+
+        const validators = {
+            Hoten: (val) => /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/.test(val.trim()) && val.trim().length >= 2,
+            TenDangNhap: (val) => /^[a-zA-Z0-9]{4,}$/.test(val),
+            Email: (val) => /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(val),
+            MatKhau: (val) => val.length >= 6,
+            XacNhanMatKhau: (val) => val === inputs.MatKhau.value && val !== "",
+            Sdt: (val) => /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(val.replace(/\s/g, ""))
+        };
+
+        function validateField(fieldName) {
+            const input = inputs[fieldName];
+            if (!input) return true;
+
+            const isValid = validators[fieldName](input.value);
+            input.classList.toggle('is-invalid', !isValid);
+            
+            let errorSpan = document.querySelector(`[data-valmsg-for="${input.name}"]`);
+            if (errorSpan) {
+                if (!isValid) {
+                    errorSpan.textContent = errorMessages[fieldName];
+                    errorSpan.style.display = 'block';
+                } else {
+                    errorSpan.textContent = '';
+                    errorSpan.style.display = 'none';
+                }
+            }
+            return isValid;
+        }
+
+        // Sự kiện Blur và Input
+        Object.keys(inputs).forEach(key => {
+            const el = inputs[key];
+            if (el) {
+                el.addEventListener('blur', () => validateField(key));
+                el.addEventListener('input', () => {
+                    if (el.classList.contains('is-invalid') && validators[key](el.value)) {
+                        el.classList.remove('is-invalid');
+                        let errorSpan = document.querySelector(`[data-valmsg-for="${el.name}"]`);
+                        if (errorSpan) errorSpan.textContent = '';
+                    }
+                });
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            let formIsValid = true;
+            Object.keys(inputs).forEach(key => {
+                if (!validateField(key)) formIsValid = false;
+            });
+
+            if (!formIsValid) {
+                e.preventDefault();
+                Swal.fire({ icon: 'warning', title: 'Chú ý', text: 'Thông tin chưa hợp lệ.', confirmButtonColor: '#1f2937' });
+            }
+        });
+    </script>
+}

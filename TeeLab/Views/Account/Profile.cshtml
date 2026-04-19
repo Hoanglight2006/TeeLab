@@ -101,6 +101,176 @@
     
     .error-text { color: var(--accent); font-size: 0.75rem; margin-top: 4px; display: none; }
     .is-invalid { border-color: var(--accent) !important; }
+
+/* Tinh chỉnh Input Group để Email/SĐT mượt hơn */
+    .input-group {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0; /* Viền mờ đồng nhất */
+        transition: all 0.3s ease;
+    }
+
+    .input-group:focus-within {
+        border-color: #1f2937; /* Đổi màu viền khi click vào */
+        box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.08);
+    }
+
+    /* Ô input khi đang khóa */
+    .input-locked {
+        background-color: #f8fafc !important; /* Xám xanh cực nhẹ */
+        color: #64748b !important; /* Chữ xám đậm dễ đọc hơn xám nhạt */
+        border: none !important; /* Bỏ viền riêng của input để dùng viền của Group */
+        font-weight: 500;
+    }
+
+    /* Nút SỬA (Email/SĐT) - Phong cách tối giản của TeeLab */
+    .btn-change {
+        background: #f1f5f9; /* Nền xám nhẹ tách biệt */
+        color: #1f2937; /* Chữ đen xám */
+        border: none;
+        border-left: 1px solid #e0e0e0;
+        padding: 0 18px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-change:hover {
+        background: #1f2937; /* Hover vào là đen toàn bộ */
+        color: #ffffff;
+    }
+
+    /* Đảm bảo chiều cao input và nút bằng nhau */
+    .input-group .form-control {
+        border: none !important; /* Quan trọng: Bỏ border cũ để không bị 2 lớp viền */
+        height: 45px;
+    }
+    /* Loại bỏ bóng xanh mặc định của input khi click vào */
+.input-group .form-control:focus {
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Đưa hiệu ứng focus ra viền ngoài cùng của cả nhóm */
+.input-group:focus-within {
+    border-color: #1f2937 !important; /* Màu đen xám chuẩn của ông */
+    box-shadow: 0 0 0 2px rgba(31, 41, 55, 0.1) !important;
+}
+
+/* Tinh chỉnh lại ô input để nó khít hoàn toàn */
+.input-locked {
+    border: none !important;
+    outline: none !important;
+}
+/* NÚT SỬA - PHONG CÁCH TỐI GIẢN HIỆN ĐẠI */
+.btn-change {
+    /* Bố cục & Kích thước */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Khít tuyệt đối chiều cao input */
+    padding: 0 22px !important;
+    
+    /* Font chữ chuẩn TeeLab */
+    font-size: 10px !important; 
+    font-weight: 900 !important; 
+    text-transform: uppercase;
+    letter-spacing: 2px; /* Độ giãn chữ sang trọng */
+    
+    /* Màu sắc & Viền */
+    color: #111827 !important;
+    background: #f3f4f6 !important; /* Nền xám nhạt tinh tế */
+    border: none !important;
+    border-left: 1px solid #e5e7eb !important; /* Đường ngăn cách mảnh */
+    border-radius: 0 !important; /* Quan trọng: Để không bị bo góc bên trong group */
+    
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+/* Hiệu ứng khi di chuột vào nút */
+.btn-change:hover {
+    background: #111827 !important; /* Chuyển nền đen tuyền */
+    color: #ffffff !important;    /* Chữ trắng nổi bật */
+    border-left-color: #111827 !important;
+}
+
+/* Hiệu ứng khi nhấn giữ */
+.btn-change:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+}
+/* Khung chứa mới - Loại bỏ hoàn toàn sự thô cứng của Bootstrap */
+.custom-input-group {
+    display: flex;
+    align-items: stretch;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 48px; /* Độ cao chuẩn hiện đại */
+}
+
+/* Hiệu ứng khi click vào ô nhập liệu */
+.custom-input-group:focus-within {
+    border-color: #111827;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.05);
+}
+
+/* Ô input bên trong */
+.custom-input-field {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #111827;
+    outline: none !important;
+}
+
+/* NÚT SỬA V2 - ĐẲNG CẤP HƠN */
+.btn-change-v2 {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: none;
+    border-left: 1px solid #e5e7eb;
+    padding: 0 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+/* Hover nút sửa chuyển sang phong cách TeeLab Black */
+.btn-change-v2:hover {
+    background: #111827 !important;
+    color: #ffffff !important;
+    border-left-color: #111827;
+}
+
+/* Trạng thái khi bị khóa */
+.input-locked {
+    color: #9ca3af !important;
+    cursor: not-allowed;
+}
+
+/* Đảm bảo label nhìn đồng bộ */
+.form-label {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: #374151;
+}
 </style>
 
 <div class="profile-main-wrapper">
@@ -146,22 +316,23 @@
                         <label class="form-label">Họ và tên</label>
                         <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên đầy đủ" />
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Địa chỉ Email</label>
-                        <div class="input-group">
-                            <input id="Email" name="Email" type="text" class="form-control input-locked" value="@displayEmail" readonly />
-                            <button type="button" class="btn-change" onclick="unlockField('Email', '@Model.Email')">SỬA</button>
-                        </div>
-                        <div id="Email-error" class="error-text">Định dạng Email không đúng</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Số điện thoại</label>
-                        <div class="input-group">
-                            <input id="SoDienThoai" name="SoDienThoai" type="text" class="form-control input-locked" value="@displayPhone" readonly />
-                            <button type="button" class="btn-change" onclick="unlockField('SoDienThoai', '@Model.SoDienThoai')">SỬA</button>
-                        </div>
-                        <div id="Phone-error" class="error-text">SĐT không hợp lệ</div>
-                    </div>
+                   <div class="col-md-6">
+    <label class="form-label">Địa chỉ Email</label>
+    <div class="custom-input-group">
+        <input id="Email" name="Email" type="text" class="custom-input-field input-locked" value="@displayEmail" readonly />
+        <button type="button" class="btn-change-v2" onclick="unlockField('Email', '@Model.Email')">SỬA</button>
+    </div>
+    <div id="Email-error" class="error-text">Định dạng Email không đúng</div>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label">Số điện thoại</label>
+    <div class="custom-input-group">
+        <input id="SoDienThoai" name="SoDienThoai" type="text" class="custom-input-field input-locked" value="@displayPhone" readonly />
+        <button type="button" class="btn-change-v2" onclick="unlockField('SoDienThoai', '@Model.SoDienThoai')">SỬA</button>
+    </div>
+    <div id="Phone-error" class="error-text">SĐT không hợp lệ</div>
+</div>
 
                     <div class="col-12">
                         <label class="form-label">Địa chỉ nhận hàng</label>
