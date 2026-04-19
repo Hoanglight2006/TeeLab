@@ -29,6 +29,8 @@ builder.Services.AddSingleton<IVnPayService, VnPayService>();
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 builder.Services.AddScoped<IPdfService, PdfService>();
 var app = builder.Build();
+// Lấy cấu hình Gemini từ appsettings.json
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
