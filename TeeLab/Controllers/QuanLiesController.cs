@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using TeeLab.Models;
 using Teelab.Models;
+using TeeLab.Models;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 
 namespace TeeLab.Controllers
 {
@@ -15,10 +17,12 @@ namespace TeeLab.Controllers
     public class QuanLiesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPdfService _pdfService; // 1. Thêm biến này
 
-        public QuanLiesController(AppDbContext context)
+        public QuanLiesController(AppDbContext context, IPdfService pdfService)
         {
             _context = context;
+            _pdfService = pdfService;
         }
 
         // --- CẬP NHẬT: Thêm tham số lọc thời gian và Tính Top 5 Sản phẩm ---
@@ -262,15 +266,15 @@ namespace TeeLab.Controllers
 
             foreach (var kh in listKhachHang)
             {
- 
-                    // Lấy tổng tiền từ Dictionary, nếu không có đơn nào thành công thì mặc định là 0
-                    decimal total = tongChiTieu.ContainsKey(kh.Id) ? tongChiTieu[kh.Id] : 0;
 
-                    if (total >= 5000000) kh.HangThanhVien = "Kim Cương";
-                    else if (total >= 2000000) kh.HangThanhVien = "Vàng";
-                    else if (total >= 1000000) kh.HangThanhVien = "Bạc";
-                    else if (total > 0) kh.HangThanhVien = "Đồng";
-                    else kh.HangThanhVien = "Mới";
+                // Lấy tổng tiền từ Dictionary, nếu không có đơn nào thành công thì mặc định là 0
+                decimal total = tongChiTieu.ContainsKey(kh.Id) ? tongChiTieu[kh.Id] : 0;
+
+                if (total >= 5000000) kh.HangThanhVien = "Kim Cương";
+                else if (total >= 2000000) kh.HangThanhVien = "Vàng";
+                else if (total >= 1000000) kh.HangThanhVien = "Bạc";
+                else if (total > 0) kh.HangThanhVien = "Đồng";
+                else kh.HangThanhVien = "Mới";
                 _context.Update(kh);
             }
             await _context.SaveChangesAsync(); // Lưu tất cả thay đổi hạng vào DB
@@ -303,35 +307,241 @@ namespace TeeLab.Controllers
             return View(kh);
         }
 
-        [HttpPost]
         [Authorize(Roles = "QuanLy")]
-        public async Task<IActionResult> AdminEdit(int id, KhachHang kh)
+        public async Task<IActionResult> ExportDoanhThuPdf(DateTime? tuNgay, DateTime? denNgay)
         {
-            if (id != kh.Id) return NotFound();
+            // 1. Lấy dữ liệu lọc các đơn thành công kèm chi tiết sản phẩm
+            var query = _context.ThanhToans
+                .Include(t => t.ChiTietThanhToans)
+                .ThenInclude(ct => ct.SanPham)
+                .Where(t => t.TrangThai == "Giao hàng thành công");
 
-            // Loại bỏ kiểm tra ModelState nếu ông chỉ muốn cập nhật một vài trường
-            // hoặc đảm bảo các trường bắt buộc không bị null
-            try
+            if (tuNgay.HasValue) query = query.Where(t => t.NgayTao >= tuNgay.Value);
+            if (denNgay.HasValue) query = query.Where(t => t.NgayTao < denNgay.Value.AddDays(1));
+
+            var listDonHang = await query.OrderByDescending(t => t.NgayTao).ToListAsync();
+
+            // Thống kê tổng hợp sản phẩm đã bán
+            var thongKeSanPham = listDonHang
+    .SelectMany(t => t.ChiTietThanhToans)
+    .GroupBy(ct => new { ct.MaSP, TenSP = ct.SanPham != null ? ct.SanPham.TenSP : "Sản phẩm đã xóa" })
+    .Select(g => new
+    {
+        Ten = g.Key.TenSP,
+        SoLuong = g.Sum(x => x.SoLuong),
+        // Tính tổng tiền bán được của từng SP (Fix lỗi số 0)
+        TongTienBan = g.Sum(x => (x.Gia > 0 ? x.Gia : (int)(x.SanPham?.SoTien ?? 0)) * x.SoLuong)
+    })
+    .OrderByDescending(x => x.SoLuong)
+    .ToList();
+
+            var tongDoanhThu = listDonHang.Sum(t => t.TongTien);
+            var tongDonHang = listDonHang.Count;
+
+            // 2. Tạo nội dung HTML chuyên nghiệp
+            var html = $@"
+    <html>
+    <head>
+        <style>
+            body {{ font-family: 'Arial', sans-serif; color: #333; line-height: 1.5; }}
+            .container {{ padding: 20px; }}
+            .header {{ text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; margin-bottom: 20px; }}
+            .header h1 {{ margin: 0; color: #d32f2f; text-transform: uppercase; }}
+            .info-box {{ margin-bottom: 20px; font-size: 14px; }}
+            table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
+            th, td {{ border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 12px; }}
+            th {{ background-color: #f8f9fa; font-weight: bold; text-transform: uppercase; }}
+            .text-right {{ text-align: right; }}
+            .highlight {{ background-color: #fff9c4; font-weight: bold; }}
+            .footer {{ margin-top: 50px; width: 100%; }}
+            .signature {{ float: right; width: 200px; text-align: center; }}
+            .summary-table {{ width: 300px; float: right; }}
+            .clear {{ clear: both; }}
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>Báo Cáo Doanh Thu Chi Tiết</h1>
+                <p>Cửa hàng thời trang TeeLab</p>
+            </div>
+
+            <div class='info-box'>
+                <p><b>Thời gian báo cáo:</b> {tuNgay?.ToString("dd/MM/yyyy") ?? "Tất cả"} - {denNgay?.ToString("dd/MM/yyyy") ?? "Hiện tại"}</p>
+                <p><b>Ngày lập báo cáo:</b> {DateTime.Now:dd/MM/yyyy HH:mm}</p>
+                <p><b>Tổng số đơn hàng thành công:</b> {tongDonHang} đơn</p>
+            </div>
+
+            <h3>1. THỐNG KÊ SẢN PHẨM BÁN CHẠY</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên Sản Phẩm</th>
+                        <th class='text-right'>Số Lượng</th>
+                        <th class='text-right'>Doanh Thu Thành Phần</th>
+                    </tr>
+                </thead>
+                <tbody>";
+            foreach (var sp in thongKeSanPham)
             {
-                var khInDb = await _context.KhachHangs.FindAsync(id);
-                if (khInDb == null) return NotFound();
-
-                // Cập nhật các thông tin từ Form truyền về
-                khInDb.Hoten = kh.Hoten;
-                khInDb.Sdt = kh.Sdt;
-                khInDb.Email = kh.Email;
-                khInDb.Diachi = kh.Diachi;
-                khInDb.HangThanhVien = kh.HangThanhVien; // ĐÂY LÀ DÒNG LƯU HẠNG ÔNG VỪA CHỌN
-                khInDb.IsLocked = kh.IsLocked;
-
-                _context.Update(khInDb);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ManegerCustomers));
+                html += $@"<tr>
+                        <td>{sp.Ten}</td>
+                        <td class='text-right'>{sp.SoLuong:N0}</td>
+                        <td class='text-right'>{sp.TongTienBan:N0} VNĐ</td>
+                    </tr>";
             }
-            catch (Exception)
+            html += $@"</tbody>
+            </table>
+
+            <h3>2. DANH SÁCH ĐƠN HÀNG CHI TIẾT</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Ngày Tạo</th>
+                        <th>Khách Hàng (ID)</th>
+                        <th class='text-right'>Tổng Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>";
+            foreach (var item in listDonHang)
             {
-                return View(kh);
+                html += $@"<tr>
+                        <td><b>{item.MaTT}</b></td>
+                        <td>{item.NgayTao:dd/MM/yyyy HH:mm}</td>
+                        <td>Khách hàng #{item.Id}</td>
+                        <td class='text-right'>{item.TongTien:N0} VNĐ</td>
+                    </tr>";
             }
+            html += $@"</tbody>
+            </table>
+
+            <div class='clear'></div>
+            <table class='summary-table'>
+                <tr class='highlight'>
+                    <td style='border:none'>TỔNG DOANH THU:</td>
+                    <td class='text-right' style='border:none; color: #d32f2f; font-size: 16px;'>{tongDoanhThu:N0} VNĐ</td>
+                </tr>
+            </table>
+
+            <div class='clear'></div>
+            <div class='footer'>
+                <div class='signature'>
+                    <p><i>Ngày .... tháng .... năm ....</i></p>
+                    <p><b>Người lập biểu</b></p>
+                    <br><br><br>
+                    <p>................................</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>";
+
+            // 3. Xuất file
+            var file = _pdfService.CreatePdf(html);
+            return File(file, "application/pdf", $"BaoCaoChiTiet_{DateTime.Now:yyyyMMdd}.pdf");
         }
+        [Authorize(Roles = "QuanLy")]
+public async Task<IActionResult> ExportDoanhThuWord(DateTime? tuNgay, DateTime? denNgay)
+{
+    // 1. Lấy dữ liệu (Giữ nguyên logic tính toán giống PDF)
+    var query = _context.ThanhToans
+        .Include(t => t.ChiTietThanhToans)
+        .ThenInclude(ct => ct.SanPham)
+        .Where(t => t.TrangThai == "Giao hàng thành công");
+
+    if (tuNgay.HasValue) query = query.Where(t => t.NgayTao >= tuNgay.Value);
+    if (denNgay.HasValue) query = query.Where(t => t.NgayTao < denNgay.Value.AddDays(1));
+
+    var listDonHang = await query.OrderByDescending(t => t.NgayTao).ToListAsync();
+
+    var thongKeSanPham = listDonHang
+        .SelectMany(t => t.ChiTietThanhToans)
+        .GroupBy(ct => new { ct.MaSP, TenSP = ct.SanPham != null ? ct.SanPham.TenSP : "Sản phẩm đã xóa" })
+        .Select(g => new {
+            Ten = g.Key.TenSP,
+            SoLuong = g.Sum(x => x.SoLuong),
+            TongTienBan = g.Sum(x => (x.Gia > 0 ? x.Gia : (int)(x.SanPham?.SoTien ?? 0)) * x.SoLuong)
+        })
+        .OrderByDescending(x => x.SoLuong).ToList();
+
+    var tongDoanhThu = listDonHang.Sum(t => t.TongTien);
+
+    // 2. Tạo file Word
+    using (var stream = new MemoryStream())
+    {
+        using (var doc = DocX.Create(stream))
+        {
+            // --- HEADER (Giống PDF) ---
+            var title = doc.InsertParagraph("BÁO CÁO DOANH THU CHI TIẾT").Bold().FontSize(20);
+            title.Alignment = Alignment.center;
+
+            doc.InsertParagraph("Cửa hàng thời trang TeeLab").Alignment = Alignment.center;
+            doc.InsertParagraph("---------------------------------------").Alignment = Alignment.center;
+
+            // INFO BOX
+            doc.InsertParagraph($"Thời gian báo cáo: {(tuNgay?.ToString("dd/MM/yyyy") ?? "Tất cả")} - {(denNgay?.ToString("dd/MM/yyyy") ?? "Hiện tại")}");
+            doc.InsertParagraph($"Ngày lập báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm}");
+            doc.InsertParagraph($"Tổng số đơn hàng thành công: {listDonHang.Count} đơn");
+            doc.InsertParagraph("");
+
+            // --- 1. THỐNG KÊ SẢN PHẨM BÁN CHẠY ---
+            doc.InsertParagraph("1. THỐNG KÊ SẢN PHẨM BÁN CHẠY").Bold().FontSize(14);
+            var t1 = doc.AddTable(thongKeSanPham.Count + 1, 3);
+            t1.Design = TableDesign.TableGrid;
+            t1.Alignment = Alignment.center;
+            t1.Rows[0].Cells[0].Paragraphs[0].Append("Tên Sản Phẩm").Bold();
+            t1.Rows[0].Cells[1].Paragraphs[0].Append("Số Lượng").Bold();
+            t1.Rows[0].Cells[2].Paragraphs[0].Append("Số tiền bán được").Bold();
+
+            for (int i = 0; i < thongKeSanPham.Count; i++)
+            {
+                var sp = thongKeSanPham[i];
+                t1.Rows[i + 1].Cells[0].Paragraphs[0].Append(sp.Ten);
+                t1.Rows[i + 1].Cells[1].Paragraphs[0].Append(sp.SoLuong.ToString("N0")).Alignment = Alignment.right;
+                t1.Rows[i + 1].Cells[2].Paragraphs[0].Append(sp.TongTienBan.ToString("N0") + " VNĐ").Alignment = Alignment.right;
+            }
+            doc.InsertTable(t1);
+            doc.InsertParagraph("");
+
+            // --- 2. DANH SÁCH ĐƠN HÀNG CHI TIẾT ---
+            doc.InsertParagraph("2. DANH SÁCH ĐƠN HÀNG CHI TIẾT").Bold().FontSize(14);
+            var t2 = doc.AddTable(listDonHang.Count + 1, 4);
+            t2.Design = TableDesign.TableGrid;
+            t2.Alignment = Alignment.center;
+            t2.Rows[0].Cells[0].Paragraphs[0].Append("Mã Đơn").Bold();
+            t2.Rows[0].Cells[1].Paragraphs[0].Append("Ngày Tạo").Bold();
+            t2.Rows[0].Cells[2].Paragraphs[0].Append("Khách Hàng").Bold();
+            t2.Rows[0].Cells[3].Paragraphs[0].Append("Tổng Tiền").Bold();
+
+            for (int i = 0; i < listDonHang.Count; i++)
+            {
+                var item = listDonHang[i];
+                t2.Rows[i + 1].Cells[0].Paragraphs[0].Append(item.MaTT).Bold();
+                t2.Rows[i + 1].Cells[1].Paragraphs[0].Append(item.NgayTao.ToString("dd/MM/yyyy HH:mm"));
+                t2.Rows[i + 1].Cells[2].Paragraphs[0].Append($"Khách hàng #{item.Id}");
+                t2.Rows[i + 1].Cells[3].Paragraphs[0].Append(item.TongTien.ToString("N0") + " VNĐ").Alignment = Alignment.right;
+            }
+            doc.InsertTable(t2);
+
+            // --- TỔNG DOANH THU (Căn phải, màu đỏ) ---
+            doc.InsertParagraph("");
+            var pTotal = doc.InsertParagraph($"TỔNG DOANH THU: ");
+            pTotal.Append(tongDoanhThu.ToString("N0") + " VNĐ").Bold().FontSize(16);
+            pTotal.Alignment = Alignment.right;
+
+            // --- CHỮ KÝ (FOOTER) ---
+            doc.InsertParagraph("");
+            var signaturePara = doc.InsertParagraph($"Ngày .... tháng .... năm ....").Italic();
+            signaturePara.Alignment = Alignment.right;
+            var signName = doc.InsertParagraph("Người lập biểu").Bold();
+            signName.Alignment = Alignment.right;
+            doc.InsertParagraph("\n\n\n................................").Alignment = Alignment.right;
+
+            doc.Save();
+        }
+        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"BaoCaoDoanhThu_{DateTime.Now:yyyyMMdd}.docx");
     }
 }
+        }
+    }

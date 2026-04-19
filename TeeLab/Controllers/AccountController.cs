@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http; // Đảm bảo có dòng này để dùng Sess
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Teelab.Models;
 using TeeLab.Models;
 namespace Teelab.Controllers
@@ -99,7 +100,15 @@ namespace Teelab.Controllers
                     ModelState.AddModelError("", "Tên đăng nhập này đã có người dùng rồi!");
                     return View(model);
                 }
-
+                if (!string.IsNullOrEmpty(model.Sdt))
+                {
+                    var phoneRegex = @"^(0[3|5|7|8|9])[0-9]{8}$";
+                    if (!Regex.IsMatch(model.Sdt, phoneRegex))
+                    {
+                        ModelState.AddModelError("Sdt", "Số điện thoại không đúng định dạng!");
+                        return View(model);
+                    }
+                }
                 string fileName = "default-avatar.png"; // Ảnh mặc định
 
                 // Xử lý lưu ảnh nếu người dùng có chọn file
@@ -130,6 +139,7 @@ namespace Teelab.Controllers
 
                 _context.KhachHangs.Add(khachHang);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Tài khoản của bạn đã được tạo thành công!";
                 return RedirectToAction("Login");
             }
             return View(model);
@@ -207,6 +217,6 @@ namespace Teelab.Controllers
             TempData["Success"] = "";
             return RedirectToAction("Profile");
         }
- 
-    }
+        }
+   
 }

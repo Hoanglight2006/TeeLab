@@ -1,10 +1,12 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Teelab.Models;
 using TeeLab.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<GeminiService>(); // Đăng ký service của ông
+builder.Services.AddScoped<GeminiService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -24,7 +26,8 @@ builder.Services.AddSession(options => {
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
-var geminiSettings = builder.Configuration.GetSection("Gemini");
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddScoped<IPdfService, PdfService>();
 var app = builder.Build();
 // Lấy cấu hình Gemini từ appsettings.json
 

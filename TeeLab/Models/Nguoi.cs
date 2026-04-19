@@ -13,7 +13,7 @@ namespace TeeLab.Models
         public string? Diachi { get; set; }
 
         public DateTime? Ngaysinh { get; set; }
-
+        [RegularExpression(@"^(0[3|5|7|8|9])[0-9]{8}$", ErrorMessage = "Số điện thoại không đúng định dạng Việt Nam (ví dụ: 0987654321)")]
         public string? Sdt { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
