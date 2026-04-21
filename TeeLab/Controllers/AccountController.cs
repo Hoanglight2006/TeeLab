@@ -33,9 +33,8 @@ namespace Teelab.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _context.Nguois.FirstOrDefault(u => u.TenDangNhap == model.TenDangNhap && u.MatKhau == model.MatKhau);
-
-                if (user != null)
+                var user = _context.Nguois.FirstOrDefault(u => u.TenDangNhap == model.TenDangNhap);
+                if (user != null && BCrypt.Net.BCrypt.Verify(model.MatKhau, user.MatKhau))
                 {
                     if (user is KhachHang kh && kh.IsLocked)
                     {
@@ -131,7 +130,7 @@ namespace Teelab.Controllers
                 {
                     Hoten = model.Hoten,
                     TenDangNhap = model.TenDangNhap,
-                    MatKhau = model.MatKhau,
+                    MatKhau = BCrypt.Net.BCrypt.HashPassword(model.MatKhau),
                     Sdt = model.Sdt,
                     Email = model.Email,
                     Avatar = fileName // Lưu tên file vào Database
@@ -139,8 +138,8 @@ namespace Teelab.Controllers
 
                 _context.KhachHangs.Add(khachHang);
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Tài khoản của bạn đã được tạo thành công!";
-                return RedirectToAction("Login");
+                TempData["Success"] = "Tai Khoan Cua Ban Duoc Tao Thanh Cong!";
+                return RedirectToAction("Register");
             }
             return View(model);
         }
@@ -176,21 +175,28 @@ namespace Teelab.Controllers
 
             if (!string.IsNullOrEmpty(NewPassword))
             {
-                if (userInDb.MatKhau != OldPassword)
+                // 1. Kiểm tra mật khẩu cũ bằng Verify
+                if (string.IsNullOrEmpty(OldPassword) || !BCrypt.Net.BCrypt.Verify(OldPassword, userInDb.MatKhau))
                 {
                     ModelState.AddModelError("OldPassword", "Mật khẩu cũ không chính xác!");
                 }
+
+                // 2. Kiểm tra mật khẩu xác nhận
                 if (NewPassword != ConfirmPassword)
                 {
                     ModelState.AddModelError("ConfirmPassword", "Mật khẩu xác nhận không khớp!");
                 }
 
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
+                {
+                    // 3. Băm mật khẩu mới trước khi lưu
+                    userInDb.MatKhau = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+                }
+                else
                 {
                     model.Avatar = userInDb.Avatar;
                     return View("Profile", model);
                 }
-                userInDb.MatKhau = NewPassword;
             }
 
             if (AvatarFile != null && AvatarFile.Length > 0)
@@ -217,6 +223,126 @@ namespace Teelab.Controllers
             TempData["Success"] = "";
             return RedirectToAction("Profile");
         }
+        [HttpGet]
+        public IActionResult ForgotPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kiểm tra khớp cả Tên đăng nhập VÀ Email
+                var user = await _context.Nguois.FirstOrDefaultAsync(u =>
+                    u.TenDangNhap == model.TenDangNhap && u.Email == model.Email);
+
+                if (user != null)
+                {
+                    string otpCode = new Random().Next(100000, 999999).ToString();
+                    HttpContext.Session.SetString("OTPCode", otpCode);
+                    HttpContext.Session.SetString("OTPEmail", model.Email);
+                    HttpContext.Session.SetString("ResetUser", model.TenDangNhap); // Lưu lại để biết đổi cho ai
+
+                    try
+                    {
+                        var emailService = new EmailService();
+                        await emailService.SendEmailAsync(model.Email, "Xác nhận đổi mật khẩu", $"Mã OTP của bạn là: {otpCode}");
+                        return RedirectToAction("VerifyOTP");
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "Lỗi gửi mail: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    // Thông báo lỗi chung để bảo mật hoặc báo chi tiết tùy ông
+                    ModelState.AddModelError("", "Tên đăng nhập hoặc Email không chính xác!");
+                }
+            }
+            return View(model);
         }
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            var userName = HttpContext.Session.GetString("ResetUser");
+            var email = HttpContext.Session.GetString("OTPEmail");
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return RedirectToAction("ForgotPassword");
+            }
+
+            // Gán sẵn Email vào model để vượt qua kiểm tra Valid
+            var model = new ResetPasswordViewModel
+            {
+                Email = email ?? ""
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            // Bỏ qua kiểm tra Email và Token vì mình dùng Session để xác định User
+            ModelState.Remove("Email");
+            ModelState.Remove("Token");
+
+            if (ModelState.IsValid)
+            {
+                var userName = HttpContext.Session.GetString("ResetUser");
+                if (string.IsNullOrEmpty(userName)) return RedirectToAction("ForgotPassword");
+
+                var user = await _context.Nguois.FirstOrDefaultAsync(u => u.TenDangNhap == userName);
+
+                if (user != null)
+                {
+                    // 1. Gán mật khẩu mới đã băm
+                    user.MatKhau = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+
+                    // 2. Ép Entity Framework đánh dấu là đã thay đổi
+                    _context.Nguois.Update(user);
+
+                    // 3. Lưu vào DB
+                    var result = await _context.SaveChangesAsync();
+
+                    if (result > 0) // Kiểm tra xem có dòng nào được cập nhật không
+                    {
+                        // 4. Dọn dẹp Session
+                        HttpContext.Session.Remove("ResetUser");
+                        HttpContext.Session.Remove("OTPCode");
+                        HttpContext.Session.Remove("OTPEmail");
+
+                        TempData["Success"] = "Đổi mật khẩu thành công! Vui lòng đăng nhập.";
+                        return RedirectToAction("Login");
+                    }
+                }
+            }
+
+            // Nếu bị văng ra đây, ông hãy Debug xem ModelState có lỗi gì:
+            // var errors = ModelState.Values.SelectMany(v => v.Errors);
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult VerifyOTP()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult VerifyOTP(string otp)
+        {
+            var savedOtp = HttpContext.Session.GetString("OTPCode");
+            var userName = HttpContext.Session.GetString("ResetUser"); 
+
+            if (otp == savedOtp && !string.IsNullOrEmpty(userName))
+            {
+                HttpContext.Session.SetString("ResetUser", userName);
+                return RedirectToAction("ResetPassword");
+            }
+
+            ModelState.AddModelError("", "Mã xác nhận không chính xác!");
+            return View();
+        }
+    }
    
 }

@@ -133,12 +133,12 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Mật khẩu</label>
-                                <input asp-for="MatKhau" type="password" class="form-control" placeholder="••••••••" />
-                                <span asp-validation-for="MatKhau" class="error-msg"></span>
-                            </div>
+    <label class="form-label">Mật khẩu</label>
+    <input asp-for="MatKhau" type="password" class="form-control" placeholder="Mật khẩu của bạn" />
+    <span asp-validation-for="MatKhau" class="error-msg" data-valmsg-for="MatKhau"></span>
+</div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Xác nhận</label>
+                                <label class="form-label">Xác nhận mật khẩu</label>
                                 <input asp-for="XacNhanMatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu xác nhận" />
                                 <span asp-validation-for="XacNhanMatKhau" class="error-msg"></span>
                             </div>
@@ -209,7 +209,7 @@
             Hoten: "Họ tên chỉ được chứa chữ cái và khoảng trắng, không có chữ số.",
             TenDangNhap: "Tên đăng nhập ít nhất 4 ký tự, không chứa dấu/khoảng cách.",
             Email: "Định dạng Email không hợp lệ.",
-            MatKhau: "Mật khẩu phải từ 6 ký tự trở lên.",
+            MatKhau: "Mật khẩu 6-30 ký tự, phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số.",
             XacNhanMatKhau: "Mật khẩu xác nhận không khớp.",
             Sdt: "Số điện thoại không đúng định dạng."
         };
@@ -218,7 +218,7 @@
             Hoten: (val) => /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/.test(val.trim()) && val.trim().length >= 2,
             TenDangNhap: (val) => /^[a-zA-Z0-9]{4,}$/.test(val),
             Email: (val) => /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(val),
-            MatKhau: (val) => val.length >= 6,
+            MatKhau: (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,30}$/.test(val),
             XacNhanMatKhau: (val) => val === inputs.MatKhau.value && val !== "",
             Sdt: (val) => /^(0|\+84)[3|5|7|8|9][0-9]{8}$/.test(val.replace(/\s/g, ""))
         };

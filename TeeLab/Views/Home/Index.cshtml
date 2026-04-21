@@ -284,9 +284,9 @@
                                     <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-flex gap-2">
                                         <input type="hidden" name="id" value="@item.MaSP" />
                                         <input type="number" name="quantity" value="1" min="1" max="@item.SoLuong" class="form-control text-center px-1" style="width: 60px;" />
-                                        <button type="submit" class="btn btn-dark flex-grow-1 fw-bold">
-                                            @(quantityInCart > 0 ? "THÊM TIẾP" : "MUA NGAY")
-                                        </button>
+                                        <a asp-controller="Home" asp-action="Details" asp-route-id="@item.MaSP" class="btn btn-dark w-100 fw-bold">
+    @(quantityInCart > 0 ? "XEM CHI TIẾT" : "MUA NGAY")
+</a>    
                                     </form>
                                 }
                             }
