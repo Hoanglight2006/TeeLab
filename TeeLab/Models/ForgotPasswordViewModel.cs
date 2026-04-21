@@ -18,7 +18,7 @@ namespace TeeLab.Models
         public string? Token { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu mới không được để trống")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$", ErrorMessage = "Mật khẩu cần ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,30}$", ErrorMessage = "Mật khẩu 6-30 ký tự phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số")]
         public string NewPassword { get; set; }
 
         [Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận không khớp")]
