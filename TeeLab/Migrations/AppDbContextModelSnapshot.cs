@@ -77,7 +77,8 @@ namespace TeeLab.Migrations
 
                     b.Property<string>("MatKhau")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("Ngaysinh")
                         .HasColumnType("datetime2");
@@ -407,7 +408,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hải Phòng",
                             Email = "Customer@gmail.com",
                             Hoten = "Customer",
-                            MatKhau = "123456",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0977777777",
                             TenDangNhap = "Customer",
                             IsLocked = false
@@ -428,7 +429,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hà Nội",
                             Email = "Staff@teelab.vn",
                             Hoten = "Staff",
-                            MatKhau = "123456",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0988888888",
                             TenDangNhap = "Staff"
                         });
@@ -448,7 +449,7 @@ namespace TeeLab.Migrations
                             Diachi = "Thái Nguyên",
                             Email = "admin@teelab.vn",
                             Hoten = "ADMIN",
-                            MatKhau = "123456",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });

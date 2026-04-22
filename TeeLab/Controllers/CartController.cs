@@ -54,7 +54,13 @@ namespace Teelab.Controllers
 
             return View(cart);
         }
+        // Trong CartController.cs
 
+        [HttpGet]
+        public IActionResult AddToCart()
+        {
+            return RedirectToAction("Index");
+        }
         [HttpPost]
         public IActionResult AddToCart(string id, int quantity = 1, string? size = null, string? color = null)
         {

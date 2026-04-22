@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TeeLab.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,7 +40,7 @@ namespace TeeLab.Migrations
                     Ngaysinh = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenDangNhap = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MatKhau = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MatKhau = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
@@ -132,14 +132,14 @@ namespace TeeLab.Migrations
                 columns: new[] { "Id", "Avatar", "Diachi", "Discriminator", "Email", "Hoten", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
                 values: new object[,]
                 {
-                    { 1, "default-avatar.png", "Thái Nguyên", "QuanLy", "admin@teelab.vn", "ADMIN", "123456", null, "0123456789", "admin" },
-                    { 2, "default-avatar.png", "Hà Nội", "NhanVien", "Staff@teelab.vn", "Staff", "123456", null, "0988888888", "Staff" }
+                    { 1, "default-avatar.png", "Thái Nguyên", "QuanLy", "admin@teelab.vn", "ADMIN", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0123456789", "admin" },
+                    { 2, "default-avatar.png", "Hà Nội", "NhanVien", "Staff@teelab.vn", "Staff", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0988888888", "Staff" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Nguois",
                 columns: new[] { "Id", "Avatar", "Diachi", "Discriminator", "Email", "HangThanhVien", "Hoten", "IsLocked", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
-                values: new object[] { 3, "default-avatar.png", "Hải Phòng", "KhachHang", "Customer@gmail.com", null, "Customer", false, "123456", null, "0977777777", "Customer" });
+                values: new object[] { 3, "default-avatar.png", "Hải Phòng", "KhachHang", "Customer@gmail.com", null, "Customer", false, "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0977777777", "Customer" });
 
             migrationBuilder.InsertData(
                 table: "SanPhams",

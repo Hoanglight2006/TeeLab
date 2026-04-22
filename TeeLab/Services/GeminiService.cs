@@ -33,7 +33,6 @@ namespace TeeLab.Services
         5. Khi khách đã nêu nhu cầu, chỉ gợi ý tối đa 3 mẫu sát nhất kèm giá tiền từ dữ liệu, không trả lời lan man.
         6. Khi khách hàng cần tư vấn cụ thể một vấn đề nào đó, trả lời đúng trọng tâm cho khach hang. 
 
-        KHÁCH HỎI: {userMessage}";
 
 Bước 2: Phân tích Ý định của khách (User Intent):
 - NẾU HỎI SIZE: Tuyệt đối không đưa ra size ngay. Hãy hỏi: ""Để TeeLab tư vấn size chính xác nhất, bạn cho mình xin Chiều cao (cm), Cân nặng (kg) và mẫu bạn đang nhắm tới nhé!""

@@ -20,7 +20,9 @@ namespace TeeLab.Models
         public string? TenDangNhap { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
-        public string? MatKhau { get; set; }
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 ký tự trở lên")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số")]
+        public string MatKhau { get; set; }
 
         // --- BỔ SUNG 2 CỘT MỚI ---
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
