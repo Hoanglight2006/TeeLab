@@ -28,7 +28,7 @@ namespace Teelab.Models
             modelBuilder.Entity<QuanLy>().HasData(new QuanLy { Id = 1, Hoten = "ADMIN", TenDangNhap = "admin", MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW", Sdt = "0123456789", Diachi = "Thái Nguyên", Email = "admin@teelab.vn", Avatar = "default-avatar.png" });
             modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Staff", TenDangNhap = "Staff", MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW", Sdt = "0988888888", Diachi = "Hà Nội", Email = "Staff@teelab.vn", Avatar = "default-avatar.png" });
             modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Customer", TenDangNhap = "Customer", MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW", Sdt = "0977777777", Diachi = "Hải Phòng", Email = "Customer@gmail.com", Avatar = "default-avatar.png" });
-
+            
             // 2. SEED DATA: SẢN PHẨM
             modelBuilder.Entity<SanPham>().HasData(
      new SanPham { MaSP = "AT382", TenSP = "Áo Thun Teelab Alter Oversize Cotton 250GSM Trơn Unisex TS382", SoTien = 250000, SoLuong = 50, TinhTrang = "Còn hàng", HinhAnh = "aotrang.jpg", KichThuoc = "S, M, L, XL", MauSac = "Đen, Trắng, Xám tiêu" },

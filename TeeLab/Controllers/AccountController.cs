@@ -255,7 +255,6 @@ namespace Teelab.Controllers
                 }
                 else
                 {
-                    // Thông báo lỗi chung để bảo mật hoặc báo chi tiết tùy ông
                     ModelState.AddModelError("", "Tên đăng nhập hoặc Email không chính xác!");
                 }
             }

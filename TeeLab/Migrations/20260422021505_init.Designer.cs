@@ -12,8 +12,8 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260421195043_reseta")]
-    partial class reseta
+    [Migration("20260422021505_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -398,7 +398,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hải Phòng",
                             Email = "Customer@gmail.com",
                             Hoten = "Customer",
-                            MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F",
+                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
                             Sdt = "0977777777",
                             TenDangNhap = "Customer",
                             IsLocked = false
@@ -419,7 +419,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hà Nội",
                             Email = "Staff@teelab.vn",
                             Hoten = "Staff",
-                            MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F",
+                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
                             Sdt = "0988888888",
                             TenDangNhap = "Staff"
                         });
@@ -439,7 +439,7 @@ namespace TeeLab.Migrations
                             Diachi = "Thái Nguyên",
                             Email = "admin@teelab.vn",
                             Hoten = "ADMIN",
-                            MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F",
+                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });
