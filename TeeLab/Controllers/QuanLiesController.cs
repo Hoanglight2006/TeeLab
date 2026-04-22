@@ -56,8 +56,8 @@ namespace TeeLab.Controllers
 
             // 4. Lấy TOP 5 SẢN PHẨM BÁN CHẠY NHẤT (Chỉ tính đơn thành công)
             var topSanPham = await queryDonThanhCong
-                .SelectMany(t => t.ChiTietThanhToans)
-                .GroupBy(ct => new { ct.MaSP, ct.SanPham.TenSP })
+                .SelectMany(t => t.ChiTietThanhToans!)
+                .GroupBy(ct => new { ct.MaSP, TenSP = ct.SanPham != null ? ct.SanPham.TenSP : "Sản phẩm đã xóa" })
                 .Select(g => new
                 {
                     TenSP = g.Key.TenSP ?? "Sản phẩm đã xóa",
@@ -200,14 +200,14 @@ namespace TeeLab.Controllers
 
             // 1. Tìm hóa đơn và nạp kèm chi tiết sản phẩm
             var donHang = await _context.ThanhToans
-                .Include(t => t.ChiTietThanhToans)
+                .Include(t => t.ChiTietThanhToans)!
                 .ThenInclude(ct => ct.SanPham) // Nạp bảng SanPham để lấy giá gốc nếu cần
                 .FirstOrDefaultAsync(m => m.MaTT == id);
 
             if (donHang == null) return NotFound();
 
             // 2. LOGIC FIX LỖI SỐ 0: Kiểm tra từng dòng chi tiết
-            foreach (var item in donHang.ChiTietThanhToans)
+            foreach (var item in donHang.ChiTietThanhToans!)
             {
                 // Nếu DonGia trong database đang là 0, thì lấy giá từ bảng SanPham bù vào
                 if (item.Gia == 0 && item.SanPham != null)
@@ -243,9 +243,9 @@ namespace TeeLab.Controllers
             // Lọc tìm kiếm
             if (!string.IsNullOrEmpty(searchString))
             {
-                query = query.Where(k => k.Hoten.Contains(searchString) ||
-                                         k.Sdt.Contains(searchString) ||
-                                         k.TenDangNhap.Contains(searchString));
+                query = query.Where(k => k.Hoten!.Contains(searchString) ||
+                                         k.Sdt!.Contains(searchString) ||
+                                         k.TenDangNhap!.Contains(searchString));
             }
 
             // Lọc hạng

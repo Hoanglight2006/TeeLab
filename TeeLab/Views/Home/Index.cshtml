@@ -51,17 +51,15 @@
             text-transform: uppercase;
             letter-spacing: 12px; /* Khoảng cách chữ rộng ra cho sang */
             text-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        
-            /* Hiệu ứng mượt */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             display: inline-block;
         }
 
-        /* Hiệu ứng Hover mới: To ra và sáng rực lên */
+        /* Logo Teelab*/
         .teelab-title:hover {
-            transform: scale(1.1) translateY(-5px); /* To ra và nhích lên trên tí */
-            letter-spacing: 15px; /* Giãn chữ thêm khi hover */
+            transform: scale(1.1) translateY(-5px); 
+            letter-spacing: 15px; 
             text-shadow: 0 10px 25px rgba(255,255,255,0.3), 0 0 50px rgba(255,255,255,0.2);
             color: #f8f9fa !important;
         }
@@ -140,7 +138,124 @@
     .search-btn-v2 i {
         font-size: 1.1rem;
     }
-    </style>
+
+    /* 1. Reset và Tổng thể */
+    :root {
+        --primary-black: #111;
+        --teelab-red: #d9534f;
+        --soft-gray: #f8f9fa;
+        --border-color: #eee;
+    }
+
+    /* 2. Hiệu ứng Nút phân loại (Category Buttons) */
+    .btn-outline-dark.rounded-pill {
+        border: 1px solid #ddd !important;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        background-color: #fff;
+    }
+
+    .btn-outline-dark.rounded-pill:hover {
+        background-color: var(--primary-black) !important;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .btn-dark.rounded-pill {
+        background-color: var(--primary-black) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    /* 3. Thanh tìm kiếm Search-Container-V2 */
+    .search-container-v2:focus-within {
+        border-color: var(--primary-black) !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+    }
+
+    .search-input-v2::placeholder {
+        color: #bbb;
+        font-weight: 400;
+    }
+
+    .search-btn-v2:hover {
+        transform: scale(1.05);
+        background: #333 !important;
+    }
+
+    /* 4. Card Sản phẩm (Product Cards) */
+    .card.h-100 {
+        border-radius: 12px !important;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .card-img-top {
+        transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background-color: var(--soft-gray);
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    /* Hiệu ứng Badge "Hết hàng" */
+    .badge.bg-danger {
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    /* 5. Nội dung trong Card */
+    .card-title {
+        font-size: 1.05rem;
+        color: var(--primary-black);
+        margin-top: 5px;
+    }
+
+    .text-danger.fw-bold.fs-5 {
+        color: var(--teelab-red) !important;
+        letter-spacing: 0.5px;
+    }
+
+    /* 6. Form mua hàng nhanh (Add to Cart form) */
+    .form-control.text-center {
+        border-radius: 6px !important;
+        border: 1px solid #ddd !important;
+        font-weight: 600;
+    }
+
+    .btn-dark.flex-grow-1 {
+        background-color: var(--primary-black) !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dark.flex-grow-1:hover {
+        background-color: #333 !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    /* 7. Footer của Card */
+    .card-footer {
+        padding: 0 1.25rem 1.25rem 1.25rem !important;
+    }
+
+    /* 8. Badge giỏ hàng (Đang có x cái) */
+    .badge.bg-info {
+        background-color: #e9ecef !important; /* Đổi thành màu trung tính cho sang */
+        color: #495057 !important;
+        border: 1px solid #dee2e6;
+        font-weight: 500;
+    }
+
+    /* 9. Hiệu ứng trống (Empty state) */
+    .bi-emoji-frown {
+        color: #dee2e6;
+    }
+</style>
     @{
         ViewData["Title"] = "Trang chủ Teelab";
         var sessionData = Context.Session.GetString("GioHang");
@@ -161,19 +276,19 @@
     </div>
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
         <a asp-action="Index" asp-route-category="" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
-           class="btn @(string.IsNullOrEmpty((string)ViewData["CurrentCategory"]) ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Tất cả</a>
+           class="btn @(string.IsNullOrEmpty((string)ViewData["CurrentCategory"]!) ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Tất cả</a>
 
         <a asp-action="Index" asp-route-category="AT" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
-           class="btn @((string)ViewData["CurrentCategory"] == "AT" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Áo Thun</a>
+           class="btn @((string)ViewData["CurrentCategory"]! == "AT" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Áo Thun</a>
 
         <a asp-action="Index" asp-route-category="AH" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
-           class="btn @((string)ViewData["CurrentCategory"] == "AH" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Áo Hoodie</a>
+           class="btn @((string)ViewData["CurrentCategory"]! == "AH" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Áo Hoodie</a>
 
         <a asp-action="Index" asp-route-category="Q" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
-           class="btn @((string)ViewData["CurrentCategory"] == "Q" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Quần</a>
+           class="btn @((string)ViewData["CurrentCategory"]! == "Q" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Quần</a>
 
         <a asp-action="Index" asp-route-category="PK" asp-route-searchString="@ViewData["CurrentFilter"]" asp-route-priceRange="@ViewData["CurrentPrice"]"
-           class="btn @((string)ViewData["CurrentCategory"] == "PK" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Phụ kiện</a>
+           class="btn @((string)ViewData["CurrentCategory"]! == "PK" ? "btn-dark" : "btn-outline-dark") rounded-pill px-4 fw-bold">Phụ kiện</a>
     </div>
 
    <div class="row mb-5 justify-content-center">
@@ -190,9 +305,9 @@
 
                 <select name="priceRange" class="form-select search-select-v2">
                     <option value="">Mọi mức giá</option>
-                    <option value="duoi300" selected="@((string)ViewData["CurrentPrice"] == "duoi300")">Dưới 300k</option>
-                    <option value="300den500" selected="@((string)ViewData["CurrentPrice"] == "300den500")">300k - 500k</option>
-                    <option value="tren500" selected="@((string)ViewData["CurrentPrice"] == "tren500")">Trên 500k</option>
+                    <option value="duoi300" selected="@((string)ViewData["CurrentPrice"]! == "duoi300")">Dưới 300k</option>
+                    <option value="300den500" selected="@((string)ViewData["CurrentPrice"]! == "300den500")">300k - 500k</option>
+                    <option value="tren500" selected="@((string)ViewData["CurrentPrice"]! == "tren500")">Trên 500k</option>
                 </select>
 
                 <button type="submit" class="search-btn-v2" title="Tìm kiếm">
@@ -215,7 +330,7 @@
         <div class="row">
             @foreach (var item in Model)
             {
-                var itemInCart = currentCart.FirstOrDefault(c => c.MaSP == item.MaSP);
+                var itemInCart = currentCart!.FirstOrDefault(c => c.MaSP == item.MaSP);
                 var quantityInCart = itemInCart?.SoLuong ?? 0;
 
                 <div class="col-md-3 mb-4">

@@ -114,11 +114,9 @@ namespace TeeLab.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaSP")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaTT")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MauSac")
@@ -151,6 +149,7 @@ namespace TeeLab.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MoTa")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SoLuong")
@@ -161,7 +160,8 @@ namespace TeeLab.Migrations
 
                     b.Property<string>("TenSP")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TinhTrang")
                         .HasColumnType("nvarchar(max)");
@@ -177,6 +177,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "aotrang.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xám tiêu",
+                            MoTa = "Áo thun form oversize basic với chất liệu cotton 250GSM dày dặn, mềm mại và thoáng khí. Thiết kế trơn tối giản, dễ phối đồ, phù hợp mặc hằng ngày hoặc đi chơi.",
                             SoLuong = 50,
                             SoTien = 250000m,
                             TenSP = "Áo Thun Teelab Alter Oversize Cotton 250GSM Trơn Unisex TS382",
@@ -188,6 +189,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "aoxam.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Trắng, Xám",
+                            MoTa = "Áo thun oversize với họa tiết World Tour TOKYO phong cách watercolor độc đáo. Chất cotton cao cấp mang lại cảm giác thoải mái, phù hợp cho phong cách streetwear năng động.",
                             SoLuong = 3,
                             SoTien = 280000m,
                             TenSP = "Áo Thun Teelab Alter Oversize Cotton In World Tour TOKYO Water Color Unisex TS376",
@@ -199,6 +201,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "aoxoc.jpg",
                             KichThuoc = "S, M ,L, XL",
                             MauSac = "Kẻ sọc nâu, Kẻ sọc xanh",
+                            MoTa = "Áo thun sọc form rộng với điểm nhấn thêu Pop Star tinh tế. Chất liệu cotton mềm mại, thoáng mát, mang lại phong cách trẻ trung và cá tính.",
                             SoLuong = 20,
                             SoTien = 280000m,
                             TenSP = "Áo Thun Sọc Teelab Alter Oversize Cotton Thêu Pop Star Unisex TS377",
@@ -210,6 +213,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "quandui.jpg",
                             KichThuoc = "S, M ,L ,XL",
                             MauSac = "Đen, Trắng",
+                            MoTa = "Quần short nỉ form rộng với chất vải mềm mại, co giãn tốt. Thiết kế in World Tour nổi bật, phù hợp mặc đi chơi, thể thao hoặc ở nhà.",
                             SoLuong = 100,
                             SoTien = 220000m,
                             TenSP = "Quần Short Teelab Alter Oversize Nỉ Chân Cua In Wourld Tour Unisex SH003",
@@ -221,6 +225,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "soc.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen",
+                            MoTa = "Áo thun oversize với họa tiết Wave Line hiện đại. Chất cotton cao cấp giúp thoáng mát, dễ chịu khi mặc. Thiết kế đơn giản nhưng vẫn tạo điểm nhấn.",
                             SoLuong = 0,
                             SoTien = 250000m,
                             TenSP = "Áo Thun Teelab Alter Oversize Cotton In Wave Line Unisex TS188",
@@ -232,6 +237,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "quanni.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Xanh Navy, Xám trắng",
+                            MoTa = "Quần nỉ ống suông form rộng, mang lại sự thoải mái khi vận động. Họa tiết in World Tour tạo phong cách streetwear năng động.",
                             SoLuong = 50,
                             SoTien = 250000m,
                             TenSP = "Quần Nỉ Ống Suông Teelab Alter Oversize Nỉ In World Tour PS131",
@@ -243,6 +249,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "quanbo.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen Wash, Trắng Wash, Xanh Wash, Xám đen Wash",
+                            MoTa = "Quần jeans ống rộng phong cách local brand, dễ phối đồ. Chất denim bền bỉ, form rộng thoải mái phù hợp nhiều phong cách khác nhau.",
                             SoLuong = 20,
                             SoTien = 250000m,
                             TenSP = "Quần Dài Local Brand Unisex Teelab Jeans Ống Rộng PS116",
@@ -254,6 +261,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "hutdi.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xám, Nâu",
+                            MoTa = "Hoodie zip form rộng với họa tiết Stars nổi bật. Chất nỉ dày dặn, giữ ấm tốt, phù hợp mặc trong thời tiết se lạnh.",
                             SoLuong = 6,
                             SoTien = 399000m,
                             TenSP = "Áo Teelab Local Brand Unisex Hoodie zip Stars HD121",
@@ -263,6 +271,7 @@ namespace TeeLab.Migrations
                         {
                             MaSP = "PK085",
                             HinhAnh = "balo.jpg",
+                            MoTa = "Balo da thiết kế tối giản, sang trọng. Chất liệu da bền đẹp, nhiều ngăn tiện dụng, phù hợp đi học, đi làm hoặc du lịch.",
                             SoLuong = 3,
                             SoTien = 340000m,
                             TenSP = "Balo Da Teelab Local Brand Essentials Leather Backpack AC085",
@@ -273,6 +282,7 @@ namespace TeeLab.Migrations
                             MaSP = "PK057",
                             HinhAnh = "tat.jpg",
                             MauSac = "Đen, Trắng, Kem, Vàng, Xanh lá",
+                            MoTa = "Tất cổ cao với thiết kế logo Teelab nổi bật. Chất liệu cotton co giãn tốt, thoáng khí, mang lại cảm giác dễ chịu khi sử dụng.",
                             SoLuong = 25,
                             SoTien = 25000m,
                             TenSP = "Tất Teelab Iconic Logo Socks AC057",
@@ -283,6 +293,7 @@ namespace TeeLab.Migrations
                             MaSP = "PK112",
                             HinhAnh = "nonda.jpg",
                             MauSac = "Tweed Caro, Sọc, Đen, Da beo",
+                            MoTa = "Nón pillbox phong cách vintage, tạo điểm nhấn cho outfit. Thiết kế độc đáo, dễ phối với nhiều phong cách thời trang.",
                             SoLuong = 26,
                             SoTien = 85000m,
                             TenSP = "Nón Pillbox Local Brand Unisex Teelab Alter AC112",
@@ -294,6 +305,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "SS052.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Hồng, Xanh, Xám",
+                            MoTa = "Áo sơ mi ngắn tay chất Oxford cao cấp, form rộng thoải mái. Thiết kế đơn giản, phù hợp mặc đi học, đi làm hoặc đi chơi.",
                             SoLuong = 6,
                             SoTien = 250000m,
                             TenSP = "Áo Sơ Mi Ngắn Tay Teelab Local Brand Unisex Studio Oxford Shirt SS052",
@@ -305,6 +317,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "somidai.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xanh than, Xanh dương",
+                            MoTa = "Áo sơ mi dài tay với chất liệu Oxford dày dặn, đứng form. Phù hợp phong cách lịch sự nhưng vẫn trẻ trung.",
                             SoLuong = 4,
                             SoTien = 280000m,
                             TenSP = "Áo Sơ Mi Dài Tay Teelab Local Brand Unisex Oxford shirts SS066",
@@ -316,6 +329,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "SS068.jpg",
                             KichThuoc = "S, M, L, XL",
                             MauSac = "Đen, Trắng, Xanh than, Xanh dương, Hồng",
+                            MoTa = "Áo sơ mi cộc tay với thiết kế logo signature tinh tế. Chất liệu Oxford thân thiện, thoáng mát, phù hợp mặc hằng ngày.",
                             SoLuong = 12,
                             SoTien = 250000m,
                             TenSP = "Áo Sơ Mi Cộc Tay Teelab Local Brand Unisex Eco Oxford Logo Signature Shirt SS068",
@@ -327,6 +341,7 @@ namespace TeeLab.Migrations
                             HinhAnh = "xamtieu.jpg",
                             KichThuoc = "M, L, XL",
                             MauSac = "Đen,Xanh Navy, Melane",
+                            MoTa = "Áo polo dệt kim cao cấp với form vừa vặn. Thiết kế thanh lịch, phù hợp cho cả đi làm và đi chơi.",
                             SoLuong = 0,
                             SoTien = 320000m,
                             TenSP = "Áo Polo Local Brand Unisex Teelab KNIT POLO SHIRT AP074",
@@ -358,14 +373,12 @@ namespace TeeLab.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhuongThucTT")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TongTien")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("TrangThai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaTT");
@@ -395,7 +408,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hải Phòng",
                             Email = "Customer@gmail.com",
                             Hoten = "Customer",
-                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0977777777",
                             TenDangNhap = "Customer",
                             IsLocked = false
@@ -416,7 +429,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hà Nội",
                             Email = "Staff@teelab.vn",
                             Hoten = "Staff",
-                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0988888888",
                             TenDangNhap = "Staff"
                         });
@@ -436,7 +449,7 @@ namespace TeeLab.Migrations
                             Diachi = "Thái Nguyên",
                             Email = "admin@teelab.vn",
                             Hoten = "ADMIN",
-                            MatKhau = "$2a$11$RmtZhPdmyjWci4YLDNfdBONzf.ML4a011L3hMlelCviuk2m.VoHgW",
+                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });
@@ -446,15 +459,11 @@ namespace TeeLab.Migrations
                 {
                     b.HasOne("Teelab.Models.SanPham", "SanPham")
                         .WithMany("ChiTietThanhToans")
-                        .HasForeignKey("MaSP")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaSP");
 
                     b.HasOne("Teelab.Models.ThanhToan", "ThanhToan")
                         .WithMany("ChiTietThanhToans")
-                        .HasForeignKey("MaTT")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaTT");
 
                     b.Navigation("SanPham");
 

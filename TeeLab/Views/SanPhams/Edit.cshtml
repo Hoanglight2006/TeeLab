@@ -15,11 +15,6 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
-                        <label asp-for="TenSP" class="fw-bold mb-1">Tên sản phẩm</label>
-                        <input asp-for="TenSP" class="form-control" />
-                        <span asp-validation-for="TenSP" class="text-danger"></span>
-                    </div>
-                    <div class="form-group mb-3">
                         <label asp-for="SoTien" class="fw-bold mb-1">Giá bán (VNĐ)</label>
                         <input asp-for="SoTien" class="form-control" type="text" value="@Model?.SoTien.ToString("0")" />
                         <span asp-validation-for="SoTien" class="text-danger"></span>
@@ -43,8 +38,8 @@
 
                         @{
                             // Lấy data cũ, tách thành mảng để so sánh
-                            var currentSizes = string.IsNullOrEmpty(Model.KichThuoc) ? new string[0] : Model.KichThuoc.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            var currentColors = string.IsNullOrEmpty(Model.MauSac) ? new string[0] : Model.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            var currentSizes = string.IsNullOrEmpty(Model!.KichThuoc) ? new string[0] : Model!.KichThuoc.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            var currentColors = string.IsNullOrEmpty(Model!.MauSac) ? new string[0] : Model!.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         }
 
                         <div class="form-group mb-4 mt-4">

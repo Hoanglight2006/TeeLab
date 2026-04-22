@@ -6,6 +6,7 @@
     var colors = string.IsNullOrEmpty(Model.MauSac) ? new string[0] : Model.MauSac.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 }
 
+
 <div class="container mt-4 mb-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-4">
@@ -109,3 +110,113 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    /* 1. Tông màu và Phông chữ chủ đạo */
+    :root {
+        --primary-black: #111;
+        --teelab-red: #d9534f;
+        --bg-light: #f9f9f9;
+        --border-soft: #eee;
+    }
+
+    /* 2. Làm đẹp Breadcrumb */
+    .breadcrumb-item a {
+        transition: color 0.2s;
+        font-weight: 500;
+    }
+
+        .breadcrumb-item a:hover {
+            color: var(--teelab-red) !important;
+        }
+
+    /* 3. Khung ảnh sản phẩm */
+    /* col-md-5 của bạn */
+    .col-md-5 img {
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background-color: var(--bg-light);
+        border: none !important; /* Ghi đè class border của Bootstrap */
+    }
+
+    .col-md-5:hover img {
+        transform: scale(1.03);
+    }
+
+    /* 4. Tiêu đề và Giá */
+    h2.fw-bold {
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+        text-transform: uppercase;
+        font-size: 1.75rem;
+    }
+
+    .text-danger.fw-bold {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        color: var(--teelab-red) !important;
+    }
+
+    /* 5. Khối thông tin sản phẩm (Card bg-light) */
+    .card.bg-light {
+        border-radius: 10px !important;
+        border: 1px dashed #ccc !important;
+        background-color: #fafafa !important;
+    }
+
+        .card.bg-light p {
+            white-space: pre-line; /* Để hiển thị xuống dòng từ database */
+            color: #555 !important;
+        }
+
+    /* 6. Tùy chỉnh các ô Select và Input */
+    .form-select-lg, .form-control-lg {
+        border: 1px solid #ddd !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .form-select-lg:focus, .form-control-lg:focus {
+            border-color: var(--primary-black) !important;
+            box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.05) !important;
+        }
+
+    /* 7. Nút THÊM VÀO GIỎ HÀNG */
+    .btn-dark {
+        background-color: var(--primary-black) !important;
+        border: none !important;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: 1.5px;
+        border-radius: 8px !important;
+        transition: all 0.3s ease !important;
+    }
+
+        .btn-dark:hover {
+            background-color: #333 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+        }
+
+        .btn-dark:active {
+            transform: translateY(-1px);
+        }
+
+    /* Nút tạm hết hàng */
+    .btn-secondary:disabled {
+        background-color: #ccc !important;
+        border: none !important;
+        cursor: not-allowed;
+    }
+
+    /* 8. Badge (Còn hàng/Hết hàng) */
+    .badge {
+        font-weight: 500;
+        border-radius: 50px;
+        padding: 6px 15px !important;
+    }
+</style>
