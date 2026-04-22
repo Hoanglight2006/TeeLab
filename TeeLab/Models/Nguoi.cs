@@ -17,7 +17,7 @@ namespace TeeLab.Models
         public string? Sdt { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-        public string TenDangNhap { get; set; }
+        public string? TenDangNhap { get; set; }
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 ký tự trở lên")]

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teelab.Models;
 
@@ -11,9 +12,11 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260418155235_initCreateMota")]
+    partial class initCreateMota
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,8 +80,7 @@ namespace TeeLab.Migrations
 
                     b.Property<string>("MatKhau")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Ngaysinh")
                         .HasColumnType("datetime2");
@@ -408,7 +410,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hải Phòng",
                             Email = "Customer@gmail.com",
                             Hoten = "Customer",
-                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
+                            MatKhau = "123456",
                             Sdt = "0977777777",
                             TenDangNhap = "Customer",
                             IsLocked = false
@@ -429,7 +431,7 @@ namespace TeeLab.Migrations
                             Diachi = "Hà Nội",
                             Email = "Staff@teelab.vn",
                             Hoten = "Staff",
-                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
+                            MatKhau = "123456",
                             Sdt = "0988888888",
                             TenDangNhap = "Staff"
                         });
@@ -449,7 +451,7 @@ namespace TeeLab.Migrations
                             Diachi = "Thái Nguyên",
                             Email = "admin@teelab.vn",
                             Hoten = "ADMIN",
-                            MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm",
+                            MatKhau = "123456",
                             Sdt = "0123456789",
                             TenDangNhap = "admin"
                         });
