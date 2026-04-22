@@ -25,9 +25,9 @@ namespace Teelab.Models
 
 
             // 1. SEED DATA: TÀI KHOẢN
-            modelBuilder.Entity<QuanLy>().HasData(new QuanLy { Id = 1, Hoten = "ADMIN", TenDangNhap = "admin", MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F", Sdt = "0123456789", Diachi = "Thái Nguyên", Email = "admin@teelab.vn", Avatar = "default-avatar.png" });
-            modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Staff", TenDangNhap = "Staff", MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F", Sdt = "0988888888", Diachi = "Hà Nội", Email = "Staff@teelab.vn", Avatar = "default-avatar.png" });
-            modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Customer", TenDangNhap = "Customer", MatKhau = "$2a$11$9.ZqI6v2w5f8A7R7vS5uEeR1G9S8T7U6V5W4X3Y2Z1A1B1C1D1E1F", Sdt = "0977777777", Diachi = "Hải Phòng", Email = "Customer@gmail.com", Avatar = "default-avatar.png" });
+            modelBuilder.Entity<QuanLy>().HasData(new QuanLy { Id = 1, Hoten = "ADMIN", TenDangNhap = "admin", MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", Sdt = "0123456789", Diachi = "Thái Nguyên", Email = "admin@teelab.vn", Avatar = "default-avatar.png" });
+            modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Staff", TenDangNhap = "Staff", MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", Sdt = "0988888888", Diachi = "Hà Nội", Email = "Staff@teelab.vn", Avatar = "default-avatar.png" });
+            modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Customer", TenDangNhap = "Customer", MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", Sdt = "0977777777", Diachi = "Hải Phòng", Email = "Customer@gmail.com", Avatar = "default-avatar.png" });
 
             // 2. SEED DATA: SẢN PHẨM
             modelBuilder.Entity<SanPham>().HasData(
