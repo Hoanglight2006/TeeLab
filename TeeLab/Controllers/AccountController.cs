@@ -189,7 +189,6 @@ namespace Teelab.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    // 3. Băm mật khẩu mới trước khi lưu
                     userInDb.MatKhau = BCrypt.Net.BCrypt.HashPassword(NewPassword);
                 }
                 else
@@ -210,9 +209,18 @@ namespace Teelab.Controllers
 
             if (!string.IsNullOrEmpty(model.Email) && !model.Email.Contains("*")) userInDb.Email = model.Email;
             if (!string.IsNullOrEmpty(model.SoDienThoai) && !model.SoDienThoai.Contains("*")) userInDb.Sdt = model.SoDienThoai;
-
+            if (!string.IsNullOrWhiteSpace(model.HoTen))
+            {
+                userInDb.Hoten = model.HoTen;
+            }
+            else
+            {
+                ModelState.AddModelError("HoTen","");
+                return View("Profile", model);
+            }
             userInDb.Hoten = model.HoTen;
             userInDb.Diachi = model.DiaChi;
+            userInDb.Hoten = model.HoTen;
 
             await _context.SaveChangesAsync();
 

@@ -315,6 +315,8 @@
                     <div class="col-12">
                         <label class="form-label">Họ và tên</label>
                         <input asp-for="HoTen" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                        <div id="HoTen-error" class="error-text">Họ tên phải từ 2 từ trở lên và không chứa số, ký tự đặc biệt</div>
+                        <span asp-validation-for="HoTen" class="text-danger small"></span>
                     </div>
                    <div class="col-md-6">
     <label class="form-label">Địa chỉ Email</label>
@@ -385,7 +387,20 @@
                 document.getElementById('previewImg').src = window.URL.createObjectURL(input.files[0]);
             }
         }
+const nameInput = document.getElementById('HoTen');
 
+function validateFullName() {
+    const nameRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]{2,50}$/;
+    
+    const value = nameInput.value.trim();
+    const isValid = nameRegex.test(value);
+
+    nameInput.classList.toggle('is-invalid', !isValid);
+    document.getElementById('HoTen-error').style.display = isValid ? 'none' : 'block';
+    
+    return isValid;
+}
+nameInput.addEventListener('input', validateFullName);
         function unlockField(id, realValue) {
             const el = document.getElementById(id);
             el.value = realValue; el.readOnly = false;
