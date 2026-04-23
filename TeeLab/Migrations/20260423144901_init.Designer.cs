@@ -12,7 +12,7 @@ using Teelab.Models;
 namespace TeeLab.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260422023558_init")]
+    [Migration("20260423144901_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -66,11 +66,6 @@ namespace TeeLab.Migrations
                     b.Property<string>("Diachi")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,11 +90,9 @@ namespace TeeLab.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Nguois");
+                    b.ToTable("Nguois", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Nguoi");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Teelab.Models.ChiTietThanhToan", b =>
@@ -401,7 +394,7 @@ namespace TeeLab.Migrations
                     b.Property<bool>("IsLocked")
                         .HasColumnType("bit");
 
-                    b.HasDiscriminator().HasValue("KhachHang");
+                    b.ToTable("KhachHangs", (string)null);
 
                     b.HasData(
                         new
@@ -422,7 +415,7 @@ namespace TeeLab.Migrations
                 {
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
-                    b.HasDiscriminator().HasValue("NhanVien");
+                    b.ToTable("NhanViens", (string)null);
 
                     b.HasData(
                         new
@@ -442,7 +435,7 @@ namespace TeeLab.Migrations
                 {
                     b.HasBaseType("TeeLab.Models.Nguoi");
 
-                    b.HasDiscriminator().HasValue("QuanLy");
+                    b.ToTable("QuanLys");
 
                     b.HasData(
                         new
@@ -482,6 +475,33 @@ namespace TeeLab.Migrations
                         .IsRequired();
 
                     b.Navigation("KhachHang");
+                });
+
+            modelBuilder.Entity("TeeLab.Models.KhachHang", b =>
+                {
+                    b.HasOne("TeeLab.Models.Nguoi", null)
+                        .WithOne()
+                        .HasForeignKey("TeeLab.Models.KhachHang", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TeeLab.Models.NhanVien", b =>
+                {
+                    b.HasOne("TeeLab.Models.Nguoi", null)
+                        .WithOne()
+                        .HasForeignKey("TeeLab.Models.NhanVien", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TeeLab.Models.QuanLy", b =>
+                {
+                    b.HasOne("TeeLab.Models.Nguoi", null)
+                        .WithOne()
+                        .HasForeignKey("TeeLab.Models.QuanLy", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Teelab.Models.SanPham", b =>

@@ -42,10 +42,7 @@ namespace TeeLab.Migrations
                     TenDangNhap = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MatKhau = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    HangThanhVien = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsLocked = table.Column<bool>(type: "bit", nullable: true)
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -72,6 +69,59 @@ namespace TeeLab.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KhachHangs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    HangThanhVien = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsLocked = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KhachHangs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KhachHangs_Nguois_Id",
+                        column: x => x.Id,
+                        principalTable: "Nguois",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NhanViens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NhanViens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NhanViens_Nguois_Id",
+                        column: x => x.Id,
+                        principalTable: "Nguois",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuanLys",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuanLys", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuanLys_Nguois_Id",
+                        column: x => x.Id,
+                        principalTable: "Nguois",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ThanhToans",
                 columns: table => new
                 {
@@ -90,9 +140,9 @@ namespace TeeLab.Migrations
                 {
                     table.PrimaryKey("PK_ThanhToans", x => x.MaTT);
                     table.ForeignKey(
-                        name: "FK_ThanhToans_Nguois_Id",
+                        name: "FK_ThanhToans_KhachHangs_Id",
                         column: x => x.Id,
-                        principalTable: "Nguois",
+                        principalTable: "KhachHangs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -127,17 +177,13 @@ namespace TeeLab.Migrations
 
             migrationBuilder.InsertData(
                 table: "Nguois",
-                columns: new[] { "Id", "Avatar", "Diachi", "Discriminator", "Email", "Hoten", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
+                columns: new[] { "Id", "Avatar", "Diachi", "Email", "Hoten", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
                 values: new object[,]
                 {
-                    { 1, "default-avatar.png", "Thái Nguyên", "QuanLy", "admin@teelab.vn", "ADMIN", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0123456789", "admin" },
-                    { 2, "default-avatar.png", "Hà Nội", "NhanVien", "Staff@teelab.vn", "Staff", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0988888888", "Staff" }
+                    { 1, "default-avatar.png", "Thái Nguyên", "admin@teelab.vn", "ADMIN", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0123456789", "admin" },
+                    { 2, "default-avatar.png", "Hà Nội", "Staff@teelab.vn", "Staff", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0988888888", "Staff" },
+                    { 3, "default-avatar.png", "Hải Phòng", "Customer@gmail.com", "Customer", "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0977777777", "Customer" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "Nguois",
-                columns: new[] { "Id", "Avatar", "Diachi", "Discriminator", "Email", "HangThanhVien", "Hoten", "IsLocked", "MatKhau", "Ngaysinh", "Sdt", "TenDangNhap" },
-                values: new object[] { 3, "default-avatar.png", "Hải Phòng", "KhachHang", "Customer@gmail.com", null, "Customer", false, "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", null, "0977777777", "Customer" });
 
             migrationBuilder.InsertData(
                 table: "SanPhams",
@@ -160,6 +206,21 @@ namespace TeeLab.Migrations
                     { "Q116", "quanbo.jpg", "S, M, L, XL", "Đen Wash, Trắng Wash, Xanh Wash, Xám đen Wash", "Quần jeans ống rộng phong cách local brand, dễ phối đồ. Chất denim bền bỉ, form rộng thoải mái phù hợp nhiều phong cách khác nhau.", 20, 250000m, "Quần Dài Local Brand Unisex Teelab Jeans Ống Rộng PS116", "Còn hàng" },
                     { "Q131", "quanni.jpg", "S, M, L, XL", "Đen, Xanh Navy, Xám trắng", "Quần nỉ ống suông form rộng, mang lại sự thoải mái khi vận động. Họa tiết in World Tour tạo phong cách streetwear năng động.", 50, 250000m, "Quần Nỉ Ống Suông Teelab Alter Oversize Nỉ In World Tour PS131", "Còn hàng" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "KhachHangs",
+                columns: new[] { "Id", "HangThanhVien", "IsLocked" },
+                values: new object[] { 3, null, false });
+
+            migrationBuilder.InsertData(
+                table: "NhanViens",
+                column: "Id",
+                value: 2);
+
+            migrationBuilder.InsertData(
+                table: "QuanLys",
+                column: "Id",
+                value: 1);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChiTietThanhToans_MaSP",
@@ -187,10 +248,19 @@ namespace TeeLab.Migrations
                 name: "ChiTietThanhToans");
 
             migrationBuilder.DropTable(
+                name: "NhanViens");
+
+            migrationBuilder.DropTable(
+                name: "QuanLys");
+
+            migrationBuilder.DropTable(
                 name: "SanPhams");
 
             migrationBuilder.DropTable(
                 name: "ThanhToans");
+
+            migrationBuilder.DropTable(
+                name: "KhachHangs");
 
             migrationBuilder.DropTable(
                 name: "Nguois");

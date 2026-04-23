@@ -17,7 +17,6 @@ namespace Teelab.Models
         public DbSet<ThanhToan> ThanhToans { get; set; }
         public DbSet<ChiTietThanhToan> ChiTietThanhToans { get; set; }
         public DbSet<ChatHistory> ChatHistory { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -29,7 +28,10 @@ namespace Teelab.Models
             modelBuilder.Entity<NhanVien>().HasData(new NhanVien { Id = 2, Hoten = "Staff", TenDangNhap = "Staff", MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", Sdt = "0988888888", Diachi = "Hà Nội", Email = "Staff@teelab.vn", Avatar = "default-avatar.png" });
             modelBuilder.Entity<KhachHang>().HasData(new KhachHang { Id = 3, Hoten = "Customer", TenDangNhap = "Customer", MatKhau = "$2a$12$g9A8wOWOaOukKb52yMPeru.OAgvWjVQF6N7AkowgHFgSoeKjGAWtm", Sdt = "0977777777", Diachi = "Hải Phòng", Email = "Customer@gmail.com", Avatar = "default-avatar.png" });
 
-            // 2. SEED DATA: SẢN PHẨM
+            modelBuilder.Entity<Nguoi>().ToTable("Nguois");
+            modelBuilder.Entity<KhachHang>().ToTable("KhachHangs");
+            modelBuilder.Entity<NhanVien>().ToTable("NhanViens");
+
             modelBuilder.Entity<SanPham>().HasData(
 new SanPham
 {

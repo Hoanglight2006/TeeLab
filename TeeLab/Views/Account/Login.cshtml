@@ -139,10 +139,10 @@
             <p class="text-muted">Chưa có tài khoản? <a asp-action="Register">Đăng ký</a></p>
             <a asp-controller="Account" asp-action="ForgotPassword" class="text-muted small text-decoration-none">Quên mật khẩu?</a>
         </div>
-        @if (TempData["Success"] != null)
+        @if (TempData["ResetPasswordSuccess"] != null)
         {
-            <div class="alert alert-success small p-2 text-center">
-                @TempData["Success"]
+            <div class="alert alert-success small p-2 text-center mt-3">
+                @TempData["ResetPasswordSuccess"]
             </div>
         }
     </div>

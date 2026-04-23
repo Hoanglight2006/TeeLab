@@ -320,7 +320,7 @@ namespace Teelab.Controllers
                         HttpContext.Session.Remove("OTPCode");
                         HttpContext.Session.Remove("OTPEmail");
 
-                        TempData["Success"] = "Đổi mật khẩu thành công! Vui lòng đăng nhập.";
+                        TempData["ResetPasswordSuccess"] = "Đổi mật khẩu thành công! Vui lòng đăng nhập.";
                         return RedirectToAction("Login");
                     }
                 }
