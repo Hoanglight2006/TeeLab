@@ -112,7 +112,7 @@ namespace TeeLab.Controllers
                     ModelState.AddModelError("TenDangNhap", "Tên đăng nhập này đã tồn tại trên hệ thống!");
                     return View(nhanVien);
                 }
-
+                nhanVien.MatKhau = BCrypt.Net.BCrypt.HashPassword(nhanVien.MatKhau);
                 _context.Add(nhanVien);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
